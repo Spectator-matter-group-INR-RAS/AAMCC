@@ -1,0 +1,2 @@
+/usr/bin/ar qc libTGlauberLib.a  CMakeFiles/TGlauberLib.dir/TGlauNucleon.cc.o CMakeFiles/TGlauberLib.dir/TGlauNucleus.cc.o CMakeFiles/TGlauberLib.dir/TGlauberMC.cc.o
+/usr/bin/ranlib libTGlauberLib.a
