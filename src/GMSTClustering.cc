@@ -163,7 +163,7 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
         G4double PrefragmentMass_A = SumMassMst + ExEnA;
 
         std::vector<G4LorentzVector *> *momentumVectorA;
-        //if is commented as a part of a history
+        //if is commented as a part of a long history
         //if (PrefragmentMass_A > (SumMassMstEx + + 1e-10*MeV)) {
             momentumVectorA = phaseSpaceDecay.Decay(PrefragmentMass_A, MstMassVector_A);
         //}
