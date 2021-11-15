@@ -22,8 +22,7 @@
 
     G4ReactionProductVector* BreakUp(const G4Fragment &theInitialFragment);
     G4ReactionProductVector* BreakUpPureNeutrons(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* FromFragmentVectorToReactionProductVector(G4FragmentVector &FragVect_in); //in my realisation
-    std::vector<G4LorentzVector *> * AfterMST();
+    G4ReactionProductVector* futureBreakItUp(const G4Fragment &theInitialFragment);
     inline void SetMaxAforPureNeutronFragments(G4int in_A) {MaxAforFermiBreakUpForPureNeutronFragments = in_A;};
     inline void SetMaxAforFermiBreakUp(G4int in_A) {MaxAforFermiBreakUp = in_A;};
     inline void SetMaxZforFermiBreakUp(G4int in_Z) {MaxZforFermiBreakUp = in_Z;};

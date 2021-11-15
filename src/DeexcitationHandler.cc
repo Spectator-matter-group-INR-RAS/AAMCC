@@ -32,14 +32,9 @@ G4ReactionProductVector *DeexcitationHandler::BreakUpPureNeutrons(const G4Fragme
             outVec->push_back(New);
         }
         return outVec;
-    };
-
-//Not written convertor from G4FragmentVector to G4ReactionProduct
-    G4ReactionProductVector *
-    DeexcitationHandler::FromFragmentVectorToReactionProductVector(G4FragmentVector &FragVect_in) {
-        G4ReactionProductVector *outVec = new G4ReactionProductVector();
-        for (G4Fragment *frag: FragVect_in) {
-        }
-        return outVec;
     }
+
+G4ReactionProductVector *DeexcitationHandler::futureBreakItUp(const G4Fragment &theInitialFragment) {
+    return nullptr;
+};
 

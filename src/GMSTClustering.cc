@@ -163,7 +163,6 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
         G4double PrefragmentMass_A = SumMassMst + ExEnA;
 
         std::vector<G4LorentzVector *> *momentumVectorA;
-        momentumVectorA->reserve(momClusters.at(0).size());
         //if (PrefragmentMass_A > (SumMassMstEx + + 1e-10*MeV)) {
             momentumVectorA = phaseSpaceDecay.Decay(PrefragmentMass_A, MstMassVector_A);
         //}
@@ -196,7 +195,6 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
 
         G4double PrefragmentMass_B = SumMassMst + ExEnB;
         std::vector<G4LorentzVector *> *momentumVectorB;
-        momentumVectorB->reserve(momClusters.at(1).size());
         //if (PrefragmentMass_B > (SumMassMstEx + 1e-10*MeV)) {
             momentumVectorB = phaseSpaceDecay.Decay(PrefragmentMass_B, MstMassVector_B);
         //}
