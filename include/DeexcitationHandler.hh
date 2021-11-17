@@ -31,6 +31,10 @@
     G4int MaxAforFermiBreakUp = 19;
     G4int MaxZforFermiBreakUp =  9;
     G4double mn = 939.5731*MeV;
+    G4Fragment* toFragment(G4ReactionProduct* product);
+    G4ReactionProduct* toReactionProduct(G4Fragment* fragment);
+    G4ParticleDefinition* toParticleDefinition(G4int A, G4int Z) const;
+
     G4FermiPhaseSpaceDecay PhaseSpaceDecay;
     G4FermiBreakUp* FermiBreakUp;
 };

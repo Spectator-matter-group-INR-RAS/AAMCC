@@ -57,6 +57,7 @@ int main()
    //Seting parameters for Deexcitation
   G4NuclearLevelData* fLevelData = G4NuclearLevelData::GetInstance(); 
   G4DeexPrecoParameters* fParam = fLevelData->GetParameters();
+  //fParam->SetDeexModelType(0);
   fParam->SetMinExPerNucleounForMF(4.*MeV); 
 
   G4StateManager* fStateManager = G4StateManager::GetStateManager();
@@ -294,7 +295,7 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
     G4FragmentVector clusters_to_excit_A = MstClustersVector.at(0);
     G4FragmentVector clusters_to_excit_B = MstClustersVector.at(1);
     // if(histoManager.ToFileOrNot()){histoManager.WriteNucleonsCoordinatesInFile(clusters_to_excit_A, clusters_to_excit_B,b);}
-
+   /*
     for(G4int i = 0; i < MstClustersVector.at(0).size(); ++i) {
       A_cl.push_back((MstClustersVector.at(0)[i])->GetA());
       Z_cl.push_back((MstClustersVector.at(0)[i])->GetZ());
@@ -303,23 +304,21 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
     for(G4int i = 0; i < MstClustersVector.at(1).size(); ++i) {
       Ab_cl.push_back((MstClustersVector.at(1)[i])->GetA());
       Zb_cl.push_back((MstClustersVector.at(1)[i])->GetZ());
-    }
+    }*/
 
-    histoManager.GetTreeMST()->Fill();
-    A_cl.clear();
-    Z_cl.clear();
-    Ab_cl.clear();
-    Zb_cl.clear();
-
+        std::cout<<"Event with mult = "<<MstClustersVector.at(0).size()<<std::endl;
 
       for(G4int i = 0; i < MstClustersVector.at(0).size(); ++i) {
 
 	  G4Fragment aFragment = (*MstClustersVector.at(0).at(i));
       G4LorentzVector p4 = aFragment.GetMomentum();
-
+      if((aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()) - ExEn*aFragment.GetA() !=0) && aFragment.GetA() != 1){std::cout<<"dE_x = "<<(aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()))/aFragment.GetA() - ExEn<<"\n";}
+      A_cl.push_back(aFragment.GetA());
+      Z_cl.push_back(aFragment.GetZ());
           G4double eta_A = 0;
       //if(abs(p4.px()) < 1) std::cout<<G4double(clfrag_A)<<" "<<G4double(sourceA)<<"\n";
 
+      // TODO Devise the source of a differences between models
       // HANDLER
       G4ReactionProductVector *theProduct = handlerNew->BreakUp(aFragment);
 
@@ -390,7 +389,8 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
 
             G4Fragment aFragmentB = (*MstClustersVector.at(1).at(i));
             G4LorentzVector p4b = aFragmentB.GetMomentum();
-
+            Ab_cl.push_back(aFragmentB.GetA());
+            Zb_cl.push_back(aFragmentB.GetZ());
       G4double eta_B = 0;
 
       // HANDLER
@@ -431,6 +431,12 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
       }
       delete theProductB;
     }
+
+   histoManager.GetTreeMST()->Fill();
+   A_cl.clear();
+   Z_cl.clear();
+   Ab_cl.clear();
+   Zb_cl.clear();
 
     //Filling histo-s + cleaning
     histoManager.GetTree()->Fill();
