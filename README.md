@@ -5,7 +5,7 @@ of colliding nuclei and energy of the collision on the event-by-event basis
 
 ## Main assumtions of AAMCC
  
- - Nucleus-nucleus collisions are simulated by means of the Glauber Monte Carlomodel. Non-participated nucleons form spectator matter (prefragment).
+ - Nucleus-nucleus collisions are simulated by means of the Glauber Monte Carlo model. Non-participated nucleons form spectator matter (prefragment).
  - Excitation energy of prefragment is calculated as follows: 
   - in peripheral collisions with less then ~15% of removed nucleons the particle-hole model is used 2) (Ericson formula);
   - otherwise a parabolic ALADIN approximation 3) is applied with parameters tuned to data obtained in nuclear emulsions.
