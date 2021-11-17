@@ -102,6 +102,7 @@ class GMSTClustering{
 
 	public:
 	inline void SetCD(G4double CD_in) {CritDist = CD_in; d0 = CD_in;}
+	inline G4double GetCD(std::string side) {return (side == "A" ?  CritDistA : CritDist);}
     void SetCDExEn(G4double Ex, G4int A);
 	Graph ClusterToGraph(NucleonVector* nucleons, G4double A);
 
@@ -111,11 +112,12 @@ class GMSTClustering{
 
     std::vector<G4FragmentVector> CalculateMomentum(std::vector<G4FragmentVector> noMomClusters, G4double ExEnA, G4double ExEnB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB);
 
-	G4double CritDist;
+    G4double CritDistA;
+    G4double CritDist;
 	G4double kappa;
 	G4double eps0 = 2.17*MeV;
 	G4double alphaPow = -1.02;
-	G4double d0 = 2.7;
+	G4double d0 = -999;
 	G4double aColRel = 5.315; //divided by aVol
 	G4double aSurfRel  = 0.017; //divided by aVol
 	G4double aVol     = 0.054;

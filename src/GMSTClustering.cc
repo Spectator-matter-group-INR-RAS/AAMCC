@@ -71,6 +71,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
 	vector< vector <G4int> > clusters;
 	if(ExA > 0 && ExB > 0) this->SetCDExEn(ExA,A);
 	//G4cout<<"CritDist = "<<CritDist<<"\n";
+    CritDistA = this->CritDist;
     clusters = g.AdvancedKruskalMST(this->CritDist);
 
     // Applying MST + critical distance cut + DFS clustering (side B)
