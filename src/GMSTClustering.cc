@@ -165,13 +165,21 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
 
         std::vector<G4LorentzVector *> *momentumVectorA;
         //if is commented as a part of a long history
-        //if (PrefragmentMass_A > (SumMassMstEx + + 1e-10*MeV)) {
+        if (PrefragmentMass_A > (SumMassMstEx + 1e-10*MeV)) {
             momentumVectorA = phaseSpaceDecay.Decay(PrefragmentMass_A, MstMassVector_A);
-        //}
-        for (int I = 0; I < momClusters.at(0).size(); ++I) {
-            momClusters.at(0).at(I)->SetMomentum((*momentumVectorA->at(I)).boost(boostA));
         }
-        momentumVectorA->clear();
+        for (int I = 0; I < momClusters.at(0).size(); ++I) {
+            if (PrefragmentMass_A > (SumMassMstEx + 1e-10*MeV)) {
+                momClusters.at(0).at(I)->SetMomentum((*momentumVectorA->at(I)).boost(boostA));
+            }
+            else
+            {
+                momClusters.at(0).at(I)->SetMomentum(GetFermiLab(MstMassVector_A.at(I), momClusters.at(0).at(I)->GetA(), boostA));
+            }
+        }
+        if (PrefragmentMass_A > (SumMassMstEx + 1e-10*MeV)) {
+            momentumVectorA->clear();
+        }
     }
     //side B
     SumMassMst = 0;
@@ -198,16 +206,22 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
         G4double PrefragmentMass_B = SumMassMst + ExEnB;
         std::vector<G4LorentzVector *> *momentumVectorB;
         //if is commented as a part of a history
-        //if (PrefragmentMass_B > (SumMassMstEx + 1e-10*MeV)) {
+        if (PrefragmentMass_B > (SumMassMstEx + 1e-10*MeV)) {
             momentumVectorB = phaseSpaceDecay.Decay(PrefragmentMass_B, MstMassVector_B);
-        //}
-
-        for (int I = 0; I < momClusters.at(1).size(); ++I) {
-            momClusters.at(1).at(I)->SetMomentum((*momentumVectorB->at(I)).boost(boostB));
         }
-        momentumVectorB->clear();
+        for (int I = 0; I < momClusters.at(1).size(); ++I) {
+            if (PrefragmentMass_B > (SumMassMstEx + 1e-10*MeV)) {
+                momClusters.at(1).at(I)->SetMomentum((*momentumVectorB->at(I)).boost(boostB));
+            }
+            else
+            {
+                momClusters.at(1).at(I)->SetMomentum(GetFermiLab(MstMassVector_B.at(I), momClusters.at(1).at(I)->GetA(), boostB));
+            }
+        }
+        if (PrefragmentMass_B > (SumMassMstEx + 1e-10*MeV)) {
+            momentumVectorB->clear();
+        }
     }
-
     MstMassVector_A.clear();
     MstMassVector_B.clear();
     noMomClusters.clear();
@@ -359,4 +373,17 @@ void DisjointSets::merge(G4int x, G4int y)
 
     if (rnk[x] == rnk[y])
         rnk[y]++;
+}
+
+G4LorentzVector GMSTClustering::GetFermiLab(G4double Mass, G4int A, CLHEP::Hep3Vector Boost)
+{
+    G4double px_clust = 0;
+    G4double py_clust = 0;
+    G4double pz_clust = 0;
+    G4double beta2 = pow(Boost.getX(), 2) + pow(Boost.getY(), 2) + pow(Boost.getZ(), 2);
+    px_clust = Boost.getX() * 931.494*CLHEP::MeV * A / pow((1-beta2), 0.5);
+    py_clust = Boost.getY() * 931.494*CLHEP::MeV * A / pow((1-beta2), 0.5);
+    pz_clust = Boost.getZ() * 931.494*CLHEP::MeV * A / pow((1-beta2), 0.5);
+    G4LorentzVector p4(px_clust, py_clust, pz_clust, pow(pow(Mass, 2) + pow(pz_clust, 2) + pow(px_clust, 2) + pow(py_clust, 2), 0.5));
+    return p4;
 }

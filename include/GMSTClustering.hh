@@ -111,7 +111,7 @@ class GMSTClustering{
 	private:
 
     std::vector<G4FragmentVector> CalculateMomentum(std::vector<G4FragmentVector> noMomClusters, G4double ExEnA, G4double ExEnB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB);
-
+    G4LorentzVector GetFermiLab(G4double Mass, G4int A, CLHEP::Hep3Vector Boost);
     G4double CritDistA;
     G4double CritDist;
 	G4double kappa;

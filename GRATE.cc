@@ -198,9 +198,6 @@ G4int sourceAb = histoManager.GetInitialContidions().GetSourceAb();
 G4double rA_plus_rB = 1.3*(pow(G4double(sourceA),0.3333333)+pow(G4double(sourceAb),0.3333333));
 
 //START OF THE MODELLING
-//Setting up GMST
-GMSTClustering* clusters = new GMSTClustering(histoManager.GetCriticalDistance(),sourceA,sourceAb);
-clusters->SetCD(histoManager.GetCriticalDistance());
 
 //Setting up ExcitationHandler
 DeexcitationHandler* handlerNew = new DeexcitationHandler();
@@ -286,6 +283,10 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
   reader.Read(nucleons);
   nV = reader.GetNucleons();
   Z = nV.GetZ("A"); A = nV.GetA("A"); Zb = nV.GetZ("B"); Ab = nV.GetA("B");
+
+  //Setting up GMST
+  GMSTClustering* clusters = new GMSTClustering(histoManager.GetCriticalDistance(),A,Ab);
+  clusters->SetCD(histoManager.GetCriticalDistance());
 
     if(!(A == 0 && Ab ==0)) {
     G4int thisEventNumFragments = 0;
@@ -464,6 +465,7 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
     if (!G4bool(count % 100)) { G4cout << "Program is working," << count << " events calculated    \r" << std::flush; }
 
     }
+    delete clusters;
   }
 
 G4cout<<"----> collided "<<histoManager.GetIterations()<<" nuclei "<<histoManager.GetSysA()<< " with " << histoManager.GetSysB() <<" at N-N x-section "<<signn<<" mb"<<G4endl;
@@ -478,7 +480,6 @@ else
 histoManager.CleanHisto();
 
 delete runManager;
-delete clusters;
 delete handlerNew;
 delete mcg;
 delete ExEnA;
