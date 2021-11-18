@@ -14,8 +14,8 @@ CritDist = 100;
 
 GMSTClustering::GMSTClustering(G4double CD_in, G4double Aa_in, G4double Ab_in){
 CritDist = CD_in;
-Aa = Aa_in;
-Ab = Ab_in;
+    SpecAa = Aa_in;
+    SpecAb = Ab_in;
 };
 
 GMSTClustering::~GMSTClustering(){
@@ -46,8 +46,12 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
 	G4int Z = 0;
 	G4int Ab = 0;
 	G4int Zb = 0;
+    nucleonVector = nucleons_in;
+    SpecAa = nucleonVector->GetA("A"); SpecAb = nucleonVector->GetA("B");
+
 	NucleonVector *nucleons = new NucleonVector(); // nucleons from Side A
-	NucleonVector *nucleons_B = new NucleonVector(); // nucleons from Side B
+    NucleonVector *nucleons_B = new NucleonVector(); // nucleons from Side B
+
 	for(G4int iArray = 0; iArray < nucleons_in->size(); iArray++){
 		Nucleon *nucleon= &(nucleons_in->at(iArray));
 		if(nucleon->isParticipant == 0 && nucleon->Nucl == "A"){
@@ -71,6 +75,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
 	vector< vector <G4int> > clusters;
 	if(ExA > 0 && ExB > 0) this->SetCDExEn(ExA,A);
 	//G4cout<<"CritDist = "<<CritDist<<"\n";
+    CritDistA = this->CritDist;
     clusters = g.AdvancedKruskalMST(this->CritDist);
 
     // Applying MST + critical distance cut + DFS clustering (side B)
@@ -139,7 +144,6 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
 
     G4double SumMassMst = 0;
     G4double SumMassMstEx = 0;
-
     if(!noMomClusters.at(0).empty()) {
 
         for (G4int i = 0; i < noMomClusters.at(0).size(); ++i) {
@@ -148,7 +152,7 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
             //Excitation energy computing
             G4double energy = 0;
             if (!((clfrag_Z == 0 && (clfrag_A == 1)) || (clfrag_Z == 1 && (clfrag_A == 1)))) {
-                energy = ExEnA * G4double(clfrag_A) / G4double(Aa);
+                energy = ExEnA * G4double(clfrag_A) / G4double(SpecAa);
             }
 
             G4double NuclearMass = G4NucleiProperties::GetNuclearMass(clfrag_A, clfrag_Z) + energy;
@@ -164,7 +168,7 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
 
         std::vector<G4LorentzVector *> *momentumVectorA;
         //if is commented as a part of a long history
-        //if (PrefragmentMass_A > (SumMassMstEx + + 1e-10*MeV)) {
+        if (PrefragmentMass_A < (SumMassMstEx + 1e-5*MeV)) { PrefragmentMass_A += 1e-5*MeV; }
             momentumVectorA = phaseSpaceDecay.Decay(PrefragmentMass_A, MstMassVector_A);
         //}
         for (int I = 0; I < momClusters.at(0).size(); ++I) {
@@ -182,7 +186,7 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
             //Excitation energy computing
             G4double energy = 0;
             if (!((clfrag_Z == 0 && (clfrag_A == 1)) || (clfrag_Z == 1 && (clfrag_A == 1)))) {
-                energy = ExEnB * G4double(clfrag_A) / G4double(Ab);
+                energy = ExEnB * G4double(clfrag_A) / G4double(SpecAb);
             }
 
             G4double NuclearMass = G4NucleiProperties::GetNuclearMass(clfrag_A, clfrag_Z) + energy;
@@ -197,7 +201,7 @@ std::vector<G4FragmentVector> GMSTClustering::CalculateMomentum(std::vector<G4Fr
         G4double PrefragmentMass_B = SumMassMst + ExEnB;
         std::vector<G4LorentzVector *> *momentumVectorB;
         //if is commented as a part of a history
-        //if (PrefragmentMass_B > (SumMassMstEx + 1e-10*MeV)) {
+        if (PrefragmentMass_B < (SumMassMstEx + 1e-5*MeV)) {PrefragmentMass_B += 1e-5*MeV;}
             momentumVectorB = phaseSpaceDecay.Decay(PrefragmentMass_B, MstMassVector_B);
         //}
 

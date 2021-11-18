@@ -31,3 +31,10 @@ int NucleonVector::GetTotZ(std::string Nucl) {
     return tZ;
 }
 
+NucleonVector* NucleonVector::GetNucleons(std::string side) {
+    NucleonVector* out = new NucleonVector();
+    if(side == "A" || side == "B"){
+    for(int k = 0; k < this->size(); ++k){if(this->at(k).Nucl == side){out->push_back(this->at(k));}}
+    } else {out = this;}
+    return out;
+}

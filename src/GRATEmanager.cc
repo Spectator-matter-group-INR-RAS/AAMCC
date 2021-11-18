@@ -127,17 +127,17 @@ void GRATEmanager::BookHisto()
 
   histo[1] =  new TH1D("M distr"," ;M;entries",100, -0.5, 100+0.5);
 
-  histo[2] =  new TH1D("pz for neutrons",";pz;",1000,0, PzA+5000);
-  histo[3] =  new TH1D("pz for protons"," ;pz;",1000, 0, PzA+5000);
-  histo[4] =  new TH1D("pz for IMF"," ;pz;",1000, -6*1e4, 6*1e4);
-  histo[5] =  new TH1D("pz for heavy fragments"," ;pz;",1000, -6*1e4, 6*1e4);
+  histo[2] =  new TH1D("pz for neutrons, side A",";pz;",1e+3,InCond->GetPzA()/MeV/InCond->GetSourceA() - 20e+3, InCond->GetPzA()/MeV/InCond->GetSourceA() + 20e+3);
+  histo[3] =  new TH1D("pz for protons, side A"," ;pz;",1e+3, InCond->GetPzA()/MeV/InCond->GetSourceA() - 20e+3, InCond->GetPzA()/MeV/InCond->GetSourceA() + 20e+3);
+  histo[4] =  new TH1D("pz (2 < Z < 20), side A"," ;pz;",1e+3, InCond->GetPzA()/MeV/20 - 500e+3, InCond->GetPzA()/MeV/20 + 800e+3);
+  histo[5] =  new TH1D("pz (Z > 20), side A"," ;pz;",1e+3, InCond->GetPzA()/MeV/2 - 1.5e+6, InCond->GetPzA()/MeV/2 + 2e+6);
 
 
   histo[6] =  new TH1D("Charge distruibution"," ;Z;entries",sourceZ+1,-0.5, sourceZ+0.5);
 
   histo[7] =  new TH1D("Mass distribution", " ;A,entries",sourceA,0.5, sourceA+0.5);
 
-  histo2[1] = new TH2D("Ex En distribution"," ;E*/A;A_{pf}/A",300, 0, 15, sourceA+1, 0, 1);
+  histo2[1] = new TH2D("Ex En distribution, side A"," ;E*/A;A_{pf}/A",300, 0, 15, sourceA+1, 0, 1);
 
   histo2[2] = new TH2D("Mass and Charge distribution"," ;Z;A",sourceZ+1, -0.5, sourceZ+0.5, sourceA+1, -0.5, sourceA+0.5);
 
@@ -211,7 +211,6 @@ void GRATEmanager::CleanHisto()
   G4cout << "\n----> Histograms were written into the file " << fileFullName << G4endl;
   delete fFile;
 }
-
 
 void GRATEmanager::FillConditionsTree(G4double Xsect){
 

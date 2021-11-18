@@ -125,6 +125,11 @@ int main()
   G4int Npart;
   G4int NpartA;
   G4int NpartB;
+  G4int ClustNumA;
+  G4int ClustNumB;
+  G4double d_MstA;
+  G4double d_MstB;
+
 
   G4float PhiRotA;
   G4float ThetaRotA;
@@ -158,8 +163,12 @@ int main()
 
   histoManager.GetTreeMST()->Branch("A_cl", "std::vector" ,&A_cl);
   histoManager.GetTreeMST()->Branch("Z_cl", "std::vector" ,&Z_cl);
+  histoManager.GetTreeMST()->Branch("d", &d_MstA ,"d/d");
+  histoManager.GetTreeMST()->Branch("Clust_num", &ClustNumA ,"Clust_num/I");
   histoManager.GetTreeMST()->Branch("Ab_cl", "std::vector" ,&Ab_cl);
   histoManager.GetTreeMST()->Branch("Zb_cl", "std::vector" ,&Zb_cl);
+  histoManager.GetTreeMST()->Branch("d_b", &d_MstB ,"d/d");
+  histoManager.GetTreeMST()->Branch("Clust_num_b", &ClustNumB ,"Clust_num_b/I");
 
 if(histoManager.WritePseudorapidity()){
   histoManager.GetTree()->Branch("pseudorapidity_on_A", "std::vector", &pseudorapidity_A);
@@ -251,7 +260,6 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
    mcg->Run(1);
 
   histoManager.CalcNucleonDensity(mcg->GetNucleons(), mcg->GetB());
-
   //Side A $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   TGlauNucleus *nucA   = mcg->GetNucleusA(); 
   TGlauNucleus *nucB = mcg->GetNucleusB();
@@ -289,36 +297,34 @@ for(G4int count=0;count<histoManager.GetIterations() ;count++){
     G4double energy_A = ExEnA->GetEnergy(A);
     G4double energy_B = ExEnB->GetEnergy(Ab);
     ExEn = energy_A/G4double(A);
-
+    histoManager.GetHisto2(1)->Fill(ExEn, G4double(A)/sourceA);
 
     std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, FermiMom.GetBoost("A"), FermiMom.GetBoost("B")); //d = const if energy is negative
     G4FragmentVector clusters_to_excit_A = MstClustersVector.at(0);
     G4FragmentVector clusters_to_excit_B = MstClustersVector.at(1);
-    // if(histoManager.ToFileOrNot()){histoManager.WriteNucleonsCoordinatesInFile(clusters_to_excit_A, clusters_to_excit_B,b);}
-   /*
-    for(G4int i = 0; i < MstClustersVector.at(0).size(); ++i) {
-      A_cl.push_back((MstClustersVector.at(0)[i])->GetA());
-      Z_cl.push_back((MstClustersVector.at(0)[i])->GetZ());
-    }
+    d_MstA = clusters->GetCD("A");
+    d_MstB = clusters->GetCD("B");
 
-    for(G4int i = 0; i < MstClustersVector.at(1).size(); ++i) {
-      Ab_cl.push_back((MstClustersVector.at(1)[i])->GetA());
-      Zb_cl.push_back((MstClustersVector.at(1)[i])->GetZ());
-    }*/
+    ClustNumB = Ab_cl.size();
 
-        std::cout<<"Event with mult = "<<MstClustersVector.at(0).size()<<std::endl;
+    histoManager.GetTreeMST()->Fill();
+    A_cl.clear();
+    Z_cl.clear();
+    Ab_cl.clear();
+    Zb_cl.clear();
 
       for(G4int i = 0; i < MstClustersVector.at(0).size(); ++i) {
 
 	  G4Fragment aFragment = (*MstClustersVector.at(0).at(i));
       G4LorentzVector p4 = aFragment.GetMomentum();
-      if((aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()) - ExEn*aFragment.GetA() !=0) && aFragment.GetA() != 1){std::cout<<"dE_x = "<<(aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()))/aFragment.GetA() - ExEn<<"\n";}
+      //if((aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()) - ExEn*aFragment.GetA() !=0) && aFragment.GetA() != 1){std::cout<<"dE_x = "<<(aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()))/aFragment.GetA() - ExEn<<"\n";}
       A_cl.push_back(aFragment.GetA());
       Z_cl.push_back(aFragment.GetZ());
           G4double eta_A = 0;
       //if(abs(p4.px()) < 1) std::cout<<G4double(clfrag_A)<<" "<<G4double(sourceA)<<"\n";
 
       // TODO Devise the source of a differences between models
+      //    - Issues in propagation of Excitation energy through GMSTClustering
       // HANDLER
       G4ReactionProductVector *theProduct = handlerNew->BreakUp(aFragment);
 

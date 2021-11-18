@@ -25,5 +25,7 @@ public:
     int GetZ(std::string Nucl);
     int GetTotA(std::string Nucl);
     int GetTotZ(std::string Nucl);
+
+    NucleonVector* GetNucleons(std::string side);
 };
 #endif
