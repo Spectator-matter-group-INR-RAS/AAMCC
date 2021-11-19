@@ -31,6 +31,7 @@ class GRATEmanager
   TH1D* GetHisto(G4int id) {return histo[id];};
   TTree* GetTree() {return Glauber;};
   TTree* GetTreeMST() {return Clusters;};
+  TTree* GetTreeFermiMom() {return FermiMom;};
   TH2D* GetHisto2(G4int id) {return histo2[id];};
  
        
@@ -72,58 +73,59 @@ class GRATEmanager
   private:
 
   
-    TFile* fFile;
-    TH1D*  histo[20];
-    TH2D*  histo2[10];
-    TTree* Glauber;
-    TTree* modelingCo;
-    TTree* Clusters;
- 
+  TFile* fFile;
+  TH1D*  histo[20];
+  TH2D*  histo2[10];
+  TTree* Glauber;
+  TTree* modelingCo;
+  TTree* Clusters;
+  TTree* FermiMom;
 
-    G4int sourceZ;
-    G4int sourceA;
-    G4int sourceZb;
-    G4int sourceAb;
-    G4int iterations; 
-    G4int StatisticsLabel;  
-    G4bool NucleusInputLabel;
-    G4bool IsCollider;
-    G4bool InFileOrNot;
 
-    G4String fileName;
-    G4String fileType;
-    G4String fileOpenPath;
+  G4int sourceZ;
+  G4int sourceA;
+  G4int sourceZb;
+  G4int sourceAb;
+  G4int iterations; 
+  G4int StatisticsLabel;  
+  G4bool NucleusInputLabel;
+  G4bool IsCollider;
+  G4bool InFileOrNot;
 
-    G4String     fileFullName;
-    G4String     SysA;
-    G4String     SysB;
-    G4int        compressionFactor;
+  G4String fileName;
+  G4String fileType;
+  G4String fileOpenPath;
 
-    G4double XsectNN;
+  G4String     fileFullName;
+  G4String     SysA;
+  G4String     SysB;
+  G4int        compressionFactor;
 
-    G4double KinEn;
-    G4double PzA;
-    G4double PzB;
-    G4double lowLimitExEn;
-    G4double upperLimitExEn;
-    G4double lowLimitExEnB;
-    G4double upperLimitExEnB;
-    G4double lowLimitB;
-    G4double upperLimitB;
-    G4int    binsExEn;
-    G4int    eventsPerBin;
+  G4double XsectNN;
 
-    G4double CritDist;
-    G4double angle;
+  G4double KinEn;
+  G4double PzA;
+  G4double PzB;
+  G4double lowLimitExEn;
+  G4double upperLimitExEn;
+  G4double lowLimitExEnB;
+  G4double upperLimitExEnB;
+  G4double lowLimitB;
+  G4double upperLimitB;
+  G4int    binsExEn;
+  G4int    eventsPerBin;
 
-    G4double nucleonAverMass = 0.931494*CLHEP::GeV;
+  G4double CritDist;
+  G4double angle;
 
-    G4bool   wM;
-    G4bool   wP = false;
+  G4double nucleonAverMass = 0.931494*CLHEP::GeV;
 
-    InitialConditions* InCond = new InitialConditions();
+  G4bool   wM;
+  G4bool   wP = false;
 
-    std::ifstream XsectFile;
+  InitialConditions* InCond = new InitialConditions();
+
+  std::ifstream XsectFile;
 
 };
 
