@@ -32,26 +32,26 @@ GRATEmanager::GRATEmanager()
   std::cin >> lowLimitB;
 
   if(lowLimitB > -0.000001){
-  std::cout<<"Input upper limit for impact parameter in fm (MB if negative) : ";
-  std::cin >> upperLimitB;
-   }
+    std::cout<<"Input upper limit for impact parameter in fm (MB if negative) : ";
+    std::cin >> upperLimitB;
+  }
   else if(0){
-      lowLimitB = 0;
-      upperLimitB = 20;
+    lowLimitB = 0;
+    upperLimitB = 20;
   }
 
   std::cout<<"Do you want to calculate collisions for collider or for fixed target geometry (1 for collider, 0 for fixed target) : ";
   std::cin >> IsCollider;
 
   while ( KinEn<0. ) {
-     if (!IsCollider) {
-         std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
-         std::cin >> KinEn;
-     }
-     else {
-         std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
-         std::cin >> KinEn;
-     }
+    if (!IsCollider) {
+      std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
+      std::cin >> KinEn;
+    }
+    else {
+      std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
+      std::cin >> KinEn;
+    }
   }
 
   InCond->SetCollider(IsCollider);
@@ -78,7 +78,7 @@ GRATEmanager::GRATEmanager()
   while(CritDist < 0) {
     std::cout<<"Please enter critical distance (in fm) : ";
     std::cin >> CritDist;
-   }
+  }
 
   std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
   std::cin >> InFileOrNot;
@@ -122,6 +122,7 @@ void GRATEmanager::BookHisto()
   Glauber = new TTree("Glauber","Events from glauber modeling");
   modelingCo = new TTree("Conditions","preconditions for modeling");
   Clusters = new TTree("MST: Clusters info", "TTree to store clusters");
+  FermiMom = new TTree("FermiMomentum_info", "Fermi moments");
   // Book all histograms there ...
   histo[0] =  new TH1D("Charge distruibution for side B"," ;Z;entries",sourceZb+1,-0.5, sourceZb+0.5); 
 
@@ -146,6 +147,8 @@ void GRATEmanager::BookHisto()
   histo2[5] = new TH2D("px vs py for IMF", ";px;py", 100,-200,200,100,-200,200);
   histo2[6] = new TH2D("px vs py for heavy fragments", ";px;py", 100,-200,200,100,-200,200);
 
+  histo2[7] = new TH2D("Ex En VS d, side A"," ;E*/A;d",300, 0, 15, 280, 0, CritDist + 0.5);
+
   G4int Rmax = 20;
   G4int Num_ent = 1200;
   histo[8] = new TH1D ("Neutron distribution A", ";R;entries", Num_ent, 0, Rmax);
@@ -158,34 +161,35 @@ void GRATEmanager::BookHisto()
 
 
 void GRATEmanager::CalcXsectNN()
-{   G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
-    KinEn=InCond->GetKinEnergy();
-    G4double KinEnAtFixTarget = 0;
-    if(IsCollider){KinEnAtFixTarget = (KinEn*KinEn/(2*nucleonAverMass*G4double(sourceA))) - 2*nucleonAverMass*G4double(sourceA);}
-    else{KinEnAtFixTarget = KinEn;}
+{   
+  G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
+  KinEn=InCond->GetKinEnergy();
+  G4double KinEnAtFixTarget = 0;
+  if(IsCollider){KinEnAtFixTarget = (KinEn*KinEn/(2*nucleonAverMass*G4double(sourceA))) - 2*nucleonAverMass*G4double(sourceA);}
+  else{KinEnAtFixTarget = KinEn;}
 
-if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
-	G4double Tkin[2];
-	G4double xsect[2];
-	XsectFile.open("../src/bystricky.dat");
+  if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
+    G4double Tkin[2];
+    G4double xsect[2];
+    XsectFile.open("../src/bystricky.dat");
 
-	while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
-		Tkin[0] = Tkin[1];	
-		xsect[0] = xsect[1];
-		XsectFile >> Tkin[1] >> xsect[1];
-		if (!XsectFile.good()) break;
-	}
-	G4double a = (xsect[1]-xsect[0])/(Tkin[1]-Tkin[0]);
-	G4double b = xsect[1] - a*Tkin[1];
-	XsectNN = a*KinEnAtFixTarget/(G4double(sourceA)*GeV)+b;
-   }
-else{
+    while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
+    Tkin[0] = Tkin[1];	
+    xsect[0] = xsect[1];
+    XsectFile >> Tkin[1] >> xsect[1];
+    if (!XsectFile.good()) break;
+    }
+    G4double a = (xsect[1]-xsect[0])/(Tkin[1]-Tkin[0]);
+    G4double b = xsect[1] - a*Tkin[1];
+    XsectNN = a*KinEnAtFixTarget/(G4double(sourceA)*GeV)+b;
+  }
+  else{
     G4double S = 0;
     if(IsCollider){S = KinEn*KinEn/G4double(sourceA*sourceA);}
     else{S = 4*nucleonAverMass*nucleonAverMass+2*(KinEn/G4double(sourceA))*nucleonAverMass;}
-   XsectNN = 25.0+0.146*pow(log(S/(GeV*GeV)),2);
-   }
-    //XsectNN *= shadowing;
+    XsectNN = 25.0+0.146*pow(log(S/(GeV*GeV)),2);
+  }
+  //XsectNN *= shadowing;
 }
 
 void GRATEmanager::CalcNucleonDensity(TObjArray* nucleons_pre, G4double b)
@@ -212,60 +216,58 @@ void GRATEmanager::CleanHisto()
   delete fFile;
 }
 
-void GRATEmanager::FillConditionsTree(G4double Xsect){
+void GRATEmanager::FillConditionsTree(G4double Xsect)
+{
+  G4double XsectTot = 0;
+  G4double KineticEnergy = 0;
+  G4double pzA = 0;
+  G4double pzB = 0;
+  G4double Mass_on_A = 0;
+  G4double Mass_on_B = 0;
+  G4double Charge_on_A = 0;
+  G4double Charge_on_B = 0;
 
-G4double XsectTot = 0;
-G4double KineticEnergy = 0;
-G4double pzA = 0;
-G4double pzB = 0;
-G4double Mass_on_A = 0;
-G4double Mass_on_B = 0;
-G4double Charge_on_A = 0;
-G4double Charge_on_B = 0;
+  modelingCo->Branch("Xsect_total", &XsectTot,"Xsect_total/d");
+  modelingCo->Branch("Kinetic_energy_per_nucleon_of_projectile_in_GeV", &KineticEnergy,"Kinetic_energy_of_per_nucleon_projectile_in_GeV/d");
+  modelingCo->Branch("pZ_in_MeV_on_A", &pzA,"pZ_in_MeV_on_A/d");
+  modelingCo->Branch("pZ_in_MeV_on_B", &pzB,"pZ_in_MeV_on_B/d");
+  modelingCo->Branch("Mass_on_A", &Mass_on_A,"Mass_on_A/d");
+  modelingCo->Branch("Mass_on_B", &Mass_on_B,"Mass_on_B/d");
+  modelingCo->Branch("Charge_on_A", &Charge_on_A,"Charge_on_A/d");
+  modelingCo->Branch("Charge_on_B", &Charge_on_B,"Charge_on_B/d");
 
-modelingCo->Branch("Xsect_total", &XsectTot,"Xsect_total/d");
-modelingCo->Branch("Kinetic_energy_per_nucleon_of_projectile_in_GeV", &KineticEnergy,"Kinetic_energy_of_per_nucleon_projectile_in_GeV/d");
-modelingCo->Branch("pZ_in_MeV_on_A", &pzA,"pZ_in_MeV_on_A/d");
-modelingCo->Branch("pZ_in_MeV_on_B", &pzB,"pZ_in_MeV_on_B/d");
-modelingCo->Branch("Mass_on_A", &Mass_on_A,"Mass_on_A/d");
-modelingCo->Branch("Mass_on_B", &Mass_on_B,"Mass_on_B/d");
-modelingCo->Branch("Charge_on_A", &Charge_on_A,"Charge_on_A/d");
-modelingCo->Branch("Charge_on_B", &Charge_on_B,"Charge_on_B/d");
+  XsectTot = Xsect;
+  KineticEnergy = InCond->GetKinEnergy()/(sourceA*GeV);
+  pzA = InCond->GetPzA()/MeV;
+  pzB = InCond->GetPzB()/MeV;
+  Mass_on_A = InCond->GetSourceA();
+  Mass_on_B = InCond->GetSourceAb();
+  Charge_on_A = InCond->GetSourceZ();
+  Charge_on_B = InCond->GetSourceZb();
 
-XsectTot = Xsect;
-KineticEnergy = InCond->GetKinEnergy()/(sourceA*GeV);
-pzA = InCond->GetPzA()/MeV;
-pzB = InCond->GetPzB()/MeV;
-Mass_on_A = InCond->GetSourceA();
-Mass_on_B = InCond->GetSourceAb();
-Charge_on_A = InCond->GetSourceZ();
-Charge_on_B = InCond->GetSourceZb();
-
-modelingCo->Fill();
+  modelingCo->Fill();
 }
 
-void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double b){
+void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double b)
+{
+  ofstream Event("Event.txt");
 
-ofstream Event("Event.txt");
+  Event<<"Clusters on side A: \n";
 
-   Event<<"Clusters on side A: \n";
-
-    for(G4int i = 0; i < clusters_to_excit_A.size(); ++i) {
-        Event<<"Nucleons from "<<i+1<<"-th cluster\n";
-        for(G4int iCoord = 0; iCoord<(clusters_to_excit_A[i]).GetCoordinates().size(); iCoord++){
-          Event<<"X = "<<(clusters_to_excit_A[i]).GetCoordinates().at(iCoord).X()<<" Y = "<<(clusters_to_excit_A[i]).GetCoordinates().at(iCoord).Y()<<" Z = "<<(clusters_to_excit_A[i]).GetCoordinates().at(iCoord).Z()<<"\n";
-      }
+  for(G4int i = 0; i < clusters_to_excit_A.size(); ++i) {
+    Event<<"Nucleons from "<<i+1<<"-th cluster\n";
+    for(G4int iCoord = 0; iCoord<(clusters_to_excit_A[i]).GetCoordinates().size(); iCoord++){
+      Event<<"X = "<<(clusters_to_excit_A[i]).GetCoordinates().at(iCoord).X()<<" Y = "<<(clusters_to_excit_A[i]).GetCoordinates().at(iCoord).Y()<<" Z = "<<(clusters_to_excit_A[i]).GetCoordinates().at(iCoord).Z()<<"\n";
     }
+  }
 
-   Event<<"\n";  Event<<"Clusters on side B: \n";
+  Event<<"\n";  Event<<"Clusters on side B: \n";
 
-    for(G4int i = 0; i < clusters_to_excit_B.size(); ++i) {
-        Event<<"Nucleons from "<<i+1<<"-th cluster\n";
-        for(G4int iCoord = 0; iCoord<(clusters_to_excit_B[i]).GetCoordinates().size(); iCoord++){
-          Event<<"X = "<<(clusters_to_excit_B[i]).GetCoordinates().at(iCoord).X()<<" Y = "<<(clusters_to_excit_B[i]).GetCoordinates().at(iCoord).Y()<<" Z = "<<(clusters_to_excit_B[i]).GetCoordinates().at(iCoord).Z()<<"\n";
-      }
+  for(G4int i = 0; i < clusters_to_excit_B.size(); ++i) {
+    Event<<"Nucleons from "<<i+1<<"-th cluster\n";
+    for(G4int iCoord = 0; iCoord<(clusters_to_excit_B[i]).GetCoordinates().size(); iCoord++){
+      Event<<"X = "<<(clusters_to_excit_B[i]).GetCoordinates().at(iCoord).X()<<" Y = "<<(clusters_to_excit_B[i]).GetCoordinates().at(iCoord).Y()<<" Z = "<<(clusters_to_excit_B[i]).GetCoordinates().at(iCoord).Z()<<"\n";
     }
-    Event<<"\nb = "<<b<<" fm \n";
-
+  }
+  Event<<"\nb = "<<b<<" fm \n";
 }
-

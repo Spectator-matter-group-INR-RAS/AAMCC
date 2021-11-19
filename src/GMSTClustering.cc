@@ -38,7 +38,7 @@ void GMSTClustering::SetCDExEn(G4double Ex, G4int A) {
    if(Ex/G4double(A) < 2.17*MeV){CritDist = d0;}
    else{//kappa = std::pow(1/(1+aColRel*std::pow(G4double(A),-0.333333333333333333)+aSurfRel*std::pow(G4double(A),-0.666666666666666)),0.3333333333333);
        kappa = 1;
-       CritDist = d0*kappa*std::pow(Ex/(eps0*G4double(A)),0.333333333333333333*alphaPow);}
+       CritDist = d0*kappa*std::pow(Ex/(eps0*G4double(A)),1./3.*alphaPow);}
 }
 
 std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleons_in, G4double ExA, G4double ExB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB){
