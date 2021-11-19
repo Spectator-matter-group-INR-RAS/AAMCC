@@ -27,7 +27,7 @@ private:
     //Goldhaber model parameter
     double GoldhaberDev0 = 193*MeV;
     //Morissey model parameter
-    double MorisseyDev0 = 400*MeV;
+    double MorisseyDev0 = 150*MeV;
     //VanBiber model parameter
     double VBDev1 = 146*MeV;
 
