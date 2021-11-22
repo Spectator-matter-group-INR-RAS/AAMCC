@@ -216,7 +216,12 @@ int main()
     DeexcitationHandler* handlerNew = new DeexcitationHandler();
     //handlerNew->SetMinEForMultiFrag(3*MeV);
     handlerNew->SetMaxAandZForFermiBreakUp(19, 9);
-    handlerNew->SetMinExcitation(1e-4);
+    handlerNew->SetMinExcitation(1e-4*MeV);
+    handlerNew->SetMaxAforFermiBreakUp(19);
+    handlerNew->SetMaxZforFermiBreakUp(9);
+    handlerNew->SetMaxAforPureNeutronFragments(200);
+    handlerNew->SetMinExForFermiBreakUp(0.1*MeV);
+    handlerNew->SetExForMF(3*MeV, 5*MeV);
     //Setting up Glauber code
     histoManager.CalcXsectNN();
     G4float omega = -1;
@@ -332,10 +337,10 @@ int main()
                 G4double eta_A = 0;
                 //if(abs(p4.px()) < 1) std::cout<<G4double(clfrag_A)<<" "<<G4double(sourceA)<<"\n";
 
-                // TODO Devise the source of a differences between models
-                //    - Issues in propagation of Excitation energy through GMSTClustering
+
                 // HANDLER
-                G4ReactionProductVector *theProduct = handlerNew->BreakUp(aFragment);
+               //G4ReactionProductVector *theProduct = handlerNew->BreakUp(aFragment);
+                G4ReactionProductVector * theProduct = handlerNew->futureBreakItUp(aFragment);
 
                 thisEventNumFragments = theProduct->size();
 
