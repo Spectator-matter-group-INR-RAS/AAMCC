@@ -260,7 +260,7 @@ int main()
 
     NucleonVector nV;
     GlauberCollisionReader reader;
-    FermiMomentum FermiMom(&nV, "M");
+    FermiMomentum FermiMom(&nV, "G");
     FermiMom.SetPzPerNucleon(histoManager.GetInitialContidions().GetPzA()/ sourceA, histoManager.GetInitialContidions().GetPzB() / sourceAb);
 
     for(G4int count=0;count<histoManager.GetIterations() ;count++){ 
