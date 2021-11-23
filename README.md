@@ -11,5 +11,6 @@ of colliding nuclei and energy of the collision on the event-by-event basis
    - otherwise a parabolic ALADIN approximation 3) is applied with parameters tuned to data obtained in nuclear emulsions.
  - Decays of prefragments are simulated as follows:
    - pre-equilibrium decays modelled with MST-clustering algorithm;
-   - Fermi break-up model from Geant4 v9.2 4);
-   - Weisskopf-Ewing evaporation model from Geant4 v10.4 4).
+   - Fermi break-up model from Geant4 v9.2;
+   - SMM in realisation of Geant4 v10.4
+   - ABLAXX evaporation from Geant4 v10.4.
