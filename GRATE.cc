@@ -220,7 +220,7 @@ int main()
     handlerNew->SetMaxAforFermiBreakUp(19);
     handlerNew->SetMaxZforFermiBreakUp(9);
     handlerNew->SetMaxAforPureNeutronFragments(200);
-    handlerNew->SetMinExForFermiBreakUp(0.1*MeV);
+    handlerNew->SetMinExForFermiBreakUp(0.01*MeV);
     handlerNew->SetExForMF(3*MeV, 5*MeV);
     //Setting up Glauber code
     histoManager.CalcXsectNN();

@@ -30,14 +30,18 @@
     inline void SetMaxAforFermiBreakUp(G4int in_A) {MaxAforFermiBreakUp = in_A;};
     inline void SetMaxZforFermiBreakUp(G4int in_Z) {MaxZforFermiBreakUp = in_Z;};
     inline void SetMinExForFermiBreakUp(G4double in_Ex) {minExForFBU = in_Ex;};
-    inline void SetExForMF(G4double in_lowEx, G4double in_upEx) {lowBoundTransitionForMF = in_lowEx; upBoundTransitionForMF = in_upEx;};
+    inline void SetExForMF(G4double in_lowEx, G4double in_upEx) {
+        lowBoundTransitionForMF = in_lowEx; upBoundTransitionForMF = in_upEx;
+        aE = 1/(2.*(upBoundTransitionForMF - lowBoundTransitionForMF));
+        E0 = (upBoundTransitionForMF + lowBoundTransitionForMF)/2.;
+    };
     inline void SetMinEx(G4double in_minEx) {minEx = in_minEx;};
  private:
     G4int MaxAforFermiBreakUpForPureNeutronFragments = 200;
     G4int MaxAforFermiBreakUp = 19;
     G4int MaxZforFermiBreakUp =  9;
     G4double minExForFBU = 0.1*MeV;
-    G4double mn = 939.5731*MeV;
+    G4double mn = 939.5731*MeV;//TODO switch nucelon mass to Geant4 nucleon mass. ALSO FOR FERMI MOMENTUM.
     G4double lowBoundTransitionForMF = 3*MeV;
     G4double upBoundTransitionForMF = 5*MeV;
     G4double minEx = 0.001*MeV;

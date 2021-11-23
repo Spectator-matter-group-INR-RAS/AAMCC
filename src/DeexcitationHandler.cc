@@ -61,8 +61,6 @@ G4ReactionProductVector *DeexcitationHandler::futureBreakItUp(const G4Fragment &
         }
     } else{theResult->push_back(toReactionProduct(const_cast<G4Fragment *>(&theInitialFragment))); return theResult;}
 
-    // TODO find a method to reduce code duplication
-    // - probably some other conditions for cycle finish will help
 
     for (G4FragmentVector::iterator j = tempResult->begin(); j != tempResult->end(); ++j) {
         if (!isDecay((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
@@ -72,37 +70,37 @@ G4ReactionProductVector *DeexcitationHandler::futureBreakItUp(const G4Fragment &
     }
     tempResult->clear();
 
-    bool flagFBU = true;
-
-    while (toDecayVector->size() != 0) {
-
-
         G4FragmentVector::iterator j = toDecayVector->begin();
         while (j != toDecayVector->end()) {
-            if (isFermiBreakUp((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy()) && flagFBU) {
+            if (isFermiBreakUp((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
                 tempResult = FermiBreakUp.BreakItUp(*(*j));
-                if(tempResult->size() == 1) flagFBU = false;
             } else {
                 ablaTempResult = ablaEvaporation.DeExcite(*(*j));
                 theResult->insert(theResult->end(), ablaTempResult->begin(), ablaTempResult->end());
             }
             j = toDecayVector->erase(j);
         }
-        //std::cout<<"1) toDecayVector->size() "<<toDecayVector->size()<<std::endl;
+
         for (G4FragmentVector::iterator j = tempResult->begin(); j != tempResult->end(); ++j) {
             if (!isDecay((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
                 theResult->push_back(toReactionProduct((*j)));
             }
             else { toDecayVector->push_back((*j)); }
         }
-
-        //if(toDecayVector->size() != 0) std::cout<<"2) toDecayVector->at(0) "<<toDecayVector->at(0)->GetA()<<std::endl;
         tempResult->clear();
 
+    G4FragmentVector::iterator t = toDecayVector->begin();
+    while (t != toDecayVector->end()) {
+            ablaTempResult = ablaEvaporation.DeExcite(*(*t));
+            theResult->insert(theResult->end(), ablaTempResult->begin(), ablaTempResult->end());
+            t = toDecayVector->erase(t);
     }
 
-   //std::cout<<"theResult->size() "<<theResult->size()<<std::endl;
-    return theResult;
+   delete tempResult;
+   delete ablaTempResult;
+   delete toDecayVector;
+
+   return theResult;
 }
 
 G4Fragment *DeexcitationHandler::toFragment(G4ReactionProduct *product) {
@@ -159,12 +157,12 @@ bool DeexcitationHandler::isFermiBreakUp(G4double A, G4double Z, G4double Ex) {
 
 bool DeexcitationHandler::isDecay(G4double A, G4double Z, G4double Ex) {
     if(A > 1 && Ex > minEx){return true;}
-    else if (nist->GetIsotopeAbundance(A,Z) > 0 ){return true;}
+    //else if (nist->GetIsotopeAbundance(A,Z) < 0 ){return true;} // TODO figure out the source of abundance -- is radioactive nucleus there
     else{return false;}
 }
 
 bool DeexcitationHandler::isDecayOfPureNeutrons(G4double A, G4double Z) {
-    if(A<MaxAforFermiBreakUpForPureNeutronFragments && Z==0) return true;
+    if(A > 0 && Z==0) return true;
     else return false;
 }
 
