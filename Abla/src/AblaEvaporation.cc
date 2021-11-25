@@ -24,12 +24,12 @@ G4ReactionProductVector *AblaEvaporation::DeExcite(const G4Fragment &aFragment) 
 
     const G4int ARem = aFragment.GetA_asInt();
     const G4int ZRem = aFragment.GetZ_asInt();
-    const G4double eStarRem = aFragment.GetExcitationEnergy() / MeV;
+    const G4double eStarRem = aFragment.GetExcitationEnergy() / CLHEP::MeV;
     const G4double jRem = aFragment.GetAngularMomentum().mag() / CLHEP::hbar_Planck;
     const G4LorentzVector &pRem = aFragment.GetMomentum();
-    const G4double pxRem = pRem.x() / MeV;
-    const G4double pyRem = pRem.y() / MeV;
-    const G4double pzRem = pRem.z() / MeV;
+    const G4double pxRem = pRem.x() / CLHEP::MeV;
+    const G4double pyRem = pRem.y() / CLHEP::MeV;
+    const G4double pzRem = pRem.z() / CLHEP::MeV;
 
     eventNumber++;
 
