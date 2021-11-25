@@ -110,9 +110,7 @@ G4double ExcitationEnergy::GetEnergyEricson(G4int A) {
     G4double Ericson(G4double, G4double, G4int ,G4int);
 
     for (G4int n = 0; n < 10000; n++) {
-        G4double sum =
-                Ericson(G4double(n) * ((UpExEn - LowExEn) / G4double(10000)),
-                        Ebound, A, initA) * (UpExEn - LowExEn) / G4double(10000);
+        G4double sum = Ericson(G4double(n) * ((UpExEn - LowExEn) / G4double(10000)), Ebound, A, initA) * (UpExEn - LowExEn) / G4double(10000);
         ExcitationEnergyDistribution[n] = sum;
     }
     CLHEP::RandGeneral randGeneral(ExcitationEnergyDistribution, 10000);
