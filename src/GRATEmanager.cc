@@ -80,6 +80,11 @@ GRATEmanager::GRATEmanager()
     std::cin >> CritDist;
   }
 
+  while(DeExModel.empty()){
+      std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
+      std::cin>>DeExModel;
+  }
+
   std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
   std::cin >> InFileOrNot;
 

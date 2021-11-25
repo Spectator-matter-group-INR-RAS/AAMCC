@@ -18,11 +18,16 @@ class AblaEvaporation {
 
      G4ReactionProductVector *DeExcite(const G4Fragment &aFragment);
 
+     inline void SetFreezeOutT(G4double T){T_freeze_out = T; if(theABLAModel) theABLAModel->SetFreezeOutT(T);};
+     inline G4double GetFreezeOutT() {return T_freeze_out;}
+
     private:
         G4VarNtp *ablaResult;
         G4Volant *volant;
         G4Abla *theABLAModel;
         G4long eventNumber;
+
+        G4double T_freeze_out = 1e100;
 
         /// \brief Convert an Abla particle to a G4ReactionProduct
         G4ReactionProduct *toG4Particle(G4int A, G4int Z , G4double kinE, G4double px, G4double py, G4double pz) const;

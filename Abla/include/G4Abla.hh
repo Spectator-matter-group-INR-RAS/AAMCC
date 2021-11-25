@@ -119,6 +119,8 @@ public:
   void SetParameters();
   void SetParametersG4(G4int z, G4int a);
 
+  inline void SetFreezeOutT(G4double T){T_freeze_out_in = T;};
+
   /**
    * Coefficient of collective enhancement including damping                         
    * Input: z,a,bet,sig,u                                                  

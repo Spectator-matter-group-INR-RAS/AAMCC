@@ -23,18 +23,23 @@
      DeexcitationHandler();
     ~DeexcitationHandler();
 
-    G4ReactionProductVector* BreakUp(const G4Fragment &theInitialFragment);
+    G4ReactionProductVector* G4BreakItUp(const G4Fragment &theInitialFragment);
     G4ReactionProductVector* BreakUpPureNeutrons(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* futureBreakItUp(const G4Fragment &theInitialFragment);
+    G4ReactionProductVector* AAMCCBreakItUp(const G4Fragment &theInitialFragment);
+    G4ReactionProductVector* AblaBreakItUp(const G4Fragment &theInitialFragment);
+    G4ReactionProductVector* BreakUp(const G4Fragment &theInitialFragment, G4String modelName);
+
     inline void SetMaxAforPureNeutronFragments(G4int in_A) {MaxAforFermiBreakUpForPureNeutronFragments = in_A;};
     inline void SetMaxAforFermiBreakUp(G4int in_A) {MaxAforFermiBreakUp = in_A;};
     inline void SetMaxZforFermiBreakUp(G4int in_Z) {MaxZforFermiBreakUp = in_Z;};
     inline void SetMinExForFermiBreakUp(G4double in_Ex) {minExForFBU = in_Ex;};
+
     inline void SetExForMF(G4double in_lowEx, G4double in_upEx) {
         lowBoundTransitionForMF = in_lowEx; upBoundTransitionForMF = in_upEx;
         aE = 1/(2.*(upBoundTransitionForMF - lowBoundTransitionForMF));
         E0 = (upBoundTransitionForMF + lowBoundTransitionForMF)/2.;
     };
+
     inline void SetMinEx(G4double in_minEx) {minEx = in_minEx;};
  private:
     G4int MaxAforFermiBreakUpForPureNeutronFragments = 200;
@@ -49,9 +54,9 @@
     G4double aE = 1;
     G4double E0 = 0;
 
-    G4Fragment* toFragment(G4ReactionProduct* product);
+    static G4Fragment* toFragment(G4ReactionProduct* product);
     G4ReactionProduct* toReactionProduct(G4Fragment* fragment);
-    G4ParticleDefinition* toParticleDefinition(G4int A, G4int Z) const;
+    static G4ParticleDefinition* toParticleDefinition(G4int A, G4int Z) ;
     bool isMultifragmentation(G4double A, G4double Z, G4double Ex);
     bool isFermiBreakUp(G4double A, G4double Z, G4double Ex);
     bool isDecay(G4double A, G4double Z, G4double Ex);
@@ -62,5 +67,4 @@
     AblaEvaporation ablaEvaporation;
     G4StatMF theMultifragmentation;
 
-    G4NistManager* nist;
 };

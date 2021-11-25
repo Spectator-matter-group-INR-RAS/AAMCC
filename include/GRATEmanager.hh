@@ -44,6 +44,7 @@ class GRATEmanager
 
   inline G4String GetSysA() {return SysA;}
   inline G4String GetSysB() {return SysB;}
+  inline G4String GetDeexModel() {return DeExModel;};
   inline G4int GetSourceZ() {return sourceZ;}
   inline G4int GetSourceA() {return sourceA;}
   inline G4int GetSourceZb() {return sourceZb;}
@@ -95,6 +96,7 @@ class GRATEmanager
   G4String fileName;
   G4String fileType;
   G4String fileOpenPath;
+  G4String DeExModel;
 
   G4String     fileFullName;
   G4String     SysA;

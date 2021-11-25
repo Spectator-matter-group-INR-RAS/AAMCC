@@ -319,8 +319,6 @@ int main()
             FermiMomB_y = FermiMom.GetBoost("B").getY();
 
             std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, FermiMom.GetBoost("A"), FermiMom.GetBoost("B")); //d = const if energy is negative
-            G4FragmentVector clusters_to_excit_A = MstClustersVector.at(0);
-            G4FragmentVector clusters_to_excit_B = MstClustersVector.at(1);
 
             d_MstA = clusters->GetCD("A");
             d_MstB = clusters->GetCD("B");
@@ -339,8 +337,7 @@ int main()
 
 
                 // HANDLER
-               //G4ReactionProductVector *theProduct = handlerNew->BreakUp(aFragment);
-                G4ReactionProductVector * theProduct = handlerNew->futureBreakItUp(aFragment);
+                G4ReactionProductVector * theProduct = handlerNew->BreakUp(aFragment, histoManager.GetDeexModel());
 
                 thisEventNumFragments = theProduct->size();
 
@@ -415,7 +412,7 @@ int main()
                 G4double eta_B = 0;
 
                 // HANDLER
-                G4ReactionProductVector *theProductB = handlerNew->BreakUp(aFragmentB);
+                G4ReactionProductVector *theProductB = handlerNew->G4BreakItUp(aFragmentB);
 
                 for (G4ReactionProductVector::iterator kVector = theProductB->begin(); kVector != theProductB->end(); ++kVector) {
                     G4int thisFragmentZb = 0;

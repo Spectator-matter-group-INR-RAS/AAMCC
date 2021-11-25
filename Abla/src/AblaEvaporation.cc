@@ -9,6 +9,7 @@ AblaEvaporation::AblaEvaporation() :
 {
     theABLAModel->initEvapora();
     theABLAModel->SetParameters();
+    theABLAModel->SetFreezeOutT(T_freeze_out);
 }
 
 AblaEvaporation::~AblaEvaporation() {

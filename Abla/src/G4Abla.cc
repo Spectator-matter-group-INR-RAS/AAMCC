@@ -40,6 +40,8 @@
 #include "G4Abla.hh"
 #include "G4AblaDataFile.hh"
 #include "G4AblaRandom.hh"
+#include "../include/G4Abla.hh"
+
 
 #ifdef ABLAXX_IN_GEANT4_MODE
 G4Abla::G4Abla(G4Volant *aVolant, G4VarNtp *aVarntp)
