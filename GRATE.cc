@@ -245,17 +245,17 @@ int main()
         //Parameters for ALADIN parametrization
         G4double e_0=11.5*MeV;//was 8.13 MeV
         G4double sigma0 = 0.005; //was 0.01
-        G4double b0 = 2; // From Bondorf 1995
+        G4double c0 = 2; // From Bondorf 1995
         G4double sigmaE0 = 1*MeV;
-        G4double c0 = 0.1;
+        G4double b0 = 0.1;
         G4double Pe = 24*MeV;
         G4double Pm = 0.2;
-        ExEnA->SetParametersALADIN(e_0,sigma0,b0);
-        ExEnB->SetParametersALADIN(e_0,sigma0,b0);
+        ExEnA->SetParametersALADIN(e_0,sigma0,c0);
+        ExEnB->SetParametersALADIN(e_0,sigma0,c0);
         ExEnA->SetParametersParabolicApproximation(Pe, Pm, sigma0, b0, 0.01);
         ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, b0, 0.01);
-        //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
-        //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
+        //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,b0,0);
+        //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,b0,0);
     }
 
     NucleonVector nV;
@@ -308,10 +308,10 @@ int main()
             ExEn = energy_A/G4double(A);
             histoManager.GetHisto2(1)->Fill(ExEn, G4double(A)/sourceA);
 
-            FermiMomA_x = FermiMom.GetBoost("A").getX() * 931.494*CLHEP::MeV * A / pow((1-FermiMom.GetBoost("A").mag2()), 0.5);
-            FermiMomA_y = FermiMom.GetBoost("A").getY() * 931.494*CLHEP::MeV * A / pow((1-FermiMom.GetBoost("A").mag2()), 0.5);
-            FermiMomB_x = FermiMom.GetBoost("B").getX() * 931.494*CLHEP::MeV * Ab / pow((1-FermiMom.GetBoost("B").mag2()), 0.5);
-            FermiMomB_y = FermiMom.GetBoost("B").getY() * 931.494*CLHEP::MeV * Ab / pow((1-FermiMom.GetBoost("B").mag2()), 0.5);
+            FermiMomA_x = FermiMom.GetBoost("A").getX();
+            FermiMomA_y = FermiMom.GetBoost("A").getY();
+            FermiMomB_x = FermiMom.GetBoost("B").getX();
+            FermiMomB_y = FermiMom.GetBoost("B").getY();
 
             std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, FermiMom.GetBoost("A"), FermiMom.GetBoost("B")); //d = const if energy is negative
             G4FragmentVector clusters_to_excit_A = MstClustersVector.at(0);
