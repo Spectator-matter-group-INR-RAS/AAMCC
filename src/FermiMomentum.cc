@@ -44,14 +44,12 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                         default: out = GetMorrisey(); break;
                     }
                     pF = {-out.px, -out.py, -out.pz};
-                    out.pz = -gammafacB * (out.pz + betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
                     return out;
                 }
                 else {out = {-pF.px, -pF.py, -pF.pz}; pF = {0, 0, 0};
-                    out.pz = -gammafacB * (out.pz + betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
                     return out;}
-
-
         }
         else {std::cout<< "Error, side argument is invalid. Please, use A or B as an argument"; return out;}
 

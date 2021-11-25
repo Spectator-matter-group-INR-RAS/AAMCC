@@ -22,6 +22,9 @@ public:
     vect3 GetMomentum(std::string side);
     CLHEP::Hep3Vector GetBoost(std::string side);
     void SetPzPerNucleon(double  pZA, double pZB);
+    vect3 GetGoldhaber();
+    vect3 GetMorrisey();
+    vect3 GetVanBiber();
 
 private:
     //Goldhaber model parameter
@@ -51,9 +54,5 @@ private:
     int modelInt = 0;
     NucleonVector* nucleons;
     vect3 pF = {0, 0, 0};
-
-    vect3 GetGoldhaber();
-    vect3 GetMorrisey();
-    vect3 GetVanBiber();
 
 };

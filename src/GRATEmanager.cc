@@ -122,6 +122,7 @@ void GRATEmanager::BookHisto()
   Glauber = new TTree("Glauber","Events from glauber modeling");
   modelingCo = new TTree("Conditions","preconditions for modeling");
   Clusters = new TTree("MST: Clusters info", "TTree to store clusters");
+  Goldhaber = new TTree("Goldhaber_check", "Goldhaber moments");
   FermiMom = new TTree("FermiMomentum_info", "Fermi moments");
   // Book all histograms there ...
   histo[0] =  new TH1D("Charge distruibution for side B"," ;Z;entries",sourceZb+1,-0.5, sourceZb+0.5); 

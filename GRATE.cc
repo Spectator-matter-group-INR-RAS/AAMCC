@@ -129,8 +129,16 @@ int main()
     // FermiMom Tree
     G4double FermiMomA_x;
     G4double FermiMomA_y;
+    G4double FermiMomA_z;
     G4double FermiMomB_x;
     G4double FermiMomB_y;
+    G4double FermiMomB_z;
+
+    // Goldhaber Tree
+    G4double GoldhaberB;
+    G4double GoldhaberB_x;
+    G4double GoldhaberB_y;
+    G4double GoldhaberB_z;
 
     G4float PhiRotA;
     G4float ThetaRotA;
@@ -197,10 +205,17 @@ int main()
 
     histoManager.GetTree()->Branch("Ex_En_per_nucleon", &ExEn, "Ex_En_per_nucleon/f");
 
+    histoManager.GetTreeGoldhaber()->Branch("Goldhaber_side_A", &GoldhaberB, "GoldhaberA/d");
+    histoManager.GetTreeGoldhaber()->Branch("Goldhaber_x_side_A", &GoldhaberB_x, "GoldhaberB_x/d");
+    histoManager.GetTreeGoldhaber()->Branch("Goldhaber_y_side_A", &GoldhaberB_y, "GoldhaberB_y/d");
+    histoManager.GetTreeGoldhaber()->Branch("Goldhaber_z_side_A", &GoldhaberB_z, "GoldhaberB_z/d");
+
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &FermiMomA_x, "Fermi_momentumA_x/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &FermiMomA_y, "Fermi_momentumA_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &FermiMomA_z, "Fermi_momentumA_z/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &FermiMomB_x, "Fermi_momentumB_x/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &FermiMomB_y, "Fermi_momentumB_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &FermiMomB_z, "Fermi_momentumB_z/d");
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -245,22 +260,22 @@ int main()
         //Parameters for ALADIN parametrization
         G4double e_0=11.5*MeV;//was 8.13 MeV
         G4double sigma0 = 0.005; //was 0.01
-        G4double c0 = 2; // From Bondorf 1995
+        G4double b0 = 2; // From Bondorf 1995
         G4double sigmaE0 = 1*MeV;
-        G4double b0 = 0.1;
+        G4double c0 = 0.1;
         G4double Pe = 24*MeV;
         G4double Pm = 0.2;
-        ExEnA->SetParametersALADIN(e_0,sigma0,c0);
-        ExEnB->SetParametersALADIN(e_0,sigma0,c0);
-        ExEnA->SetParametersParabolicApproximation(Pe, Pm, sigma0, b0, 0.01);
-        ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, b0, 0.01);
-        //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,b0,0);
-        //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,b0,0);
+        ExEnA->SetParametersALADIN(e_0,sigma0,b0);
+        ExEnB->SetParametersALADIN(e_0,sigma0,b0);
+        ExEnA->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
+        ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
+        //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
+        //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
     }
 
     NucleonVector nV;
     GlauberCollisionReader reader;
-    FermiMomentum FermiMom(&nV, "M");
+    FermiMomentum FermiMom(&nV, "G");
     FermiMom.SetPzPerNucleon(histoManager.GetInitialContidions().GetPzA()/ sourceA, histoManager.GetInitialContidions().GetPzB() / sourceAb);
 
     for(G4int count=0;count<histoManager.GetIterations() ;count++){ 
@@ -308,12 +323,28 @@ int main()
             ExEn = energy_A/G4double(A);
             histoManager.GetHisto2(1)->Fill(ExEn, G4double(A)/sourceA);
 
-            FermiMomA_x = FermiMom.GetBoost("A").getX();
-            FermiMomA_y = FermiMom.GetBoost("A").getY();
-            FermiMomB_x = FermiMom.GetBoost("B").getX();
-            FermiMomB_y = FermiMom.GetBoost("B").getY();
+            // Gauss width of Goldhaber for nucleons check and filling of FermiMom histo
+            CLHEP::Hep3Vector BoostA = FermiMom.GetBoost("A");
+            CLHEP::Hep3Vector BoostB = FermiMom.GetBoost("B");
+            if (A == (sourceA - 1) && Ab == (sourceAb - 1)){ 
+                // Impulses here are not the same as in the calculations
+                vect3 GoldhaberSideB = FermiMom.GetGoldhaber();
+                GoldhaberB = GoldhaberSideB.mag();
+                GoldhaberB_x = GoldhaberSideB.px;
+                GoldhaberB_y = GoldhaberSideB.py;
+                GoldhaberB_z = GoldhaberSideB.pz;
+                histoManager.GetTreeGoldhaber()->Fill();
+            }
+            // Fermi Impulses are the same as in the calculations
+            FermiMomA_x = BoostA.getX() * 931.494*CLHEP::MeV * A / pow((1-BoostA.mag2()), 0.5);
+            FermiMomA_y = BoostA.getY() * 931.494*CLHEP::MeV * A / pow((1-BoostA.mag2()), 0.5);
+            FermiMomA_z = BoostA.getZ() * 931.494*CLHEP::MeV * A / pow((1-BoostA.mag2()), 0.5);
+            FermiMomB_x = BoostB.getX() * 931.494*CLHEP::MeV * Ab / pow((1-BoostB.mag2()), 0.5);
+            FermiMomB_y = BoostB.getY() * 931.494*CLHEP::MeV * Ab / pow((1-BoostB.mag2()), 0.5);
+            FermiMomB_z = BoostB.getZ() * 931.494*CLHEP::MeV * Ab / pow((1-BoostB.mag2()), 0.5);
+            histoManager.GetTreeFermiMom()->Fill();
 
-            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, FermiMom.GetBoost("A"), FermiMom.GetBoost("B")); //d = const if energy is negative
+            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, BoostA, BoostB); //d = const if energy is negative
             G4FragmentVector clusters_to_excit_A = MstClustersVector.at(0);
             G4FragmentVector clusters_to_excit_B = MstClustersVector.at(1);
 
@@ -450,7 +481,6 @@ int main()
 
             //Filling histo-s + cleaning
             histoManager.GetTreeMST()->Fill();
-            histoManager.GetTreeFermiMom()->Fill();
             A_cl.clear();
             Z_cl.clear();
             Ab_cl.clear();

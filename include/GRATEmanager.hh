@@ -31,6 +31,7 @@ class GRATEmanager
   TH1D* GetHisto(G4int id) {return histo[id];};
   TTree* GetTree() {return Glauber;};
   TTree* GetTreeMST() {return Clusters;};
+  TTree* GetTreeGoldhaber() {return Goldhaber;};
   TTree* GetTreeFermiMom() {return FermiMom;};
   TH2D* GetHisto2(G4int id) {return histo2[id];};
  
@@ -79,6 +80,7 @@ class GRATEmanager
   TTree* Glauber;
   TTree* modelingCo;
   TTree* Clusters;
+  TTree* Goldhaber;
   TTree* FermiMom;
 
 
