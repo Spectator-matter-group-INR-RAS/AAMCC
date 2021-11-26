@@ -412,7 +412,7 @@ int main()
                 G4double eta_B = 0;
 
                 // HANDLER
-                G4ReactionProductVector *theProductB = handlerNew->G4BreakItUp(aFragmentB);
+                G4ReactionProductVector *theProductB = handlerNew->BreakUp(aFragmentB, histoManager.GetDeexModel());
 
                 for (G4ReactionProductVector::iterator kVector = theProductB->begin(); kVector != theProductB->end(); ++kVector) {
                     G4int thisFragmentZb = 0;
