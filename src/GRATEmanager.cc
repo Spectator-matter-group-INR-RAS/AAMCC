@@ -7,7 +7,7 @@
 
 
 GRATEmanager::GRATEmanager()
-  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("G4")
 {  
   std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
   while(!NucleusInputLabel){
@@ -126,8 +126,8 @@ void GRATEmanager::BookHisto()
   //Creating a Trees
   Glauber = new TTree("Glauber","Events from glauber modeling");
   modelingCo = new TTree("Conditions","preconditions for modeling");
-  Clusters = new TTree("MST: Clusters info", "TTree to store clusters");
-  FermiMom = new TTree("FermiMomentum_info", "Fermi moments");
+  Clusters = new TTree("MST-Clusters","TTree to store clusters");
+  FermiMom = new TTree("FermiMomentum", "Fermi momentum");
   // Book all histograms there ...
   histo[0] =  new TH1D("Charge distruibution for side B"," ;Z;entries",sourceZb+1,-0.5, sourceZb+0.5); 
 
