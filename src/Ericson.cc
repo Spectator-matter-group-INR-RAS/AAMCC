@@ -12,7 +12,7 @@ else{
 
 G4double s=g0;
 
-for(G4int k = 2; k < RemovedNucleons-1; k++){
+for(G4int k = 2; k < RemovedNucleons; k++){
 
 s*=(g0*E)/G4double(k*(k-1));
 
