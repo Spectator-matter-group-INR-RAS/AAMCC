@@ -88,7 +88,7 @@ G4ReactionProduct *AblaEvaporation::toG4Particle(G4int A, G4int Z,
         return 0;
     }
     G4ReactionProduct* newProduct = new G4ReactionProduct(def);
-    newProduct->SetMomentum(px,py,pz);
+    newProduct->SetMomentum(px, py, pz);
     if(def->GetParticleName() != "gamma") newProduct->SetTotalEnergy(G4NucleiProperties::GetNuclearMass(A,Z) + kinE);
     else{newProduct->SetTotalEnergy(kinE);}
     newProduct->SetFormationTime(0);
