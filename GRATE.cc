@@ -329,6 +329,8 @@ int main()
             FermiMomB_y = Fermi4MomB.py();
             FermiMomB_z = Fermi4MomB.pz();
 
+            if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(FermiMomA_x,FermiMomA_y);
+
             /*
             FermiMomA_x = FermiMom.GetBoost("A").getX();
             FermiMomA_y = FermiMom.GetBoost("A").getY();
