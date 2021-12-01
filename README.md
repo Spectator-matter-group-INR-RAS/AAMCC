@@ -20,7 +20,11 @@ of colliding nuclei and energy of the collision on the event-by-event basis
    - Evaporation-fission calculation can be carried out via one of two models: ABLAXX evaporation (options ABLAXX or AAMCC) or Weisskopf-Ewing (option G4) evaporation, both adopted from Geant4 v10.4.
 
 ## Papers published using AAMCC
+
 http://dx.doi.org/10.3103/S1062873820080249
+
 http://dx.doi.org/10.3390/particles4020021
+
 http://dx.doi.org/10.1134/S1063779621040493
+
 http://dx.doi.org/10.3103/S1062873820080110
