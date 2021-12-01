@@ -7,7 +7,7 @@
 
 
 GRATEmanager::GRATEmanager()
-  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0)
+  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
 {  
   std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
   while(!NucleusInputLabel){
@@ -80,6 +80,11 @@ GRATEmanager::GRATEmanager()
     std::cin >> CritDist;
   }
 
+  while(DeExModel.empty()){
+      std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
+      std::cin>>DeExModel;
+  }
+
   std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
   std::cin >> InFileOrNot;
 
@@ -121,8 +126,8 @@ void GRATEmanager::BookHisto()
   //Creating a Trees
   Glauber = new TTree("Glauber","Events from glauber modeling");
   modelingCo = new TTree("Conditions","preconditions for modeling");
-  Clusters = new TTree("MST: Clusters info", "TTree to store clusters");
-  FermiMom = new TTree("FermiMomentum_info", "Fermi moments");
+  Clusters = new TTree("MST-Clusters","TTree to store clusters");
+  FermiMom = new TTree("FermiMomentum", "Fermi momentum");
   // Book all histograms there ...
   histo[0] =  new TH1D("Charge distruibution for side B"," ;Z;entries",sourceZb+1,-0.5, sourceZb+0.5); 
 
@@ -146,8 +151,8 @@ void GRATEmanager::BookHisto()
   histo2[4] = new TH2D("px vs py for protons", ";px;py", 100,-200,200,100,-200,200);
   histo2[5] = new TH2D("px vs py for IMF", ";px;py", 100,-200,200,100,-200,200);
   histo2[6] = new TH2D("px vs py for heavy fragments", ";px;py", 100,-200,200,100,-200,200);
-
   histo2[7] = new TH2D("Ex En VS d, side A"," ;E*/A;d",300, 0, 15, 280, 0, CritDist + 0.5);
+  histo2[8] = new TH2D("fermi px vs fermi py for deltaA = 1", ";px;py", 50,-200,200,100,-200,200);
 
   G4int Rmax = 20;
   G4int Num_ent = 1200;

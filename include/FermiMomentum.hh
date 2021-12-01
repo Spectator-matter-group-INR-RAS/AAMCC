@@ -21,6 +21,9 @@ public:
     ~FermiMomentum() = default;
     vect3 GetMomentum(std::string side);
     CLHEP::Hep3Vector GetBoost(std::string side);
+    CLHEP::Hep3Vector GetMomentumHep3(std::string side);
+    CLHEP::HepLorentzVector GetLorentzVector(std::string side);
+
     void SetPzPerNucleon(double  pZA, double pZB);
 
 private:
@@ -55,5 +58,8 @@ private:
     vect3 GetGoldhaber();
     vect3 GetMorrisey();
     vect3 GetVanBiber();
+
+    CLHEP::Hep3Vector toHep3Vector(vect3 vectorIn);
+    CLHEP::HepLorentzVector toHepLorentzVector(vect3 vectorIn, std::string side);
 
 };

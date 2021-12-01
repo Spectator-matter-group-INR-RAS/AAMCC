@@ -44,11 +44,11 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                         default: out = GetMorrisey(); break;
                     }
                     pF = {-out.px, -out.py, -out.pz};
-                    out.pz = -gammafacB * (out.pz + betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
                     return out;
                 }
                 else {out = {-pF.px, -pF.py, -pF.pz}; pF = {0, 0, 0};
-                    out.pz = -gammafacB * (out.pz + betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
                     return out;}
 
 
@@ -101,4 +101,24 @@ CLHEP::Hep3Vector FermiMomentum::GetBoost(std::string side) {
     if(!futureBoost.isTimelike()) std::cout<<side<<" "<<E<<" nucl = "<<nucleons->GetA(side)<<std::endl;
     return futureBoost.boostVector();}
     else { return CLHEP::Hep3Vector(0,0,0);}
+}
+
+CLHEP::Hep3Vector FermiMomentum::toHep3Vector(vect3 vectorIn) {
+    return {vectorIn.px, vectorIn.py, vectorIn.pz};
+}
+
+CLHEP::HepLorentzVector FermiMomentum::toHepLorentzVector(vect3 vectorIn , std::string side) {
+    if(nucleons->GetA(side) != 0){
+        vect3 p = vectorIn;
+        double  E =std::sqrt( p.mag2()/(nucleons->GetA(side)*nucleons->GetA(side)) + nucleonAverMass*nucleonAverMass);
+        return CLHEP::HepLorentzVector(p.px, p.py, p.pz, E*nucleons->GetA(side));
+    } else{return {0,0,0, 0};}
+}
+
+CLHEP::Hep3Vector FermiMomentum::GetMomentumHep3(std::string side) {
+    return toHep3Vector(GetMomentum(side));
+}
+
+CLHEP::HepLorentzVector FermiMomentum::GetLorentzVector(std::string side) {
+    return toHepLorentzVector(GetMomentum(side),side);
 }

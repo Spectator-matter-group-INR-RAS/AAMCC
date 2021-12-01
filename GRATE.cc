@@ -129,8 +129,10 @@ int main()
     // FermiMom Tree
     G4double FermiMomA_x;
     G4double FermiMomA_y;
+    G4double FermiMomA_z;
     G4double FermiMomB_x;
     G4double FermiMomB_y;
+    G4double FermiMomB_z;
 
     G4float PhiRotA;
     G4float ThetaRotA;
@@ -165,10 +167,10 @@ int main()
     histoManager.GetTree()->Branch("NpartA", &NpartA, "NpartA/I");
     histoManager.GetTree()->Branch("NpartB", &NpartB, "NpartB/I");
 
-    histoManager.GetTreeMST()->Branch("A_cl", "std::vector" ,&A_cl);
-    histoManager.GetTreeMST()->Branch("Z_cl", "std::vector" ,&Z_cl);
+    histoManager.GetTreeMST()->Branch("Aa_cl", "std::vector" ,&A_cl);
+    histoManager.GetTreeMST()->Branch("Za_cl", "std::vector" ,&Z_cl);
     histoManager.GetTreeMST()->Branch("d", &d_MstA ,"d/d");
-    histoManager.GetTreeMST()->Branch("Clust_num", &ClustNumA ,"Clust_num/I");
+    histoManager.GetTreeMST()->Branch("Clust_num_a", &ClustNumA ,"Clust_num/I");
     histoManager.GetTreeMST()->Branch("Ab_cl", "std::vector" ,&Ab_cl);
     histoManager.GetTreeMST()->Branch("Zb_cl", "std::vector" ,&Zb_cl);
     histoManager.GetTreeMST()->Branch("d_b", &d_MstB ,"d/d");
@@ -199,8 +201,10 @@ int main()
 
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &FermiMomA_x, "Fermi_momentumA_x/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &FermiMomA_y, "Fermi_momentumA_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &FermiMomA_z, "Fermi_momentumA_y/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &FermiMomB_x, "Fermi_momentumB_x/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &FermiMomB_y, "Fermi_momentumB_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &FermiMomB_z, "Fermi_momentumB_y/d");
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -216,7 +220,12 @@ int main()
     DeexcitationHandler* handlerNew = new DeexcitationHandler();
     //handlerNew->SetMinEForMultiFrag(3*MeV);
     handlerNew->SetMaxAandZForFermiBreakUp(19, 9);
-    handlerNew->SetMinExcitation(1e-4);
+    handlerNew->SetMinExcitation(1e-4*MeV);
+    handlerNew->SetMaxAforFermiBreakUp(19);
+    handlerNew->SetMaxZforFermiBreakUp(9);
+    handlerNew->SetMaxAforPureNeutronFragments(200);
+    handlerNew->SetMinExForFermiBreakUp(0.01*MeV);
+    handlerNew->SetExForMF(3*MeV, 5*MeV);
     //Setting up Glauber code
     histoManager.CalcXsectNN();
     G4float omega = -1;
@@ -245,22 +254,22 @@ int main()
         //Parameters for ALADIN parametrization
         G4double e_0=11.5*MeV;//was 8.13 MeV
         G4double sigma0 = 0.005; //was 0.01
-        G4double c0 = 2; // From Bondorf 1995
+        G4double b0 = 2; // From Bondorf 1995
         G4double sigmaE0 = 1*MeV;
-        G4double b0 = 0.1;
+        G4double c0 = 0.1;
         G4double Pe = 24*MeV;
         G4double Pm = 0.2;
-        ExEnA->SetParametersALADIN(e_0,sigma0,c0);
-        ExEnB->SetParametersALADIN(e_0,sigma0,c0);
-        ExEnA->SetParametersParabolicApproximation(Pe, Pm, sigma0, b0, 0.01);
-        ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, b0, 0.01);
-        //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,b0,0);
-        //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,b0,0);
+        ExEnA->SetParametersALADIN(e_0, sigma0, b0);
+        ExEnB->SetParametersALADIN(e_0, sigma0, b0);
+        ExEnA->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
+        ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
+        //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
+        //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
     }
 
     NucleonVector nV;
     GlauberCollisionReader reader;
-    FermiMomentum FermiMom(&nV, "M");
+    FermiMomentum FermiMom(&nV, "G");
     FermiMom.SetPzPerNucleon(histoManager.GetInitialContidions().GetPzA()/ sourceA, histoManager.GetInitialContidions().GetPzB() / sourceAb);
 
     for(G4int count=0;count<histoManager.GetIterations() ;count++){ 
@@ -308,14 +317,22 @@ int main()
             ExEn = energy_A/G4double(A);
             histoManager.GetHisto2(1)->Fill(ExEn, G4double(A)/sourceA);
 
-            FermiMomA_x = FermiMom.GetBoost("A").getX();
-            FermiMomA_y = FermiMom.GetBoost("A").getY();
-            FermiMomB_x = FermiMom.GetBoost("B").getX();
-            FermiMomB_y = FermiMom.GetBoost("B").getY();
 
-            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, FermiMom.GetBoost("A"), FermiMom.GetBoost("B")); //d = const if energy is negative
-            G4FragmentVector clusters_to_excit_A = MstClustersVector.at(0);
-            G4FragmentVector clusters_to_excit_B = MstClustersVector.at(1);
+            CLHEP::HepLorentzVector Fermi4MomA = FermiMom.GetLorentzVector("A");
+            CLHEP::Hep3Vector boostA = Fermi4MomA.boostVector();
+            FermiMomA_x = Fermi4MomA.px();
+            FermiMomA_y = Fermi4MomA.py();
+            FermiMomA_z = Fermi4MomA.pz();
+            CLHEP::HepLorentzVector Fermi4MomB = FermiMom.GetLorentzVector("B");;
+            CLHEP::Hep3Vector boostB = Fermi4MomB.boostVector();
+            FermiMomB_x = Fermi4MomB.px();
+            FermiMomB_y = Fermi4MomB.py();
+            FermiMomB_z = Fermi4MomB.pz();
+
+            if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(FermiMomA_x,FermiMomA_y);
+
+
+            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
 
             d_MstA = clusters->GetCD("A");
             d_MstB = clusters->GetCD("B");
@@ -332,10 +349,9 @@ int main()
                 G4double eta_A = 0;
                 //if(abs(p4.px()) < 1) std::cout<<G4double(clfrag_A)<<" "<<G4double(sourceA)<<"\n";
 
-                // TODO Devise the source of a differences between models
-                //    - Issues in propagation of Excitation energy through GMSTClustering
+
                 // HANDLER
-                G4ReactionProductVector *theProduct = handlerNew->BreakUp(aFragment);
+                G4ReactionProductVector * theProduct = handlerNew->BreakUp(aFragment, histoManager.GetDeexModel());
 
                 thisEventNumFragments = theProduct->size();
 
@@ -410,7 +426,7 @@ int main()
                 G4double eta_B = 0;
 
                 // HANDLER
-                G4ReactionProductVector *theProductB = handlerNew->BreakUp(aFragmentB);
+                G4ReactionProductVector *theProductB = handlerNew->BreakUp(aFragmentB, histoManager.GetDeexModel());
 
                 for (G4ReactionProductVector::iterator kVector = theProductB->begin(); kVector != theProductB->end(); ++kVector) {
                     G4int thisFragmentZb = 0;
