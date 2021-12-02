@@ -83,6 +83,7 @@ public:
   void SetFermiModel_old(VFermiBreakUp* ptr);
   void SetPhotonEvaporation(G4VEvaporationChannel* ptr);
   void SetDeexChannelsType(G4DeexChannelType val);
+  G4bool isMulti(G4double A, G4double Z, G4double Ex);
 
   //======== Obsolete methods to be removed =====
 
