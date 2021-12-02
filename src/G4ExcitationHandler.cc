@@ -332,14 +332,14 @@ G4ReactionProductVector * G4ExcitationHandler::BreakItUp(const G4Fragment & theI
               if(A <= 1) {
                   theResults.push_back(*j);
               } else if ((*j)->GetExcitationEnergy() < minExcitation){
-                  //G4int Z = (*j)->GetZ_asInt();
+                  G4int Z = (*j)->GetZ_asInt();
                   // is stable or d, t, He3, He4
-                  //if(nist->GetIsotopeAbundance(Z, A) > 0.0 || (Z == 1 && (A == 3 || A == 2)) || (Z == 2 && (A == 3 || A == 4)) ) {
-                  theResults.push_back(*j);
-                  //}
-                  // else {
-                  //     thePhotoEvapList.push_back(*j);
-                  // } 
+                  if(nist->GetIsotopeAbundance(Z, A) > 0.0) {
+                    theResults.push_back(*j);
+                  }
+                  else {
+                      thePhotoEvapList.push_back(*j);
+                  } 
               } else {
                   thePhotoEvapList.push_back(*j);
               }
