@@ -70,8 +70,8 @@ GRATEmanager::GRATEmanager()
   upperLimitExEnB *=sourceAb;
   upperLimitExEnB *=MeV;
 
-  while ( (StatisticsLabel<0) || (StatisticsLabel>5) || (upperLimitExEn<lowLimitExEn) ) {
-    std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3 : ";
+  while ( (StatisticsLabel<0) || (StatisticsLabel>7) || (upperLimitExEn<lowLimitExEn) ) {
+    std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3, 7 - Fit of Hybrid : ";
     std::cin >> StatisticsLabel;
   }
 
@@ -81,7 +81,7 @@ GRATEmanager::GRATEmanager()
   }
 
   while(DeExModel.empty()){
-      std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
+      std::cout<<"Choose a model for fragment deexcitation. At the moment only G4 option is available: ";
       std::cin>>DeExModel;
   }
 

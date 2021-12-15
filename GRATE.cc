@@ -59,6 +59,7 @@ int main()
     G4DeexPrecoParameters* fParam = fLevelData->GetParameters();
     //fParam->SetDeexModelType(0);
     fParam->SetMinExPerNucleounForMF(4.*MeV); 
+    fParam->SetDeexChannelsType(fEvaporation); 
 
     G4StateManager* fStateManager = G4StateManager::GetStateManager();
 
@@ -265,6 +266,8 @@ int main()
         ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
         //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
         //ExEnB->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
+        ExEnA->SetParametersHybridFit(11.46648905*MeV, -1.84830078*MeV,  -58.53674677*MeV,  284.66431513*MeV, -637.51406293*MeV,  652.80324427*MeV, -251.28205381*MeV, 0.4*MeV, 0.5, 0.2);
+        ExEnB->SetParametersHybridFit(11.46648905*MeV, -1.84830078*MeV,  -58.53674677*MeV,  284.66431513*MeV, -637.51406293*MeV,  652.80324427*MeV, -251.28205381*MeV, 0.4*MeV, 0.5, 0.2);
     }
 
     NucleonVector nV;

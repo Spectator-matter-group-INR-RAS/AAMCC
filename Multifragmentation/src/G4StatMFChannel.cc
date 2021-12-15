@@ -159,9 +159,9 @@ void G4StatMFChannel::CoulombImpulse(G4int anA, G4int anZ, G4double T)
 
   // Third, we have to figure out the asymptotic momenta of charged fragments 
   // For taht we have to solve equations of motion for fragments
-  if(_NumOfChargedFragments > 1){
-    SolveEqOfMotion(anA,anZ,T);
-  }
+  // if(_NumOfChargedFragments > 1){
+  //   SolveEqOfMotion(anA,anZ,T);
+  // }
 
   return;
 }

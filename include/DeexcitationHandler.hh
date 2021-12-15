@@ -15,7 +15,7 @@
  #include "G4Pow.hh"
  #include "G4FermiPhaseSpaceDecay.hh"
  #include "../FermiBreakUp/G4FermiBreakUp.hh"
- #include "../Abla/include/AblaEvaporation.hh"
+ // #include "../Abla/include/AblaEvaporation.hh"
  #include "../Multifragmentation/include/G4StatMF.hh"
 
  class DeexcitationHandler: public G4ExcitationHandler {
@@ -25,8 +25,8 @@
 
     G4ReactionProductVector* G4BreakItUp(const G4Fragment &theInitialFragment);
     G4ReactionProductVector* BreakUpPureNeutrons(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* AAMCCBreakItUp(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* AblaBreakItUp(const G4Fragment &theInitialFragment);
+    //G4ReactionProductVector* AAMCCBreakItUp(const G4Fragment &theInitialFragment);
+    //G4ReactionProductVector* AblaBreakItUp(const G4Fragment &theInitialFragment);
     G4ReactionProductVector* BreakUp(const G4Fragment &theInitialFragment, G4String modelName);
 
     inline void SetMaxAforPureNeutronFragments(G4int in_A) {MaxAforFermiBreakUpForPureNeutronFragments = in_A;};
@@ -64,7 +64,7 @@
 
     G4FermiPhaseSpaceDecay PhaseSpaceDecay;
     G4FermiBreakUp FermiBreakUp;
-    AblaEvaporation ablaEvaporation;
+    //AblaEvaporation ablaEvaporation;
     G4StatMF theMultifragmentation;
 
 };
