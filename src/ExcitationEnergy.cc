@@ -31,8 +31,8 @@ void ExcitationEnergy::SetParametersALADIN(G4double e0_in, G4double sigma0_in, G
 
     alphaSwitch = (e0/Ebound)*(e0/ Ebound);
     for(int k = 0; k < 100; k++){
-	alphaSwitch = pow((e0/Ebound)*(alphaSwitch*(1-1/(G4double(initA)))+1/G4double(initA)-alphaSwitch*alphaSwitch),0.66666666666666);	
-	} 
+    alphaSwitch = pow((e0/Ebound)*(alphaSwitch*(1-1/(G4double(initA)))+1/G4double(initA)-alphaSwitch*alphaSwitch),0.66666666666666);    
+    } 
     //std::cout<<"alphaSwitch is set equal to "<<alphaSwitch<<"\n";
  }
 
@@ -72,6 +72,19 @@ void ExcitationEnergy::SetParametersParabolicApproximation(G4double Pe_in, G4dou
     sigmaP = sigmaP_in;
     bP0 = bP0_in;
     bP1 = bP1_in;
+}
+
+void ExcitationEnergy::SetParametersHybridFit(G4double a0_in, G4double a1_in, G4double a2_in, G4double a3_in, G4double a4_in, G4double a5_in, G4double a6_in, G4double sigma1_in, G4double sigma2_in, G4double sigma3_in) {
+    a0 = a0_in;
+    a1 = a1_in;
+    a2 = a2_in;
+    a3 = a3_in;
+    a4 = a4_in;
+    a5 = a5_in;
+    a6 = a6_in;
+    sigma1 = sigma1_in;
+    sigma2 = sigma2_in;
+    sigma3 = sigma3_in;
 }
 
 
@@ -147,7 +160,6 @@ G4double ExcitationEnergy::GetEnergyParabolicApproximation(G4int A) {
     G4double alpha = G4double(A)/G4double(initA);
     G4double sigmaE = randGauss.shoot() * sigmaP * (1 + bP0 * (1 - alpha)+bP1 * (1-alpha) * (1-alpha));
     energy = Pe*G4double(A)*(1 - alpha)*(alpha + Pm)+sigmaE;
-
     return energy;
 }
 
@@ -157,6 +169,26 @@ G4double ExcitationEnergy::GetEnergyDampEricson(G4int A) {
     else{energy = GetEnergyALADIN(A);}
     return energy;
 }
+
+G4double ExcitationEnergy::GetEnergyHybridFit(G4int A) {
+    CLHEP::RandGauss randGauss(0,1);
+    G4double alpha = G4double(A)/G4double(initA);
+    G4double energy = -1;
+    G4double sigmaE;
+     while (energy < 0) {
+        G4double rand = randGauss.shoot();
+        if (alpha > alphaSwitch){
+                sigmaE = rand * ((sigma3-1)/(1-alphaSwitch)*alpha + (1-sigma3*alphaSwitch)/(1-alphaSwitch)) * sigma1 * (1 + sigma2 * (1 - alpha));
+        }
+        else
+        {
+            sigmaE = rand * sigma1 * (1 + sigma2 * (1 - alpha));
+        }
+        energy = A*(a0+ a1*alpha + a2*pow(alpha,2)+ a3*pow(alpha,3)+ a4*pow(alpha,4)+ a5*pow(alpha,5)+ a6*pow(alpha,6) + sigmaE);
+    }
+    return energy;
+}
+
 
 G4double ExcitationEnergy::GetEnergy(G4int A) {
    G4double energy;
@@ -173,16 +205,20 @@ G4double ExcitationEnergy::GetEnergy(G4int A) {
             energy = GetEnergyALADIN(A);
             break;
         }
-	case 4:{
+        case 4:{
             energy = GetEnergyDampEricson(A);
-            break;	
-	}
+            break;  
+        }
         case 5:{
             energy = GetEnergyParabolicApproximation(A);
             break;
         }
         case 6:{
             energy = GetEnergyCorrectedALADIN(A);
+            break;
+        }
+        case 7:{
+            energy = GetEnergyHybridFit(A);
             break;
         }
         default:{

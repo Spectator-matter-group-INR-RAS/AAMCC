@@ -28,6 +28,8 @@ public:
    
     G4double GetEnergyDampEricson(G4int A);
 
+    G4double GetEnergyHybridFit(G4int A);
+
     void SetInitNuclMass(G4int initA_in);
 
     void SetParametersEricson(G4double g0_in);
@@ -41,6 +43,8 @@ public:
     void SetParametersCorrectedALADINFromFile();
 
     void SetParametersParabolicApproximation(G4double Pe_in, G4double Pm_in, G4double sigmaP_in, G4double bP0_in, G4double bP1_in);
+
+    void SetParametersHybridFit(G4double a0_in, G4double a1_in, G4double a2_in, G4double a3_in, G4double a4_in, G4double a5_in, G4double a6_in, G4double sigma1_in, G4double sigma2_in, G4double sigma3_in);
 
 private:
      G4double g0;
@@ -63,6 +67,17 @@ private:
      G4double LowExEn;
      G4double UpExEn;
      G4double Ebound;
+
+     G4double a0;
+     G4double a1;
+     G4double a2;
+     G4double a3;
+     G4double a4;
+     G4double a5;
+     G4double a6;
+     G4double sigma1;
+     G4double sigma2;
+     G4double sigma3;
 
      std::ifstream ParamFile;
 };

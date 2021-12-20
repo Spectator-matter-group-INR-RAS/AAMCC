@@ -153,7 +153,6 @@ void G4ExcitationHandler::Initialise()
   if(G4Threading::IsMasterThread()) {
     G4cout << "Number of de-excitation channels in G4Evaporation is: " 
      << theEvaporation->GetNumberOfChannels();
-    G4cout << " " << this;
   }
   G4cout << G4endl;
 }

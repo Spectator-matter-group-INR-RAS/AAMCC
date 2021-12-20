@@ -70,8 +70,8 @@ GRATEmanager::GRATEmanager()
   upperLimitExEnB *=sourceAb;
   upperLimitExEnB *=MeV;
 
-  while ( (StatisticsLabel<0) || (StatisticsLabel>5) || (upperLimitExEn<lowLimitExEn) ) {
-    std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3 : ";
+  while ( (StatisticsLabel<0) || (StatisticsLabel>7) || (upperLimitExEn<lowLimitExEn) ) {
+    std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3, 7 - Fit of Hybrid : ";
     std::cin >> StatisticsLabel;
   }
 
