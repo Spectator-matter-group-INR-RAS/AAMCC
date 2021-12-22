@@ -23,74 +23,27 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
 // $Id$
 //
 // Hadronic Process: Nuclear De-excitations
-// by V. Lara
+// by V. Lara (Dec 1999)
 
-#ifndef G4StatMFParameters_h
-#define G4StatMFParameters_h 1
+#include "G4VCoulombBarrier.hh"
+#include "G4PhysicalConstants.hh"
 
-#include "globals.hh"
-
-class G4StatMFParameters
+G4VCoulombBarrier::G4VCoulombBarrier(G4int anA, G4int aZ)
 {
-public:
-  
-  G4StatMFParameters();
+  theA = anA;
+  theZ = aZ;
+  theRho = 0.0; 
+  theR0 = 1.5*CLHEP::fermi;
+}
 
-  ~G4StatMFParameters();
-  
-  static G4double GetKappa();
-  
-  static G4double GetKappaCoulomb(); 
-  
-  static G4double GetEpsilon0();
-  
-  static G4double GetE0();
+G4VCoulombBarrier::~G4VCoulombBarrier()
+{}
 
-  static G4double GetW0();
-  
-  static G4double GetBeta0(); 
-  
-  static G4double GetGamma0();
-  
-  static G4double GetCriticalTemp();
-  
-  static G4double Getr0();
-
-  static G4double GetCoulomb();
-  
-  static G4double Beta(G4double T);
-  
-  static G4double DBetaDT(G4double T);
-  
-  static G4double GetMaxAverageMultiplicity(G4int A);
-
-  // +----------------------+
-  // | Constant Parameters: |
-  // +----------------------+
-  // Kappa is used for calculate volume V_f for translational 
-  // motion of fragments
-  static const G4double fKappa;
-  // KappaCoulomb is used for calculate Coulomb term energy
-  static const G4double fKappaCoulomb;
-  // Inverse level density
-  static const G4double fEpsilon0;
-  // Bethe-Weizsacker coefficients
-  static const G4double fE0;
-  static const G4double fBeta0;
-  static const G4double fGamma0;
-  // Critical temperature (for liquid-gas phase transitions)
-  static const G4double fCriticalTemp;
-  // Nuclear radius
-  static const G4double fr0;
-  // Coulomb 
-  static const G4double fCoulomb;
-
-  static const G4double fW0;
-
-};
-
-#endif
+void G4VCoulombBarrier::SetParameters(G4double rho, G4double r0)
+{
+  theRho = rho;
+  theR0 = r0;
+}

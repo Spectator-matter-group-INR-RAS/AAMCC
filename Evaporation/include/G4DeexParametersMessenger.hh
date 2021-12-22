@@ -23,74 +23,70 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: G4DeexParametersMessenger.hh 66241 2012-12-13 18:34:42Z gunter $
 //
-// $Id$
+// -------------------------------------------------------------------
 //
-// Hadronic Process: Nuclear De-excitations
-// by V. Lara
+// GEANT4 Class file
+//
+// File name:     G4DeexParametersMessenger
+//
+// Author:        Vladimir Ivanchenko 
+//
+// Creation date: 17-10-2017
+//
+// Modifications:
+//
+// -------------------------------------------------------------------
+//
 
-#ifndef G4StatMFParameters_h
-#define G4StatMFParameters_h 1
+// Class Description:
+//  This is a messenger class to interface to exchange information
+//  between deexcitation module and UI.
+//
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+#ifndef G4DeexParametersMessenger_h
+#define G4DeexParametersMessenger_h 1
 
 #include "globals.hh"
+#include "G4UImessenger.hh"
 
-class G4StatMFParameters
+class G4UIdirectory;
+class G4UIcommand;
+class G4UIcmdWithABool;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithADouble;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithAString;
+class G4DeexPrecoParameters;
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+class G4DeexParametersMessenger: public G4UImessenger
 {
-public:
+public:   // with description
   
-  G4StatMFParameters();
+  explicit G4DeexParametersMessenger(G4DeexPrecoParameters*);
+  virtual ~G4DeexParametersMessenger();
 
-  ~G4StatMFParameters();
-  
-  static G4double GetKappa();
-  
-  static G4double GetKappaCoulomb(); 
-  
-  static G4double GetEpsilon0();
-  
-  static G4double GetE0();
+  virtual void SetNewValue(G4UIcommand*, G4String) override;
 
-  static G4double GetW0();
-  
-  static G4double GetBeta0(); 
-  
-  static G4double GetGamma0();
-  
-  static G4double GetCriticalTemp();
-  
-  static G4double Getr0();
+private:
 
-  static G4double GetCoulomb();
-  
-  static G4double Beta(G4double T);
-  
-  static G4double DBetaDT(G4double T);
-  
-  static G4double GetMaxAverageMultiplicity(G4int A);
+  G4DeexPrecoParameters*     theParameters;
 
-  // +----------------------+
-  // | Constant Parameters: |
-  // +----------------------+
-  // Kappa is used for calculate volume V_f for translational 
-  // motion of fragments
-  static const G4double fKappa;
-  // KappaCoulomb is used for calculate Coulomb term energy
-  static const G4double fKappaCoulomb;
-  // Inverse level density
-  static const G4double fEpsilon0;
-  // Bethe-Weizsacker coefficients
-  static const G4double fE0;
-  static const G4double fBeta0;
-  static const G4double fGamma0;
-  // Critical temperature (for liquid-gas phase transitions)
-  static const G4double fCriticalTemp;
-  // Nuclear radius
-  static const G4double fr0;
-  // Coulomb 
-  static const G4double fCoulomb;
+  G4UIdirectory*             fDirectory;
 
-  static const G4double fW0;
+  G4UIcmdWithABool*          readCmd;
+  G4UIcmdWithABool*          icCmd;
+  G4UIcmdWithABool*          corgCmd;
+
+  G4UIcmdWithAnInteger*      maxjCmd;
 
 };
 
 #endif
+

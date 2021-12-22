@@ -27,86 +27,40 @@
 // $Id$
 //
 // Hadronic Process: Nuclear De-excitations
-// by V. Lara
+// by V. Lara (Dec 1999)
+//
+// 15-11-2010 V.Ivanchenko cleanup 
 
-#ifndef G4StatMFFragment_h
-#define G4StatMFFragment_h 1
+#ifndef G4CoulombBarrier_h
+#define G4CoulombBarrier_h 1
 
-#include "G4StatMFParameters.hh"
-#include "G4ThreeVector.hh"
-#include "G4ParticleTable.hh"
-#include "G4IonTable.hh"
-#include "G4Fragment.hh"
+#include "globals.hh"
+#include "G4VCoulombBarrier.hh"
+#include <CLHEP/Units/SystemOfUnits.h>
 
-class G4StatMFFragment {
+class G4Pow;
+
+class G4CoulombBarrier : public G4VCoulombBarrier
+{
 
 public:
-    // Constructor
-    G4StatMFFragment(G4int anA, G4int aZ) :
-	theA(anA),theZ(aZ),
-	_position(0.0,0.0,0.0),
-	_momentum(0.0,0.0,0.0)
-	{}
 
+  explicit G4CoulombBarrier(G4int anA, G4int aZ);
+  virtual ~G4CoulombBarrier();
 
-    // Destructor
-    virtual ~G4StatMFFragment() {};
+  G4double GetCoulombBarrier(G4int ARes, G4int ZRes, G4double U) const;
 
-
-private:
-    // Default constructor
-    G4StatMFFragment(){};
-	
-    // Copy constructor
-    G4StatMFFragment(const G4StatMFFragment & right);
-
-    // operators
-    G4StatMFFragment & operator=(const G4StatMFFragment & right);
-public:
-    G4bool operator==(const G4StatMFFragment & right) const;
-    G4bool operator!=(const G4StatMFFragment & right) const;
-	
-public:
-
-    G4double GetCoulombEnergy(const G4int initA, const G4int initZ) const;
-	
-    G4double GetEnergy(const G4double T, const G4int initA, const G4int initZ) const;
-	
-    G4double GetInvLevelDensity(void) const;
-
-    G4int GetA(void) const {return theA;}
-	
-    G4int GetZ(void) const {return theZ;}
-	
-    void SetPosition(const G4ThreeVector& aPosition) {_position = aPosition;}
-	
-    G4ThreeVector& GetPosition(void) {return _position;}
-	
-    void SetMomentum(const G4ThreeVector& aMomentum) {_momentum = aMomentum;}
-
-    G4ThreeVector& GetMomentum(void) {return _momentum;}
-
-    G4Fragment * GetFragment(const G4double T);
-	
-    G4double GetNuclearMass(void)
-	{return G4ParticleTable::GetParticleTable()->GetIonTable()
-	                       ->GetIonMass(theZ, theA);}
-	
+  virtual G4double BarrierPenetrationFactor(G4int Eexc) const;
 
 private:
 
-    G4double CalcExcitationEnergy(const G4double T);
+  G4CoulombBarrier(const G4CoulombBarrier & right) = delete;
+  const G4CoulombBarrier & operator=(const G4CoulombBarrier & right) = delete;
+  G4bool operator==(const G4CoulombBarrier & right) const = delete;
+  G4bool operator!=(const G4CoulombBarrier & right) const = delete;
+  
+protected:
 
-private:
-
-    G4int theA;
-	
-    G4int theZ;
-	
-    G4ThreeVector _position;
-	
-    G4ThreeVector _momentum;
+  G4Pow* g4calc;
 };
-
 #endif
-

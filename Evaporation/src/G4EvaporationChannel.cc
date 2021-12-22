@@ -113,7 +113,7 @@ G4double G4EvaporationChannel::GetEmissionProbability(G4Fragment* fragment)
     // for OPTxs >0 penetration under the barrier is taken into account
     // G4double elim = (0 == OPTxs) ? CoulombBarrier : CoulombBarrier*0.5;
     static const G4double dCB = 3.5*CLHEP::MeV;
-    G4double elim = (0 == OPTxs) ? CoulombBarrier : CoulombBarrier - dCB*theZ;
+    G4double elim = (3 == OPTxs || 0 == OPTxs) ? CoulombBarrier : CoulombBarrier - dCB*theZ;
     if(ExEnergy >= delta0 && Mass >= ResMass + EvapMass + elim) {
       G4double xm2 = (Mass - EvapMass)*(Mass - EvapMass);
       G4double xm  = Mass - EvapMass - elim;
@@ -136,18 +136,18 @@ G4Fragment* G4EvaporationChannel::EmittedFragment(G4Fragment* theNucleus)
   G4Fragment* evFragment = nullptr;
   G4double ekin = 0.0;
   if(ResA <= 4 && 
-    ((ResA == 4 && ResZ == 2) || (ResA == 3 && ResZ == 2) ||
-     (ResA == 3 && ResZ == 1) || (ResA == 2 && ResZ == 1) ||
-     (ResA == 1 && ResZ == 1) || (ResA == 1 && ResZ == 0) )) {
+  ((ResA == 4 && ResZ == 2) || (ResA == 3 && ResZ == 2) ||
+  (ResA == 3 && ResZ == 1) || (ResA == 2 && ResZ == 1) ||
+  (ResA == 1 && ResZ == 1) || (ResA == 1 && ResZ == 0) )) {
     G4double mres = G4NucleiProperties::GetNuclearMass(ResA, ResZ);
     ekin = 0.5*(Mass*Mass - mres*mres + EvapMass*EvapMass)/Mass - EvapMass;
   } else {
     ekin = theProbability->SampleKineticEnergy(MinKinEnergy, MaxKinEnergy,
-					       CoulombBarrier);
+    CoulombBarrier);
   }
   G4LorentzVector lv0 = theNucleus->GetMomentum();
   G4LorentzVector lv(std::sqrt(ekin*(ekin + 2.0*EvapMass))*G4RandomDirection(), 
-		     ekin + EvapMass);
+  ekin + EvapMass);
   lv.boost(lv0.boostVector());
 
   evFragment = new G4Fragment(theA, theZ, lv);
