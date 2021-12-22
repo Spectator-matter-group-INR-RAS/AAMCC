@@ -122,7 +122,7 @@ G4ReactionProductVector *DeexcitationHandler::BreakUp(const G4Fragment &theIniti
         else if(w < 2) return AblaBreakItUp(theInitialFragment);
         else           return AAMCCBreakItUp(theInitialFragment);
     }
-    else std::cout<<"Wrong model name "<<modelName<<" only G4 is available \n"; return G4BreakItUp(theInitialFragment);
+    else std::cout<<"Wrong model name "<<modelName<<" G4, ABLAXX, AAMCC or MIX is available \n"; return AAMCCBreakItUp(theInitialFragment);
 }
 
 G4Fragment *DeexcitationHandler::toFragment(G4ReactionProduct *product) {
