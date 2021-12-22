@@ -171,7 +171,7 @@ G4FragmentVector * G4StatMF::BreakItUp(const G4Fragment &theFragment)
       G4LorentzVector NewMomentum;
       NewMomentum.setVect(ScaledMomentum);
       NewMomentum.setE(std::sqrt(ScaledMomentum.mag2()+Mass*Mass));
-      (*j)->SetMomentum(NewMomentum);		
+      (*j)->SetMomentum(NewMomentum);
     }
     // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
   } while (ScaleFactor > 1.0+1.e-5 && std::abs(ScaleFactor-SavedScaleFactor)/ScaleFactor > 1.e-10);
@@ -274,9 +274,12 @@ G4bool G4StatMF::FindTemperatureOfBreakingChannel(const G4Fragment & theFragment
 G4double G4StatMF::CalcEnergy(G4int A, G4int Z, const G4StatMFChannel * aChannel,
 			      G4double T)
 {
+  G4Pow* g4calc = G4Pow::GetInstance();
   G4double MassExcess0 = G4NucleiProperties::GetMassExcess(A,Z);
-  G4double ChannelEnergy = aChannel->GetFragmentsEnergy(T);
-  return -MassExcess0 + G4StatMFParameters::GetCoulomb() + ChannelEnergy;
+  G4double ChannelEnergy = aChannel->GetFragmentsEnergy(T, A, Z);
+  G4double CoulombFactor = 1.0/g4calc->A13(1.0+G4StatMFParameters::GetKappaCoulomb());
+  G4double CoulombEnergy = 0.6*CLHEP::elm_coupling*CoulombFactor*Z*Z/(G4StatMFParameters::Getr0()*g4calc->Z13(A));
+  return -MassExcess0 + CoulombEnergy + ChannelEnergy;
 }
 
 

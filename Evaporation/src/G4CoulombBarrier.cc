@@ -23,74 +23,59 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
 // $Id$
 //
 // Hadronic Process: Nuclear De-excitations
-// by V. Lara
+// by V. Lara (Dec 1999)
+//
+// 14-11-2007 modified barrier by JMQ (test30) 
+// 15-11-2010 V.Ivanchenko use G4Pow and cleanup 
 
-#ifndef G4StatMFParameters_h
-#define G4StatMFParameters_h 1
+#include "G4CoulombBarrier.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4Pow.hh"
 
-#include "globals.hh"
-
-class G4StatMFParameters
+G4CoulombBarrier::G4CoulombBarrier(G4int A, G4int Z)
+  : G4VCoulombBarrier(A, Z) 
 {
-public:
-  
-  G4StatMFParameters();
+  g4calc = G4Pow::GetInstance();
+  if(Z > 0) {
+    G4double rho = 1.2*CLHEP::fermi; 
+    G4double r0  = 1.5*CLHEP::fermi; 
+    if(1 == A) {
+      rho = 0.0;
+    } else if(A <= 3) {
+      rho = 0.8*CLHEP::fermi; 
+      r0  = 1.7*CLHEP::fermi;
+    } else {
+      r0  = 1.7*CLHEP::fermi;
+    }
+    SetParameters(rho, r0);
+  }
+}
 
-  ~G4StatMFParameters();
-  
-  static G4double GetKappa();
-  
-  static G4double GetKappaCoulomb(); 
-  
-  static G4double GetEpsilon0();
-  
-  static G4double GetE0();
+G4CoulombBarrier::~G4CoulombBarrier() 
+{}
 
-  static G4double GetW0();
-  
-  static G4double GetBeta0(); 
-  
-  static G4double GetGamma0();
-  
-  static G4double GetCriticalTemp();
-  
-  static G4double Getr0();
+G4double G4CoulombBarrier::GetCoulombBarrier(G4int ARes, G4int ZRes, G4double) const 
+{
+  G4double r_c = 2.173*CLHEP::fermi*(1+0.006103*GetZ()*ZRes)/(1+0.009443*GetZ()*ZRes);
+  return BarrierPenetrationFactor(ZRes)*CLHEP::elm_coupling*(GetZ()*ZRes)/(r_c*(g4calc->Z13(ARes) + g4calc->Z13(GetA())));
+}
 
-  static G4double GetCoulomb();
-  
-  static G4double Beta(G4double T);
-  
-  static G4double DBetaDT(G4double T);
-  
-  static G4double GetMaxAverageMultiplicity(G4int A);
+G4double G4CoulombBarrier::BarrierPenetrationFactor(G4int aZ) const 
+{
+  G4double res = 1.0;
+  if(GetZ() == 1) {
+    res = (aZ >= 70) ? 0.80 :
+    (((0.2357e-5*aZ) - 0.42679e-3)*aZ + 0.27035e-1)*aZ + 0.19025;
+    res += 0.06*(GetA() - 1);
 
-  // +----------------------+
-  // | Constant Parameters: |
-  // +----------------------+
-  // Kappa is used for calculate volume V_f for translational 
-  // motion of fragments
-  static const G4double fKappa;
-  // KappaCoulomb is used for calculate Coulomb term energy
-  static const G4double fKappaCoulomb;
-  // Inverse level density
-  static const G4double fEpsilon0;
-  // Bethe-Weizsacker coefficients
-  static const G4double fE0;
-  static const G4double fBeta0;
-  static const G4double fGamma0;
-  // Critical temperature (for liquid-gas phase transitions)
-  static const G4double fCriticalTemp;
-  // Nuclear radius
-  static const G4double fr0;
-  // Coulomb 
-  static const G4double fCoulomb;
-
-  static const G4double fW0;
-
-};
-
-#endif
+  } else if(GetZ() == 2 && GetA() <= 4) {
+    res = (aZ >= 70) ? 0.98 :
+    (((0.23684e-5*aZ) - 0.42143e-3)*aZ + 0.25222e-1)*aZ + 0.46699;
+    res += 0.12*(4 - GetA());
+  }
+  return res;
+}

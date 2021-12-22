@@ -61,38 +61,66 @@ G4bool G4StatMFFragment::operator!=(const G4StatMFFragment & ) const
     return true;
 }
 
-G4double G4StatMFFragment::GetCoulombEnergy(void) const
+G4double G4StatMFFragment::GetCoulombEnergy(const G4int initA, const G4int initZ) const
 {
   G4double res = 0.0;
+  G4Pow* g4calc = G4Pow::GetInstance();
   if (theZ >= 1) {
-    res = G4StatMFParameters::GetCoulomb();
+    res = 0.6*CLHEP::elm_coupling*theZ*theZ/(G4StatMFParameters::Getr0()*g4calc->A23(1.0+G4StatMFParameters::GetKappaCoulomb()))*g4calc->A13(G4double(initZ)/(initA*theZ));
   }
   return res;
 }
 
-G4double G4StatMFFragment::GetEnergy(const G4double T) const
+// Energy calculation according to original SMM model (same as in the PhysRefManual)
+// G4double G4StatMFFragment::GetEnergy(const G4double T, const G4int initA, const G4int initZ) const
+// {
+//   if (theA < 1 || theZ < 0 || theZ > theA) {
+//     G4cout << "G4StatMFFragment::GetEnergy: A = " << theA 
+// 	   << ", Z = " << theZ << G4endl;
+//     throw G4HadronicException(__FILE__, __LINE__, 
+// 			      "G4StatMFFragment::GetEnergy: Wrong values for A and Z!");
+//   }
+
+//   G4double BulkEnergy = G4NucleiProperties::GetMassExcess(theA,theZ);
+	
+//   if (theA < 4) return BulkEnergy - GetCoulombEnergy(initA, initZ);
+
+//   // For A > 4 continue calculations of other contributions
+	
+//   G4double SurfaceEnergy;
+//   if (G4StatMFParameters::DBetaDT(T) == 0.0) SurfaceEnergy = 0.0;
+//   else SurfaceEnergy = (G4StatMFParameters::Beta(T) - T*G4StatMFParameters::DBetaDT(T))*G4Pow::GetInstance()->Z23(theA);
+
+//   G4double ExchangeEnergy = (- G4StatMFParameters::GetW0() + T*T/GetInvLevelDensity()) * theA;
+//   if (theA != 4) ExchangeEnergy += SurfaceEnergy;		  
+//   //std::cout << " Mass: " << theA << " Charge: " << theZ << " CoulombEnergy " << GetCoulombEnergy(initA, initZ) << " SurfaceEnergy: " << SurfaceEnergy << " ExchangeEnergy " << ExchangeEnergy << " BulkEnergy: " << BulkEnergy << std::endl;
+//   return BulkEnergy + ExchangeEnergy - GetCoulombEnergy(initA, initZ);
+// }
+
+G4double G4StatMFFragment::GetEnergy(const G4double T, const G4int initA, const G4int initZ) const
 {
   if (theA < 1 || theZ < 0 || theZ > theA) {
     G4cout << "G4StatMFFragment::GetEnergy: A = " << theA 
-	   << ", Z = " << theZ << G4endl;
+     << ", Z = " << theZ << G4endl;
     throw G4HadronicException(__FILE__, __LINE__, 
-			      "G4StatMFFragment::GetEnergy: Wrong values for A and Z!");
+            "G4StatMFFragment::GetEnergy: Wrong values for A and Z!");
   }
   G4double BulkEnergy = G4NucleiProperties::GetMassExcess(theA,theZ);
-	
-  if (theA < 4) return BulkEnergy - GetCoulombEnergy();
-	
+  
+  if (theA < 4) return BulkEnergy - GetCoulombEnergy(initA, initZ);
+  
   G4double SurfaceEnergy;
   if (G4StatMFParameters::DBetaDT(T) == 0.0) SurfaceEnergy = 0.0;
   else SurfaceEnergy = 2.5*G4Pow::GetInstance()->Z23(theA)*T*T*
-	 G4StatMFParameters::GetBeta0()/
-	 (G4StatMFParameters::GetCriticalTemp()*
-	  G4StatMFParameters::GetCriticalTemp());
-					 				 
+   G4StatMFParameters::GetBeta0()/
+   (G4StatMFParameters::GetCriticalTemp()*
+    G4StatMFParameters::GetCriticalTemp());
+                   
   G4double ExchangeEnergy = theA*T*T/GetInvLevelDensity();
-  if (theA != 4) ExchangeEnergy += SurfaceEnergy;		  
-  return BulkEnergy + ExchangeEnergy - GetCoulombEnergy();
+  if (theA != 4) ExchangeEnergy += SurfaceEnergy;     
+  return BulkEnergy + ExchangeEnergy - GetCoulombEnergy(initA, initZ);
 }
+
 
 G4double G4StatMFFragment::GetInvLevelDensity(void) const
 {
@@ -115,11 +143,11 @@ G4Fragment * G4StatMFFragment::GetFragment(const G4double T)
 G4double G4StatMFFragment::CalcExcitationEnergy(const G4double T)
 {
   if (theA <= 3) return 0.0;
-	
+  
   G4double BulkEnergy = theA*T*T/GetInvLevelDensity();
-	
+  
   // if it is an alpha particle: done
-  if (theA == 4) return BulkEnergy;
+  if (theA == 4) return 4*BulkEnergy;
     
   // Term connected with surface energy
   G4double SurfaceEnergy = 0.0;

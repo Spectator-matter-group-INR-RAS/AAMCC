@@ -23,73 +23,57 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: G4NeutronRadCapture.hh 74869 2013-10-23 09:26:17Z gcosmo $
 //
-// $Id$
 //
-// Hadronic Process: Nuclear De-excitations
-// by V. Lara
+// Geant4 header : G4NeutronRadCapture
+// Created:  31 August 2009
+// Author  V.Ivanchenko
+//  
+// Modified:
+//
+// Class Description
+// Sampling of neutron radiative capture 
+// Class Description - End
+//
 
-#ifndef G4StatMFParameters_h
-#define G4StatMFParameters_h 1
-
+#ifndef G4NeutronRadCapture_h
+#define G4NeutronRadCapture_h 1
+ 
 #include "globals.hh"
+#include "G4HadronicInteraction.hh"
+#include "G4HadProjectile.hh"
+#include "G4Nucleus.hh"
+#include "G4LorentzVector.hh"
 
-class G4StatMFParameters
+class G4VEvaporationChannel;
+class G4IonTable;
+
+class G4NeutronRadCapture : public G4HadronicInteraction
 {
 public:
-  
-  G4StatMFParameters();
 
-  ~G4StatMFParameters();
-  
-  static G4double GetKappa();
-  
-  static G4double GetKappaCoulomb(); 
-  
-  static G4double GetEpsilon0();
-  
-  static G4double GetE0();
+  explicit G4NeutronRadCapture();
 
-  static G4double GetW0();
-  
-  static G4double GetBeta0(); 
-  
-  static G4double GetGamma0();
-  
-  static G4double GetCriticalTemp();
-  
-  static G4double Getr0();
+  virtual ~G4NeutronRadCapture();
+ 
+  virtual G4HadFinalState* ApplyYourself(const G4HadProjectile & aTrack, 
+					 G4Nucleus & targetNucleus) final;
 
-  static G4double GetCoulomb();
-  
-  static G4double Beta(G4double T);
-  
-  static G4double DBetaDT(G4double T);
-  
-  static G4double GetMaxAverageMultiplicity(G4int A);
+  virtual void InitialiseModel() final;
 
-  // +----------------------+
-  // | Constant Parameters: |
-  // +----------------------+
-  // Kappa is used for calculate volume V_f for translational 
-  // motion of fragments
-  static const G4double fKappa;
-  // KappaCoulomb is used for calculate Coulomb term energy
-  static const G4double fKappaCoulomb;
-  // Inverse level density
-  static const G4double fEpsilon0;
-  // Bethe-Weizsacker coefficients
-  static const G4double fE0;
-  static const G4double fBeta0;
-  static const G4double fGamma0;
-  // Critical temperature (for liquid-gas phase transitions)
-  static const G4double fCriticalTemp;
-  // Nuclear radius
-  static const G4double fr0;
-  // Coulomb 
-  static const G4double fCoulomb;
+private:
 
-  static const G4double fW0;
+  G4NeutronRadCapture & operator=(const G4NeutronRadCapture &right) = delete;
+  G4NeutronRadCapture(const G4NeutronRadCapture&) = delete;
+
+  G4int icID;
+  const G4ParticleDefinition* electron;
+  G4double lowestEnergyLimit;
+  G4double minExcitation;
+  G4VEvaporationChannel* photonEvaporation;
+  G4IonTable*  theTableOfIons;
+  G4LorentzVector lab4mom;
 
 };
 
