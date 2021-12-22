@@ -81,7 +81,7 @@ GRATEmanager::GRATEmanager()
   }
 
   while(DeExModel.empty()){
-      std::cout<<"Choose a model for fragment deexcitation. At the moment only G4 option is available: ";
+      std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
       std::cin>>DeExModel;
   }
 
