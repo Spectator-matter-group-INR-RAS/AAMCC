@@ -128,7 +128,7 @@ void G4ExcitationHandler::SetParameters()
   icID = param->GetInternalConversionID();
   if(isActive) {
     if(!thePhotonEvaporation) { 
-      SetPhotonEvaporation(new G4PhotonEvaporation()); 
+      SetPhotonEvaporation(new G4PhotonEvaporation());
     } 
     if(!theFermiModel) { SetFermiModel(new G4FermiBreakUpVI()); }
     if(!theFermiModel_old) { SetFermiModel_old(new G4FermiBreakUp()); }
@@ -155,17 +155,6 @@ void G4ExcitationHandler::Initialise()
      << theEvaporation->GetNumberOfChannels();
   }
   G4cout << G4endl;
-}
-
-void G4ExcitationHandler::SetEvaporation(G4VEvaporation* ptr, G4bool flag)
-{
-  if(ptr && ptr != theEvaporation) {
-    delete theEvaporation; 
-    theEvaporation = ptr;
-    thePhotonEvaporation = ptr->GetPhotonEvaporation();
-    theEvaporation->SetFermiBreakUp(theFermiModel);
-    isEvapLocal = flag;
-  }
 }
 
 void G4ExcitationHandler::SetMultiFragmentation(G4VMultiFragmentation* ptr)
@@ -198,6 +187,7 @@ void G4ExcitationHandler::SetPhotonEvaporation(G4VEvaporationChannel* ptr)
   if(ptr && ptr != thePhotonEvaporation) {
     thePhotonEvaporation = ptr;
     theEvaporation->SetPhotonEvaporation(ptr);
+    thePhotonEvaporation = theEvaporation->GetPhotonEvaporation();
   }
 }
 
@@ -415,9 +405,8 @@ G4ReactionProductVector * G4ExcitationHandler::BreakItUp(const G4Fragment & theI
           G4cout << *frag << G4endl;
       }
       exEnergy = frag->GetExcitationEnergy();
-
       // photon de-excitation only for hot fragments
-      if(exEnergy > minExcitation) {  
+      if(exEnergy > minExcitation) {
           thePhotonEvaporation->BreakUpChain(&theResults, frag);
       }
 

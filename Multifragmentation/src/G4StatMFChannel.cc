@@ -48,16 +48,19 @@
 class SumCoulombEnergy : public std::binary_function<G4double,G4double,G4double>
 {
 public:
-  SumCoulombEnergy() : total(0.0) {}
+  SumCoulombEnergy(G4int anA, G4int anZ) : total(0.0), initA(anA), initZ(anZ) {}
   G4double operator() (G4double& , G4StatMFFragment*& frag)
   { 
-      total += frag->GetCoulombEnergy();
+      total += frag->GetCoulombEnergy(initA, initZ);
       return total;
   }
     
   G4double GetTotal() { return total; }
 public:
-  G4double total;  
+  G4double total;
+  G4int initA;
+  G4int initZ;
+
 };
 
 G4StatMFChannel::G4StatMFChannel() : 
@@ -102,31 +105,14 @@ void G4StatMFChannel::CreateFragment(G4int A, G4int Z)
   return;
 }
 
-G4double G4StatMFChannel::GetFragmentsCoulombEnergy(void)
+G4double G4StatMFChannel::GetFragmentsCoulombEnergy(G4int initA, G4int initZ)
 {
   G4double Coulomb = std::accumulate(_theFragments.begin(),_theFragments.end(),
-				     0.0,SumCoulombEnergy());
-  //      G4double Coulomb = 0.0;
-  //      for (unsigned int i = 0;i < _theFragments.size(); i++)
-  //  	Coulomb += _theFragments[i]->GetCoulombEnergy();
+				     0.0,SumCoulombEnergy(initA, initZ));
   return Coulomb;
 }
-// G4double G4StatMFChannel::GetFragmentsCoulombEnergy(void)
-// {
-//   G4double Coulomb = std::accumulate(_theFragments.begin(),_theFragments.end(),
-//     0.0,
-//     [](const G4double& running_total,
-//       G4StatMFFragment*& fragment)
-//   {
-//     return running_total + fragment->GetCoulombEnergy();
-//   } );
-//   //      G4double Coulomb = 0.0;
-//   //      for (unsigned int i = 0;i < _theFragments.size(); i++)
-//   //    Coulomb += _theFragments[i]->GetCoulombEnergy();
-//   return Coulomb;
-// }
 
-G4double G4StatMFChannel::GetFragmentsEnergy(G4double T) const
+G4double G4StatMFChannel::GetFragmentsEnergy(G4double T, G4int initA, G4int initZ) const
 {
   G4double Energy = 0.0;
 	
@@ -135,7 +121,7 @@ G4double G4StatMFChannel::GetFragmentsEnergy(G4double T) const
   std::deque<G4StatMFFragment*>::const_iterator i;
   for (i = _theFragments.begin(); i != _theFragments.end(); ++i)
     {
-      Energy += (*i)->GetEnergy(T);
+      Energy += (*i)->GetEnergy(T, initA, initZ);
     }
   return Energy + TranslationalEnergy;	
 }
@@ -148,15 +134,11 @@ G4FragmentVector * G4StatMFChannel::GetFragments(G4int anA,
   CoulombImpulse(anA,anZ,T);
 	
   // calculate momenta of neutral fragments
-  FragmentsMomenta(_NumOfNeutralFragments, _NumOfChargedFragments, T); //here goes strange momentum
+  FragmentsMomenta(_NumOfNeutralFragments, _NumOfChargedFragments, T);
 
   G4FragmentVector * theResult = new G4FragmentVector;
   std::deque<G4StatMFFragment*>::iterator i;
-  for (i = _theFragments.begin(); i != _theFragments.end(); ++i){theResult->push_back((*i)->GetFragment(T));
-
-      //if((*i)->GetFragment(T)->GetMomentum().pz() > 250 && (*i)->GetFragment(T)->GetA() > 1) std::cout<<"pf = "<<(*i)->GetFragment(T)->GetMomentum().pz()<<" Af = "<<(*i)->GetFragment(T)->GetA()<<"\n";
-
-  }
+  for (i = _theFragments.begin(); i != _theFragments.end(); ++i){theResult->push_back((*i)->GetFragment(T));}
   return theResult;
 }
 
@@ -220,7 +202,6 @@ void G4StatMFChannel::PlaceFragments(G4int anA)
 		    (*i)->GetPosition() - (*j)->GetPosition();
 		  G4double Rmin = R0*(g4calc->Z13((*i)->GetA()) +
 				      g4calc->Z13((*j)->GetA()));
-      //std::cout << "frag to frag distance " << FragToFragVector.mag() << std::endl; 
 		  if ( (ThereAreOverlaps = (FragToFragVector.mag2() < Rmin*Rmin))) 
 		    { break; }
 		}
@@ -273,7 +254,7 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
   G4ThreeVector SummedP(0.,0.,0.);
   do {
     // First sample momenta of NF-2 fragments 
-    // according to Boltzmann distribution-
+    // according to Boltzmann distribution
     AvailableE = 0.0;
     SummedE = 0.0;
     SummedP.setX(0.0);SummedP.setY(0.0);SummedP.setZ(0.0);
@@ -355,30 +336,21 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
     _theFragments[i1]->SetMomentum(p1);
     _theFragments[i2]->SetMomentum(p2);
   }
-  //for(int k = 0; k < _theFragments.size(); ++k){if(_theFragments[k]->GetMomentum().z()/_theFragments[k]->GetA() > 400) std::cout<<"Fragments pZ = "<<_theFragments[k]->GetMomentum().z()/_theFragments[k]->GetA()<<"\n"; }
   return;
 }
 
 void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
 // This method will find a solution of Newton's equation of motion
 // for fragments in the self-consistent time-dependent Coulomb field
+// J.F. Bondorf et al. Physics Reports 257 (1995) 133-221
 {
   G4Pow* g4calc = G4Pow::GetInstance();
-  G4double CoulombFactor = 1.0/g4calc->A13(1.0+G4StatMFParameters::GetKappaCoulomb()); // https://ecce-eic.github.io/doxygen/dd/d44/G4StatMFMicroPartition_8cc_source.html
-  G4double CoulombEnergyFragSum = 0.0;
-  //G4double CoulombEnergy = 0.6*elm_coupling*CoulombFactor*anZ*anZ/(G4StatMFParameters::Getr0()*g4calc->Z13(anA)) - GetFragmentsCoulombEnergy();
-  for (G4int n = 0; n < _NumOfChargedFragments; n++){
-    CoulombEnergyFragSum += 0.6*elm_coupling*_theFragments[n]->GetZ()*_theFragments[n]->GetZ()/(G4StatMFParameters::Getr0()*g4calc->A23(1.0+G4StatMFParameters::GetKappaCoulomb()))*g4calc->A13(G4double(anZ)/(anA*_theFragments[n]->GetZ()));
-  } 
-  
-  G4double CoulombEnergy = 0.6*elm_coupling*CoulombFactor*anZ*anZ/(G4StatMFParameters::Getr0()*g4calc->Z13(anA)) - CoulombEnergyFragSum;
-  //std::cout << " CoulombEnergy " << CoulombEnergy << " N charged fragments: " << _NumOfChargedFragments << " SumCoulomb " << CoulombEnergyFragSum <<  std::endl;
+  G4double CoulombFactor = 1.0/g4calc->A13(1.0+G4StatMFParameters::GetKappaCoulomb());
+  G4double CoulombEnergy = 0.6*CLHEP::elm_coupling*CoulombFactor*anZ*anZ/(G4StatMFParameters::Getr0()*g4calc->Z13(anA)) - GetFragmentsCoulombEnergy(anA, anZ);
 
   if (CoulombEnergy <= 0.0) return;
 
   G4int Iterations = 0;
-  G4double TimeN = 0.0;
-  G4double TimeS = 0.0;
   G4double DeltaTime = 10.0;
 
   G4ThreeVector * Pos = new G4ThreeVector[_NumOfChargedFragments];
@@ -390,8 +362,6 @@ void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
   {
     Vel[i] = (1.0/(_theFragments[i]->GetNuclearMass()))*
     _theFragments[i]->GetMomentum();
-    //std::cout << " MASS: "<<  _theFragments[i]->GetNuclearMass() << " momentum: "<< _theFragments[i]->GetMomentum() << std::endl;
-    //std::cout << " Vel[i] "<<  Vel[i] << std::endl;
     Pos[i] = _theFragments[i]->GetPosition();
   }
 
@@ -407,34 +377,17 @@ void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
           force += (1.44*pow(10, -24)*_theFragments[i]->GetZ()
           *_theFragments[j]->GetZ()/
           (distance.mag2()*distance.mag()))*distance;
-          //std::cout << " distance vector: " <<  distance << " distance: " <<  distance.mag() << std::endl;
-          // if(i == 3){
-          //  std::cout << " Force: " << (7.3*pow(10, -27)*_theFragments[i]->GetZ()
-          // *_theFragments[j]->GetZ()/
-          // (distance.mag2()*distance.mag()))*distance << " distance " << pow(10, 12)*distance.mag() << " " << pow(10, 12)*distance << std::endl;
-          // }
-          // if(i == 1 && j == 2){
-          //   std::cout << " distance " << pow(10, 12)*distance.mag() << " Frag num: " << i << " Iteration: " << Iterations << std::endl;
-          //   //std::cout << " force " << force << std::endl;
-          // }
         }
       }
       Accel[i] = (1./(_theFragments[i]->GetNuclearMass()))*force;
-      //   if(i == 3){
-      //  std::cout << " accel " << Accel[i] << std::endl;
-      // }
     }
-
-    TimeN = TimeS + DeltaTime;
 
     for ( i = 0; i < _NumOfChargedFragments; i++) 
     {
       SavedVel = Vel[i];
-      Vel[i] += Accel[i]*(TimeN-TimeS); // why not DeltaTime???
-      Pos[i] += (SavedVel+Vel[i])*(TimeN-TimeS)*0.5*fermi; // why not DeltaTime???
-      // std::cout << " Velocity " <<  Vel[i] << std::endl;
+      Vel[i] += Accel[i]*DeltaTime;
+      Pos[i] += (SavedVel+Vel[i])*DeltaTime*0.5*fermi;
     }
-    TimeS = TimeN;
     // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
   } while (Iterations++ < 50);
 
@@ -446,22 +399,13 @@ void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
   // Scaling of fragment velocities
   G4double KineticEnergy = 1.5*_NumOfChargedFragments*T;
   G4double Eta = (CoulombEnergy + KineticEnergy) / TotalKineticEnergy;
-  //std::cout << " Eta " << Eta << " KineticEnergy "  << KineticEnergy << " CoulombEnergy "<< CoulombEnergy << " TotalKineticEnergy " << TotalKineticEnergy << " procentage of transf energy " << 100.0/Eta <<  std::endl;
   for (i = 0; i < _NumOfChargedFragments; i++) {
-    Vel[i] *= pow(Eta, 0.5); // 29 page bondorf
+    Vel[i] *= pow(Eta, 0.5);
   }
 
   // Finally calculate fragments momenta
   for (i = 0; i < _NumOfChargedFragments; i++) {
-    // if(i == 3){
-    //  std::cout << " vel: " << Vel[i] << " Frag num: " << i << " berfore " << _theFragments[i]->GetMomentum() << std::endl;
-    // }
-
     _theFragments[i]->SetMomentum(_theFragments[i]->GetNuclearMass()*Vel[i]);
-
-    // if(i == 3){
-    //  std::cout << " vel: " << Vel[i] << " Frag num: " << i << " after " << _theFragments[i]->GetMomentum() << std::endl;
-    // }
   }
 
   // garbage collection

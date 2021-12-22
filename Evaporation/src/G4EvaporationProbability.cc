@@ -247,8 +247,7 @@ G4EvaporationProbability::SampleKineticEnergy(G4double minKinEnergy,
     std::cout<< " Bad kinetic energy sample in G4EvaporationProbability" << std::endl;
     T = SampleEnergy();
 
-  }
-  //G4cout << "-- new Z= " << theZ << " A= " << theA << " ekin= " << T << G4endl; 
+  } 
   return T;
   //return fLevelData->FindLevel(resZ, resA, resMass, Mass, partMass, T);
 }

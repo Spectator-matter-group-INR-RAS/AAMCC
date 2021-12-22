@@ -67,9 +67,9 @@ public:
     // Return false if there is some unphysical fragment
     G4bool CheckFragments(void);
 
-    G4double GetFragmentsCoulombEnergy(void);
+    G4double GetFragmentsCoulombEnergy(G4int initA, G4int initZ);
 
-    G4double GetFragmentsEnergy(G4double T) const;
+    G4double GetFragmentsEnergy(G4double T, G4int initA, G4int initZ) const;
 	
     G4FragmentVector * GetFragments(G4int anA, G4int anZ, G4double T);
 	

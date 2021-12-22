@@ -23,74 +23,59 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
 // $Id$
 //
-// Hadronic Process: Nuclear De-excitations
-// by V. Lara
+// -------------------------------------------------------------------
+//      GEANT 4 class file 
+//
+//      CERN, Geneva, Switzerland
+//
+//      File name:     G4VGammaTransition
+//
+//      Author:        Maria Grazia Pia (pia@genova.infn.it)
+// 
+//      Creation date: 23 October 1998
+//
+//      Modifications: 
+//
+// 15.04.1999, Alessandro Brunengo (Alessandro.Brunengo@ge.infn.it)
+//             Added creation time evaluation for products of evaporation
+// 30.10.2010  V.Ivanchenko moved constructor and destructor to the source
+//      
+// -------------------------------------------------------------------
 
-#ifndef G4StatMFParameters_h
-#define G4StatMFParameters_h 1
+#ifndef G4VGAMMATRANSITION_HH
+#define G4VGAMMATRANSITION_HH 1
 
 #include "globals.hh"
+#include "G4Fragment.hh"
 
-class G4StatMFParameters
+class G4VGammaTransition 
 {
 public:
-  
-  G4StatMFParameters();
 
-  ~G4StatMFParameters();
-  
-  static G4double GetKappa();
-  
-  static G4double GetKappaCoulomb(); 
-  
-  static G4double GetEpsilon0();
-  
-  static G4double GetE0();
+  explicit G4VGammaTransition() {};
 
-  static G4double GetW0();
+  virtual ~G4VGammaTransition() {};
   
-  static G4double GetBeta0(); 
-  
-  static G4double GetGamma0();
-  
-  static G4double GetCriticalTemp();
-  
-  static G4double Getr0();
+  virtual void SelectGamma() = 0;
+  virtual G4double GetGammaEnergy() = 0;
+  virtual G4double GetGammaCreationTime() = 0;
+  virtual void SetEnergyFrom(G4double energy) = 0;
 
-  static G4double GetCoulomb();
-  
-  static G4double Beta(G4double T);
-  
-  static G4double DBetaDT(G4double T);
-  
-  static G4double GetMaxAverageMultiplicity(G4int A);
+private:  
 
-  // +----------------------+
-  // | Constant Parameters: |
-  // +----------------------+
-  // Kappa is used for calculate volume V_f for translational 
-  // motion of fragments
-  static const G4double fKappa;
-  // KappaCoulomb is used for calculate Coulomb term energy
-  static const G4double fKappaCoulomb;
-  // Inverse level density
-  static const G4double fEpsilon0;
-  // Bethe-Weizsacker coefficients
-  static const G4double fE0;
-  static const G4double fBeta0;
-  static const G4double fGamma0;
-  // Critical temperature (for liquid-gas phase transitions)
-  static const G4double fCriticalTemp;
-  // Nuclear radius
-  static const G4double fr0;
-  // Coulomb 
-  static const G4double fCoulomb;
-
-  static const G4double fW0;
-
+  G4VGammaTransition(const G4VGammaTransition &right) = delete;
+  const G4VGammaTransition& operator=(const G4VGammaTransition &right) = delete;
+  G4bool operator==(const G4VGammaTransition &right) const = delete;
+  G4bool operator!=(const G4VGammaTransition &right) const = delete;
+ 
 };
 
+
 #endif
+
+
+
+
+

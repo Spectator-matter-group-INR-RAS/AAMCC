@@ -68,9 +68,9 @@ public:
 	
 public:
 
-    G4double GetCoulombEnergy(void) const;
+    G4double GetCoulombEnergy(const G4int initA, const G4int initZ) const;
 	
-    G4double GetEnergy(const G4double T) const;
+    G4double GetEnergy(const G4double T, const G4int initA, const G4int initZ) const;
 	
     G4double GetInvLevelDensity(void) const;
 

@@ -77,7 +77,6 @@ public:
 
   // user defined sub-models
   // deletion is responsibility of this handler if isLocal=true 
-  void SetEvaporation(G4VEvaporation* ptr, G4bool isLocal=false);
   void SetMultiFragmentation(G4VMultiFragmentation* ptr);
   void SetFermiModel(G4VFermiBreakUp* ptr);
   void SetFermiModel_old(VFermiBreakUp* ptr);
