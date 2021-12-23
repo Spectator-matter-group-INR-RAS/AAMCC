@@ -8,13 +8,11 @@ DeexcitationHandler::DeexcitationHandler(){
 
 DeexcitationHandler::~DeexcitationHandler() = default;
 
-
-
 G4ReactionProductVector *DeexcitationHandler::G4BreakItUp(const G4Fragment &theInitialFragment) {
     if(isDecayOfPureNeutrons(theInitialFragment.GetA(),theInitialFragment.GetZ())){return BreakUpPureNeutrons(theInitialFragment);}
     else{ return BreakItUp(theInitialFragment);} //parent class method
 } 
-
+/*
 G4ReactionProductVector *DeexcitationHandler::AAMCCBreakItUp(const G4Fragment &theInitialFragment) {
     G4FragmentVector* tempResult = new G4FragmentVector();
     G4ReactionProductVector* theResult = new G4ReactionProductVector();
@@ -88,6 +86,7 @@ G4ReactionProductVector *DeexcitationHandler::AblaBreakItUp(const G4Fragment &th
     if(ablaEvaporation.GetFreezeOutT() > 0) ablaEvaporation.SetFreezeOutT(-6.5); //Let ABLAXX decide freeze-out T
     return ablaEvaporation.DeExcite(theInitialFragment);
 }
+*/
 
 G4ReactionProductVector *DeexcitationHandler::BreakUpPureNeutrons(const G4Fragment &theInitialFragment) {
     G4ParticleDefinition *neutron = G4Neutron::NeutronDefinition();
@@ -114,15 +113,15 @@ G4ReactionProductVector *DeexcitationHandler::BreakUpPureNeutrons(const G4Fragme
 
 G4ReactionProductVector *DeexcitationHandler::BreakUp(const G4Fragment &theInitialFragment, G4String modelName) {
     if      (modelName == "G4")     return G4BreakItUp(theInitialFragment);
-    else if (modelName == "ABLAXX") return AblaBreakItUp(theInitialFragment);
+    /*else if (modelName == "ABLAXX") return AblaBreakItUp(theInitialFragment);
     else if (modelName == "AAMCC")  return AAMCCBreakItUp(theInitialFragment);
     else if (modelName == "MIX") {
         G4double w = G4RandFlat::shoot()*3;
         if(w < 1)      return G4BreakItUp(theInitialFragment);
         else if(w < 2) return AblaBreakItUp(theInitialFragment);
         else           return AAMCCBreakItUp(theInitialFragment);
-    }
-    else std::cout<<"Wrong model name "<<modelName<<" G4, ABLAXX, AAMCC or MIX is available \n"; return AAMCCBreakItUp(theInitialFragment);
+    }*/
+    else std::cout<<"Wrong model name "<<modelName<<" G4, ABLAXX, AAMCC or MIX is available \n"; return G4BreakItUp(theInitialFragment);
 }
 
 G4Fragment *DeexcitationHandler::toFragment(G4ReactionProduct *product) {

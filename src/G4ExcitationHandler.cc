@@ -150,7 +150,7 @@ void G4ExcitationHandler::Initialise()
     theFermiModel->Initialise();
     SetDeexChannelsType(fEvaporation);
   }
-  if(G4Threading::IsMasterThread()) {
+  if(G4Threading::IsMasterThread() && false) {
     G4cout << "Number of de-excitation channels in G4Evaporation is: " 
      << theEvaporation->GetNumberOfChannels();
   }

@@ -7,7 +7,7 @@
 
 
 GRATEmanager::GRATEmanager()
-  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("G4")
 {  
   std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
   while(!NucleusInputLabel){
