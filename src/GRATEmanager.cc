@@ -176,7 +176,12 @@ void GRATEmanager::CalcXsectNN()
   if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
     G4double Tkin[2];
     G4double xsect[2];
-    XsectFile.open("../src/bystricky.dat");
+    std::string filepath(__FILE__);
+    std::string filename(basename(__FILE__));
+    filepath.erase(filepath.length() - filename.length(), filename.length());
+    filepath += "bystricky.dat";
+    std::cout<<(filepath)<<std::endl;
+    XsectFile.open(filepath.c_str());
 
     while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
     Tkin[0] = Tkin[1];	

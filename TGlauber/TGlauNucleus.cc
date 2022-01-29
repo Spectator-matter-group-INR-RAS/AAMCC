@@ -446,23 +446,35 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
 
     // if the first call, then read in the file configurations
     if (fNucCounter == -1) {
-      // read in the ascii file into the array and step through the counter
+        std::string filepath(__FILE__);
+        std::string locfilename(basename(__FILE__));
+        filepath.erase(filepath.length() - locfilename.length(), locfilename.length());
+        std::cout<<(filepath)<<(locfilename)<<std::endl;
+        // read in the ascii file into the array and step through the counter
       char filename[100] = "foo.dat";
       if (tmpname=="He3") {
-        sprintf(filename,"../TGlauber/he3_plaintext.dat");
+        filepath += "he3_plaintext.dat";
+        //sprintf(filename,filepath.c_str());
       } else if (tmpname=="H3") {
-        sprintf(filename,"../TGlauber/h3_plaintext.dat");
+        filepath += "h3_plaintext.dat";
+        //sprintf(filename,filepath.c_str());
       } else if (tmpname=="He4") {
-        sprintf(filename,"../TGlauber/he4_plaintext.dat");
+        filepath += "he4_plaintext.dat";
+        //sprintf(filename,"../TGlauber/he4_plaintext.dat");
       } else if (tmpname=="C") {
-        sprintf(filename,"../TGlauber/carbon_plaintext.dat");
+        filepath += "carbon_plaintext.dat";
+        //sprintf(filename,"../TGlauber/carbon_plaintext.dat");
       } else if (tmpname=="O") {
-        sprintf(filename,"../TGlauber/oxygen_plaintext.dat");
+          filepath += "oxygen_plaintext.dat";
+        //sprintf(filename,"../TGlauber/oxygen_plaintext.dat");
       } else if (tmpname=="O2") {
-        sprintf(filename,"../TGlauber/o16_alv.dat");
+        filepath += "o16_alv.dat";
+        //sprintf(filename,"../TGlauber/o16_alv.dat");
       } else if (tmpname=="Ca2") {
-          sprintf(filename,"../TGlauber/ca40_alv.dat");
+        filepath += "ca40_alv.dat";
+        //sprintf(filename,"../TGlauber/ca40_alv.dat");
       }
+      sprintf(filename,filepath.c_str());
       cout << "Reading in " << filename << " for nucleon configurations with fN = " << fN << endl;
       ifstream myfile;
       myfile.open(filename);
