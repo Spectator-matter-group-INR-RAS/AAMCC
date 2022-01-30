@@ -449,7 +449,6 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
         std::string filepath(__FILE__);
         std::string locfilename(basename(__FILE__));
         filepath.erase(filepath.length() - locfilename.length(), locfilename.length());
-        std::cout<<(filepath)<<(locfilename)<<std::endl;
         // read in the ascii file into the array and step through the counter
       char filename[100] = "foo.dat";
       if (tmpname=="He3") {

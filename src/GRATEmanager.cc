@@ -180,7 +180,6 @@ void GRATEmanager::CalcXsectNN()
     std::string filename(basename(__FILE__));
     filepath.erase(filepath.length() - filename.length(), filename.length());
     filepath += "bystricky.dat";
-    std::cout<<(filepath)<<std::endl;
     XsectFile.open(filepath.c_str());
 
     while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
