@@ -12,8 +12,13 @@ G4cout<<"Excitation energy will be calculated with the "<<ExEnLabel_in<<" way  \
     LowExEn = 0*initA;
     UpExEn = 100*initA;
     Ebound = 40;
+    std::string filepath(__FILE__);
+    std::string filename(basename(__FILE__));
+    filepath.erase(filepath.length() - filename.length(), filename.length());
+    //std::cout<<(filepath)<<(filename)<<std::endl;
+    filepath += "CorrectedALADINParameters.dat";
+    ParamFile.open(filepath.c_str());
 
-    ParamFile.open("../src/CorrectedALADINParameters.dat");
     SetParametersCorrectedALADINFromFile();
     SetParametersALADIN(11,0.07,2);//8.13;0.07;2
 }
