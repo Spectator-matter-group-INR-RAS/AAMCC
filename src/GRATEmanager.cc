@@ -7,7 +7,7 @@
 
 
 GRATEmanager::GRATEmanager()
-  : sourceZ(0), sourceA(0), KinEn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+  : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
 {  
   std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
   while(!NucleusInputLabel){
@@ -43,19 +43,28 @@ GRATEmanager::GRATEmanager()
   std::cout<<"Do you want to calculate collisions for collider or for fixed target geometry (1 for collider, 0 for fixed target) : ";
   std::cin >> IsCollider;
 
-  while ( KinEn<0. ) {
+  while ( KinEn<0. && SqrtSnn <0.) {
     if (!IsCollider) {
       std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
       std::cin >> KinEn;
     }
     else {
       std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
-      std::cin >> KinEn;
+      std::cin >> SqrtSnn;
     }
   }
 
   InCond->SetCollider(IsCollider);
-  InCond->SetKinEn(KinEn);
+  if(IsCollider){
+    InCond->SetKinematics(SqrtSnn);
+    KinEn = InCond->GetKinEnergy();
+  }
+  else{
+    InCond->SetKinematics(KinEn);
+    SqrtSnn = InCond->GetSqrtSnn();
+  }
+  
+  
 
   sourceA=InCond->GetSourceA();
   sourceAb=InCond->GetSourceAb();
@@ -168,9 +177,8 @@ void GRATEmanager::BookHisto()
 void GRATEmanager::CalcXsectNN()
 {   
   G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
-  KinEn=InCond->GetKinEnergy();
   G4double KinEnAtFixTarget = 0;
-  if(IsCollider){KinEnAtFixTarget = (KinEn*KinEn/(2*nucleonAverMass*G4double(sourceA))) - 2*nucleonAverMass*G4double(sourceA);}
+  if(IsCollider){KinEnAtFixTarget = (2*(KinEn + nucleonAverMass*G4double(sourceA))*(KinEn + nucleonAverMass*G4double(sourceA))/(nucleonAverMass*G4double(sourceA)*nucleonAverMass*G4double(sourceA)) - 1.0)*nucleonAverMass*G4double(sourceA);}
   else{KinEnAtFixTarget = KinEn;}
 
   if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
@@ -193,9 +201,7 @@ void GRATEmanager::CalcXsectNN()
     XsectNN = a*KinEnAtFixTarget/(G4double(sourceA)*GeV)+b;
   }
   else{
-    G4double S = 0;
-    if(IsCollider){S = KinEn*KinEn/G4double(sourceA*sourceA);}
-    else{S = 4*nucleonAverMass*nucleonAverMass+2*(KinEn/G4double(sourceA))*nucleonAverMass;}
+    G4double S = SqrtSnn*SqrtSnn;
     XsectNN = 25.0+0.146*pow(log(S/(GeV*GeV)),2);
   }
   //XsectNN *= shadowing;
@@ -238,6 +244,7 @@ void GRATEmanager::FillConditionsTree(G4double Xsect)
 
   modelingCo->Branch("Xsect_total", &XsectTot,"Xsect_total/d");
   modelingCo->Branch("Kinetic_energy_per_nucleon_of_projectile_in_GeV", &KineticEnergy,"Kinetic_energy_of_per_nucleon_projectile_in_GeV/d");
+  modelingCo->Branch("SqrtS_nn_in_GeV", &SqrtSnn,"SqrtS_nn_in_GeV/d");
   modelingCo->Branch("pZ_in_MeV_on_A", &pzA,"pZ_in_MeV_on_A/d");
   modelingCo->Branch("pZ_in_MeV_on_B", &pzB,"pZ_in_MeV_on_B/d");
   modelingCo->Branch("Mass_on_A", &Mass_on_A,"Mass_on_A/d");
@@ -246,6 +253,7 @@ void GRATEmanager::FillConditionsTree(G4double Xsect)
   modelingCo->Branch("Charge_on_B", &Charge_on_B,"Charge_on_B/d");
 
   XsectTot = Xsect;
+  SqrtSnn = InCond->GetSqrtSnn()/GeV;
   KineticEnergy = InCond->GetKinEnergy()/(sourceA*GeV);
   pzA = InCond->GetPzA()/MeV;
   pzB = InCond->GetPzB()/MeV;
