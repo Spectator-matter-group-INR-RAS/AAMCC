@@ -178,20 +178,20 @@ void GRATEmanager::BookHisto()
 
 void GRATEmanager::CalcXsectNN()
 {   
+  std::cout << "iscollider" << IsCollider << std::endl;
   G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
   G4double KinEnAtFixTarget = 0;
   if(IsCollider){KinEnAtFixTarget = (2*(KinEn + nucleonAverMass*G4double(sourceA))*(KinEn + nucleonAverMass*G4double(sourceA))/(nucleonAverMass*G4double(sourceA)*nucleonAverMass*G4double(sourceA)) - 1.0)*nucleonAverMass*G4double(sourceA);}
   else{KinEnAtFixTarget = KinEn;}
 
   if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
-    G4double Tkin[2];
-    G4double xsect[2];
+    G4double Tkin[2] = {0};
+    G4double xsect[2] = {0};
     std::string filepath(__FILE__);
     std::string filename(basename(__FILE__));
     filepath.erase(filepath.length() - filename.length(), filename.length());
     filepath += "bystricky.dat";
     XsectFile.open(filepath.c_str());
-
     while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
     Tkin[0] = Tkin[1];	
     xsect[0] = xsect[1];
