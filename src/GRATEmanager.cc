@@ -57,11 +57,13 @@ GRATEmanager::GRATEmanager()
   InCond->SetCollider(IsCollider);
   if(IsCollider){
     InCond->SetKinematics(SqrtSnn);
+    SqrtSnn = InCond->GetSqrtSnn();
     KinEn = InCond->GetKinEnergy();
   }
   else{
     InCond->SetKinematics(KinEn);
     SqrtSnn = InCond->GetSqrtSnn();
+    KinEn = InCond->GetKinEnergy();
   }
   
   
