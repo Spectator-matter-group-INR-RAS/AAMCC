@@ -177,8 +177,7 @@ void GRATEmanager::BookHisto()
 
 
 void GRATEmanager::CalcXsectNN()
-{   
-  std::cout << "iscollider" << IsCollider << std::endl;
+{
   G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
   G4double KinEnAtFixTarget = 0;
   if(IsCollider){KinEnAtFixTarget = (2*(KinEn + nucleonAverMass*G4double(sourceA))*(KinEn + nucleonAverMass*G4double(sourceA))/(nucleonAverMass*G4double(sourceA)*nucleonAverMass*G4double(sourceA)) - 1.0)*nucleonAverMass*G4double(sourceA);}
