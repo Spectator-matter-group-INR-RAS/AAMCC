@@ -18,6 +18,7 @@ GRATEmanager::GRATEmanager()
     sourceZ = InCond->GetSourceZ();
   }
 
+
   NucleusInputLabel = 0;
 
   while(!NucleusInputLabel){
