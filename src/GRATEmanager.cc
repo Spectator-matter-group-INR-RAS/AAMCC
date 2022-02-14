@@ -43,14 +43,24 @@ GRATEmanager::GRATEmanager()
   std::cout<<"Do you want to calculate collisions for collider or for fixed target geometry (1 for collider, 0 for fixed target) : ";
   std::cin >> IsCollider;
 
-  while ( KinEn<0. && SqrtSnn <0.) {
+  while ( KinEn<280.0*MeV/GeV && SqrtSnn <0.) {
     if (!IsCollider) {
       std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
       std::cin >> KinEn;
+      if(KinEn<280.0*MeV/GeV){
+        std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
+      }
     }
     else {
       std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
       std::cin >> SqrtSnn;
+      G4double NuclMass = 0.93891875434;
+      G4double CollKinCheck = (SqrtSnn/2.0 - NuclMass);
+      G4double KinEnAtFixTargetCheck = (2.0*(CollKinCheck + NuclMass)*(CollKinCheck + NuclMass)/(NuclMass*NuclMass) - 1.0)*NuclMass;
+      if(KinEnAtFixTargetCheck < 280.0*MeV/GeV){
+        std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
+        SqrtSnn = -1.0;
+      }
     }
   }
 
@@ -180,12 +190,12 @@ void GRATEmanager::CalcXsectNN()
 {
   G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
   G4double KinEnAtFixTarget = 0;
-  if(IsCollider){KinEnAtFixTarget = (2*(KinEn + nucleonAverMass*G4double(sourceA))*(KinEn + nucleonAverMass*G4double(sourceA))/(nucleonAverMass*G4double(sourceA)*nucleonAverMass*G4double(sourceA)) - 1.0)*nucleonAverMass*G4double(sourceA);}
+  if(IsCollider){KinEnAtFixTarget = (2.0*(KinEn + nucleonAverMass*G4double(sourceA))*(KinEn + nucleonAverMass*G4double(sourceA))/(nucleonAverMass*G4double(sourceA)*nucleonAverMass*G4double(sourceA)) - 1.0)*nucleonAverMass*G4double(sourceA);}
   else{KinEnAtFixTarget = KinEn;}
 
   if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
     G4double Tkin[2] = {0};
-    G4double xsect[2] = {0};
+    G4double xsect[2] = {-1};
     std::string filepath(__FILE__);
     std::string filename(basename(__FILE__));
     filepath.erase(filepath.length() - filename.length(), filename.length());
