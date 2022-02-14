@@ -66,10 +66,13 @@ int main()
     // G4Random::setTheEngine(new CLHEP::RanluxEngine());
 
     //auto seed1 = 0x7ffce81312f0;
-    CLHEP::HepRandom::setTheSeeds(CLHEP::HepRandom::getTheSeeds());
+    
     //CLHEP::HepRandom::setTheSeed(seed1);
 
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+    CLHEP::HepRandom::setTheSeed((unsigned)clock());
+    // CLHEP::HepRandom::setTheSeeds(CLHEP::HepRandom::getTheSeeds());
+
     CLHEP::RandFlat randFlat(new CLHEP::RanecuEngine);
 
     G4RunManager * runManager = new G4RunManager;

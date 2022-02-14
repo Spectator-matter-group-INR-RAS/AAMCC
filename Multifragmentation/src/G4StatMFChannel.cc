@@ -49,18 +49,16 @@ class SumCoulombEnergy : public std::binary_function<G4double,G4double,G4double>
 {
 public:
   SumCoulombEnergy(G4int anA, G4int anZ) : total(0.0), initA(anA), initZ(anZ) {}
-  G4double operator() (G4double& , G4StatMFFragment*& frag)
-  { 
-      total += frag->GetCoulombEnergy(initA, initZ);
-      return total;
+  G4double operator() (G4double& , G4StatMFFragment*& frag){
+    total += frag->GetCoulombEnergy(initA, initZ);
+    return total;
   }
-    
+
   G4double GetTotal() { return total; }
-public:
+  public:
   G4double total;
   G4int initA;
   G4int initZ;
-
 };
 
 G4StatMFChannel::G4StatMFChannel() : 
@@ -71,22 +69,19 @@ G4StatMFChannel::G4StatMFChannel() :
 G4StatMFChannel::~G4StatMFChannel() 
 { 
   if (!_theFragments.empty()) {
-    std::for_each(_theFragments.begin(),_theFragments.end(),
-		  DeleteFragment());
+    std::for_each(_theFragments.begin(),_theFragments.end(), DeleteFragment());
   }
 }
 
 G4bool G4StatMFChannel::CheckFragments(void)
 {
   std::deque<G4StatMFFragment*>::iterator i;
-  for (i = _theFragments.begin(); 
-       i != _theFragments.end(); ++i) 
-    {
-      G4int A = (*i)->GetA();
-      G4int Z = (*i)->GetZ();
-      if ( (A > 1 && (Z > A || Z <= 0)) || (A==1 && Z > A) || A <= 0 ) return false;
-    }
-    return true;
+  for (i = _theFragments.begin(); i != _theFragments.end(); ++i){
+    G4int A = (*i)->GetA();
+    G4int Z = (*i)->GetZ();
+    if ( (A > 1 && (Z > A || Z <= 0)) || (A==1 && Z > A) || A <= 0 ) return false;
+  }
+  return true;
 }
 
 void G4StatMFChannel::CreateFragment(G4int A, G4int Z)
@@ -101,7 +96,6 @@ void G4StatMFChannel::CreateFragment(G4int A, G4int Z)
     _theFragments.push_front(new G4StatMFFragment(A,Z));
     _NumOfChargedFragments++;
   }
-	
   return;
 }
 
@@ -126,9 +120,7 @@ G4double G4StatMFChannel::GetFragmentsEnergy(G4double T, G4int initA, G4int init
   return Energy + TranslationalEnergy;	
 }
 
-G4FragmentVector * G4StatMFChannel::GetFragments(G4int anA, 
-						 G4int anZ,
-						 G4double T)
+G4FragmentVector * G4StatMFChannel::GetFragments(G4int anA, G4int anZ, G4double T)
 {
   // calculate momenta of charged fragments  
   CoulombImpulse(anA,anZ,T);
@@ -174,50 +166,49 @@ void G4StatMFChannel::PlaceFragments(G4int anA)
 
   G4bool TooMuchIterations;
   do 
+  {
+    TooMuchIterations = false;
+
+    // Sample the position of the first fragment
+    G4double R = (Rsys - R0*g4calc->Z13(_theFragments[0]->GetA()))*
+    g4calc->A13(G4UniformRand());
+    _theFragments[0]->SetPosition(R*G4RandomDirection());
+
+
+    // Sample the position of the remaining fragments
+    G4bool ThereAreOverlaps = false;
+    std::deque<G4StatMFFragment*>::iterator i;
+    for (i = _theFragments.begin()+1; i != _theFragments.end(); ++i) 
     {
-      TooMuchIterations = false;
-	
-      // Sample the position of the first fragment
-      G4double R = (Rsys - R0*g4calc->Z13(_theFragments[0]->GetA()))*
-	g4calc->A13(G4UniformRand());
-      _theFragments[0]->SetPosition(R*G4RandomDirection());
-	
-	
-      // Sample the position of the remaining fragments
-      G4bool ThereAreOverlaps = false;
-      std::deque<G4StatMFFragment*>::iterator i;
-      for (i = _theFragments.begin()+1; i != _theFragments.end(); ++i) 
-	{
-	  G4int counter = 0;
-	  do 
-	    {
-	      R = (Rsys - R0*g4calc->Z13((*i)->GetA()))*g4calc->A13(G4UniformRand());
-	      (*i)->SetPosition(R*G4RandomDirection());
-		
-	      // Check that there are not overlapping fragments
-	      std::deque<G4StatMFFragment*>::iterator j;
-	      for (j = _theFragments.begin(); j != i; ++j) 
-		{
-		  G4ThreeVector FragToFragVector = 
-		    (*i)->GetPosition() - (*j)->GetPosition();
-		  G4double Rmin = R0*(g4calc->Z13((*i)->GetA()) +
-				      g4calc->Z13((*j)->GetA()));
-		  if ( (ThereAreOverlaps = (FragToFragVector.mag2() < Rmin*Rmin))) 
-		    { break; }
-		}
-	      counter++;
-	      // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
-	    } while (ThereAreOverlaps && counter < 1000);
-	    
-	  if (counter >= 1000) 
-	    {
-	      TooMuchIterations = true;
-	      break;
-	    } 
-	}
-      // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
-    } while (TooMuchIterations);
-    return;
+      G4int counter = 0;
+      do
+      {
+        R = (Rsys - R0*g4calc->Z13((*i)->GetA()))*g4calc->A13(G4UniformRand());
+        (*i)->SetPosition(R*G4RandomDirection());
+
+        // Check that there are not overlapping fragments
+        std::deque<G4StatMFFragment*>::iterator j;
+        for (j = _theFragments.begin(); j != i; ++j) 
+        {
+          G4ThreeVector FragToFragVector = 
+          (*i)->GetPosition() - (*j)->GetPosition();
+          G4double Rmin = R0*(g4calc->Z13((*i)->GetA()) +
+          g4calc->Z13((*j)->GetA()));
+          if ( (ThereAreOverlaps = (FragToFragVector.mag2() < Rmin*Rmin))) 
+          { break; }
+        }
+        counter++;
+        // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
+      } while (ThereAreOverlaps && counter < 1000);
+      if (counter >= 1000) 
+      {
+      TooMuchIterations = true;
+      break;
+      } 
+    }
+    // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
+  } while (TooMuchIterations);
+  return;
 }
 
 void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
@@ -238,7 +229,7 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
     *G4RandomDirection();
     _theFragments[idx]->SetMomentum(p);
   } 
-  else if (NF == 2) {
+  else if (NF == 2){
     // We have only two fragment to deal with
     G4double M1 = _theFragments[idx]->GetNuclearMass();
     G4double M2 = _theFragments[idx+1]->GetNuclearMass();
@@ -246,35 +237,34 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
     _theFragments[idx]->SetMomentum(p);
     _theFragments[idx+1]->SetMomentum(-p);
   } 
-  else {
-  // We have more than two fragments
-  G4double AvailableE;
-  G4int i1,i2;
-  G4double SummedE;
-  G4ThreeVector SummedP(0.,0.,0.);
-  do {
-    // First sample momenta of NF-2 fragments 
-    // according to Boltzmann distribution
-    AvailableE = 0.0;
-    SummedE = 0.0;
-    SummedP.setX(0.0);SummedP.setY(0.0);SummedP.setZ(0.0);
-    for (G4int i = idx; i < idx+NF-2; ++i) 
-    {
-      G4double E;
-      G4double RandE;
-      do {
-        E = 9.0*G4UniformRand();
-        RandE = std::sqrt(0.5/E)*G4Exp(E-0.5)*G4UniformRand();
+  else{
+    // We have more than two fragments
+    G4double AvailableE;
+    G4int i1,i2;
+    G4double SummedE;
+    G4ThreeVector SummedP(0.,0.,0.);
+    do{
+      // First sample momenta of NF-2 fragments 
+      // according to Boltzmann distribution
+      AvailableE = 0.0;
+      SummedE = 0.0;
+      SummedP.setX(0.0);SummedP.setY(0.0);SummedP.setZ(0.0);
+      for (G4int i = idx; i < idx+NF-2; ++i){
+        G4double E;
+        G4double RandE;
+        do{
+          E = 9.0*G4UniformRand();
+          RandE = std::sqrt(0.5/E)*G4Exp(E-0.5)*G4UniformRand();
+        } 
+        // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
+        while (RandE > 1.0);
+        E *= T;
+        p = std::sqrt(2.0*E*_theFragments[i]->GetNuclearMass())
+        *G4RandomDirection();
+        _theFragments[i]->SetMomentum(p);
+        SummedE += E;
+        SummedP += p;
       } 
-      // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
-      while (RandE > 1.0);
-      E *= T;
-      p = std::sqrt(2.0*E*_theFragments[i]->GetNuclearMass())
-      *G4RandomDirection();
-      _theFragments[i]->SetMomentum(p);
-      SummedE += E;
-      SummedP += p;
-    } 
       // Calculate momenta of last two fragments in such a way
       // that constraints are satisfied
       i1 = idx+NF-2;  // before last fragment index
@@ -282,7 +272,7 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
       p = -SummedP;
       AvailableE = KinE - SummedE;
       // Available Kinetic Energy should be shared between two last fragments
-    } 
+    }
     // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
     while (AvailableE <= p.mag2()/(2.0*(_theFragments[i1]->GetNuclearMass()+_theFragments[i2]->GetNuclearMass())));
 
@@ -292,11 +282,11 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
     G4double Sign;
 
     if (CTM12 > 1.) {CosTheta1 = 1.;} 
-    else {
-      do {
-        do {
+    else{
+      do{
+        do{
           CosTheta1 = 1.0 - 2.0*G4UniformRand();
-        } 
+        }
         // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
         while (CosTheta1*CosTheta1 < CTM12);
       }
@@ -306,7 +296,7 @@ void G4StatMFChannel::FragmentsMomenta(G4int NF, G4int idx,
 
     if (CTM12 < 0.0) Sign = 1.0;
     else if (G4UniformRand() <= 0.5) Sign = -1.0;
-    else Sign = 1.0;    
+    else Sign = 1.0;
 
     G4double P1 = (p.mag()*CosTheta1+Sign*std::sqrt(p.mag2()
     *(CosTheta1*CosTheta1-CTM12)))/H;
@@ -360,8 +350,7 @@ void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
   G4int i;
   for (i = 0; i < _NumOfChargedFragments; i++) 
   {
-    Vel[i] = (1.0/(_theFragments[i]->GetNuclearMass()))*
-    _theFragments[i]->GetMomentum();
+    Vel[i] = (1.0/(_theFragments[i]->GetNuclearMass()))*_theFragments[i]->GetMomentum();
     Pos[i] = _theFragments[i]->GetPosition();
   }
 
