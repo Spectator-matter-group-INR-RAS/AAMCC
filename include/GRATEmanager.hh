@@ -53,8 +53,7 @@ class GRATEmanager
   inline G4int GetIterations()  {return iterations;};
   inline G4double GetXsectNN() {return XsectNN;}
   inline G4double GetKinEn() {return KinEn;};
-  inline G4double GetPzA()   {return PzA;};
-  inline G4double GetPzB()   {return PzB;};
+  inline G4double GetSqrtSnn() {return SqrtSnn;};
   inline G4double GetLowEn() {return lowLimitExEn;};
   inline G4double GetUpEn() {return upperLimitExEn;};
   inline G4double GetLowEnB() {return lowLimitExEnB;};
@@ -106,8 +105,7 @@ class GRATEmanager
   G4double XsectNN;
 
   G4double KinEn;
-  G4double PzA;
-  G4double PzB;
+  G4double SqrtSnn;
   G4double lowLimitExEn;
   G4double upperLimitExEn;
   G4double lowLimitExEnB;
@@ -120,7 +118,7 @@ class GRATEmanager
   G4double CritDist;
   G4double angle;
 
-  G4double nucleonAverMass = 0.931494*CLHEP::GeV;
+  G4double nucleonAverMass = 0.93891875434*CLHEP::GeV;
 
   G4bool   wM;
   G4bool   wP = false;
