@@ -2,6 +2,7 @@
 #include "G4SystemOfUnits.hh"
 #include "Nucleon.hh"
 #include "G4LorentzVector.hh"
+#include "AAMCConstants.hh"
 
 struct vect3{
     double px;
@@ -44,7 +45,6 @@ private:
     double gammafacB;
     double betafacA;
     double betafacB;
-    double nucleonAverMass = 0.931494*CLHEP::GeV;
 
     CLHEP::RanecuEngine* engine;
     CLHEP::RandGauss* randGauss;
