@@ -13,7 +13,9 @@
 #include "../TGlauber/TGlauNucleus.hh"
 
 #include "InitialConditions.hh"
-#include "GMSTClustering.hh" 
+#include "GMSTClustering.hh"
+
+#include "AAMCConstants.hh"
 
 class TFile;
 class TH1D;
@@ -117,8 +119,6 @@ class GRATEmanager
 
   G4double CritDist;
   G4double angle;
-
-  G4double nucleonAverMass = 0.93891875434*CLHEP::GeV;
 
   G4bool   wM;
   G4bool   wP = false;
