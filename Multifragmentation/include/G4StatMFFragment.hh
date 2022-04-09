@@ -43,10 +43,10 @@ class G4StatMFFragment {
 public:
     // Constructor
     G4StatMFFragment(G4int anA, G4int aZ) :
-	theA(anA),theZ(aZ),
-	_position(0.0,0.0,0.0),
-	_momentum(0.0,0.0,0.0)
-	{}
+    theA(anA),theZ(aZ),
+    _position(0.0,0.0,0.0),
+    _momentum(0.0,0.0,0.0)
+    {}
 
 
     // Destructor
@@ -56,7 +56,7 @@ public:
 private:
     // Default constructor
     G4StatMFFragment(){};
-	
+    
     // Copy constructor
     G4StatMFFragment(const G4StatMFFragment & right);
 
@@ -65,33 +65,33 @@ private:
 public:
     G4bool operator==(const G4StatMFFragment & right) const;
     G4bool operator!=(const G4StatMFFragment & right) const;
-	
+    
 public:
 
     G4double GetCoulombEnergy(const G4int initA, const G4int initZ) const;
-	
+    
     G4double GetEnergy(const G4double T, const G4int initA, const G4int initZ) const;
-	
+    
     G4double GetInvLevelDensity(void) const;
 
     G4int GetA(void) const {return theA;}
-	
+    
     G4int GetZ(void) const {return theZ;}
-	
+    
     void SetPosition(const G4ThreeVector& aPosition) {_position = aPosition;}
-	
+    
     G4ThreeVector& GetPosition(void) {return _position;}
-	
+    
     void SetMomentum(const G4ThreeVector& aMomentum) {_momentum = aMomentum;}
 
     G4ThreeVector& GetMomentum(void) {return _momentum;}
 
     G4Fragment * GetFragment(const G4double T);
-	
+    
     G4double GetNuclearMass(void)
-	{return G4ParticleTable::GetParticleTable()->GetIonTable()
-	                       ->GetIonMass(theZ, theA);}
-	
+    {return G4ParticleTable::GetParticleTable()->GetIonTable()
+                           ->GetIonMass(theZ, theA);}
+    
 
 private:
 
@@ -100,13 +100,12 @@ private:
 private:
 
     G4int theA;
-	
+    
     G4int theZ;
-	
+    
     G4ThreeVector _position;
-	
+    
     G4ThreeVector _momentum;
 };
 
 #endif
-

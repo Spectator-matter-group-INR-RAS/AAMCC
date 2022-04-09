@@ -23,7 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id$
 //
 // Hadronic Process: Nuclear De-excitations
 // by V. Lara

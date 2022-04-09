@@ -51,13 +51,13 @@ operator=(const G4StatMFFragment & )
 
 G4bool G4StatMFFragment::operator==(const G4StatMFFragment & ) const
 {
-//	throw G4HadronicException(__FILE__, __LINE__, "G4StatMFFragment::operator== meant to not be accessable");
+//  throw G4HadronicException(__FILE__, __LINE__, "G4StatMFFragment::operator== meant to not be accessable");
     return false;
 }
  
 G4bool G4StatMFFragment::operator!=(const G4StatMFFragment & ) const
 {
-//	throw G4HadronicException(__FILE__, __LINE__, "G4StatMFFragment::operator!= meant to not be accessable");
+//  throw G4HadronicException(__FILE__, __LINE__, "G4StatMFFragment::operator!= meant to not be accessable");
     return true;
 }
 
@@ -70,32 +70,6 @@ G4double G4StatMFFragment::GetCoulombEnergy(const G4int initA, const G4int initZ
   }
   return res;
 }
-
-// Energy calculation according to original SMM model (same as in the PhysRefManual)
-// G4double G4StatMFFragment::GetEnergy(const G4double T, const G4int initA, const G4int initZ) const
-// {
-//   if (theA < 1 || theZ < 0 || theZ > theA) {
-//     G4cout << "G4StatMFFragment::GetEnergy: A = " << theA 
-// 	   << ", Z = " << theZ << G4endl;
-//     throw G4HadronicException(__FILE__, __LINE__, 
-// 			      "G4StatMFFragment::GetEnergy: Wrong values for A and Z!");
-//   }
-
-//   G4double BulkEnergy = G4NucleiProperties::GetMassExcess(theA,theZ);
-	
-//   if (theA < 4) return BulkEnergy - GetCoulombEnergy(initA, initZ);
-
-//   // For A > 4 continue calculations of other contributions
-	
-//   G4double SurfaceEnergy;
-//   if (G4StatMFParameters::DBetaDT(T) == 0.0) SurfaceEnergy = 0.0;
-//   else SurfaceEnergy = (G4StatMFParameters::Beta(T) - T*G4StatMFParameters::DBetaDT(T))*G4Pow::GetInstance()->Z23(theA);
-
-//   G4double ExchangeEnergy = (- G4StatMFParameters::GetW0() + T*T/GetInvLevelDensity()) * theA;
-//   if (theA != 4) ExchangeEnergy += SurfaceEnergy;		  
-//   //std::cout << " Mass: " << theA << " Charge: " << theZ << " CoulombEnergy " << GetCoulombEnergy(initA, initZ) << " SurfaceEnergy: " << SurfaceEnergy << " ExchangeEnergy " << ExchangeEnergy << " BulkEnergy: " << BulkEnergy << std::endl;
-//   return BulkEnergy + ExchangeEnergy - GetCoulombEnergy(initA, initZ);
-// }
 
 G4double G4StatMFFragment::GetEnergy(const G4double T, const G4int initA, const G4int initZ) const
 {

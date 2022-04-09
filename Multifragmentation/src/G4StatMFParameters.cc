@@ -121,7 +121,7 @@ G4double G4StatMFParameters::Beta(G4double T)
     G4double CriticalTempSqr = fCriticalTemp*fCriticalTemp;
     G4double TempSqr = T*T;
     G4double tmp = (CriticalTempSqr-TempSqr)/(CriticalTempSqr+TempSqr);
-		
+    
     res = fBeta0*tmp*std::pow(tmp,0.25);
   }
   return res;
@@ -134,7 +134,7 @@ G4double G4StatMFParameters::DBetaDT(G4double T)
     G4double CriticalTempSqr = fCriticalTemp*fCriticalTemp;
     G4double TempSqr = T*T;
     G4double tmp = (CriticalTempSqr-TempSqr)/(CriticalTempSqr+TempSqr);
-		
+    
     res = -5.0*fBeta0*std::pow(tmp,0.25)*(CriticalTempSqr*T)/
       ((CriticalTempSqr+TempSqr)*(CriticalTempSqr+TempSqr));
   }
@@ -150,4 +150,3 @@ G4StatMFParameters::GetMaxAverageMultiplicity(G4int A)
   if (A <= 110) { MaxAverageMultiplicity = 3.3; }
   return MaxAverageMultiplicity;
 }
-

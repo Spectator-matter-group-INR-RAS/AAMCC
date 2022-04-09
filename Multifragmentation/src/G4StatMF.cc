@@ -24,7 +24,6 @@
 // ********************************************************************
 //
 //
-// $Id$
 //
 // Hadronic Process: Nuclear De-excitations
 // by V. Lara
@@ -33,9 +32,12 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4Pow.hh"
+#include "G4PhysicsModelCatalog.hh"
 
 // Default constructor
-G4StatMF::G4StatMF() : _theEnsemble(0) {}
+G4StatMF::G4StatMF() : _theEnsemble(0), _secID(-1) {
+  _secID = G4PhysicsModelCatalog::GetModelID("model_G4StatMF");
+}
 
 
 // Destructor
@@ -130,9 +132,7 @@ G4FragmentVector * G4StatMF::BreakItUp(const G4Fragment &theFragment)
  
     // Do not forget to delete this unusable channel, for which we failed to find the temperature,
     // otherwise for very proton-reach nuclei it would lead to memory leak due to large 
-    // number of iterations. N.B. "theChannel" is created in G4StatMFMacroCanonical::ChooseZ()
-
-    // G4cout << " Iteration # " << Iterations << " Mean Temperature = " << Temperature << G4endl;    
+    // number of iterations. N.B. "theChannel" is created in G4StatMFMacroCanonical::ChooseZ()    
 
     delete theChannel;    
 
@@ -171,7 +171,7 @@ G4FragmentVector * G4StatMF::BreakItUp(const G4Fragment &theFragment)
       G4LorentzVector NewMomentum;
       NewMomentum.setVect(ScaledMomentum);
       NewMomentum.setE(std::sqrt(ScaledMomentum.mag2()+Mass*Mass));
-      (*j)->SetMomentum(NewMomentum);
+      (*j)->SetMomentum(NewMomentum);		
     }
     // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
   } while (ScaleFactor > 1.0+1.e-5 && std::abs(ScaleFactor-SavedScaleFactor)/ScaleFactor > 1.e-10);
@@ -183,6 +183,7 @@ G4FragmentVector * G4StatMF::BreakItUp(const G4Fragment &theFragment)
     G4LorentzVector FourMom = (*i)->GetMomentum();
     FourMom.boost(theFragment.GetMomentum().boostVector());
     (*i)->SetMomentum(FourMom);
+    (*i)->SetCreatorModelID(_secID);
   }
   
   // garbage collection
@@ -272,7 +273,7 @@ G4bool G4StatMF::FindTemperatureOfBreakingChannel(const G4Fragment & theFragment
 }
 
 G4double G4StatMF::CalcEnergy(G4int A, G4int Z, const G4StatMFChannel * aChannel,
-			      G4double T)
+            G4double T)
 {
   G4Pow* g4calc = G4Pow::GetInstance();
   G4double MassExcess0 = G4NucleiProperties::GetMassExcess(A,Z);
