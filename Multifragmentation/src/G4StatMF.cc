@@ -36,7 +36,7 @@
 
 // Default constructor
 G4StatMF::G4StatMF() : _theEnsemble(0), _secID(-1) {
-  _secID = G4PhysicsModelCatalog::GetModelID("model_G4StatMF");
+  // _secID = G4PhysicsModelCatalog::GetModelID("model_G4StatMF");
 }
 
 
@@ -183,7 +183,7 @@ G4FragmentVector * G4StatMF::BreakItUp(const G4Fragment &theFragment)
     G4LorentzVector FourMom = (*i)->GetMomentum();
     FourMom.boost(theFragment.GetMomentum().boostVector());
     (*i)->SetMomentum(FourMom);
-    (*i)->SetCreatorModelID(_secID);
+    // (*i)->SetCreatorModelID(_secID);
   }
   
   // garbage collection
