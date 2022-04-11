@@ -79,17 +79,17 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
 }
 
 void InitialConditions::SetKinematics(G4double Energy_in) {
-
+    G4double NuclMass = nucleonAverMass/CLHEP::GeV;
     if(IsCollider){
-        PzA =    pow(Energy_in*Energy_in*0.25 - nucleonAverMass*nucleonAverMass,0.5);
-        PzB = -1*pow(Energy_in*Energy_in*0.25 - nucleonAverMass*nucleonAverMass,0.5);
-        KinEn = (Energy_in/2.0 - nucleonAverMass);
+        PzA =    pow(Energy_in*Energy_in*0.25 - NuclMass*NuclMass,0.5);
+        PzB = -1*pow(Energy_in*Energy_in*0.25 - NuclMass*NuclMass,0.5);
+        KinEn = (Energy_in/2.0 - NuclMass);
         SqrtSnn = Energy_in;
     } else{
-        PzA = pow(Energy_in*(Energy_in+2*nucleonAverMass),0.5);
+        PzA = pow(Energy_in*(Energy_in+2*NuclMass),0.5);
         PzB = 0;
         KinEn = Energy_in;
-        SqrtSnn = pow(2*nucleonAverMass*nucleonAverMass+2*Energy_in*nucleonAverMass, 0.5);
+        SqrtSnn = pow(2*NuclMass*NuclMass+2*Energy_in*NuclMass, 0.5);
     }
     SqrtSnn*= GeV;
     KinEn*= sourceA*GeV;

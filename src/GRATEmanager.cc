@@ -55,7 +55,7 @@ GRATEmanager::GRATEmanager()
     else {
       std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
       std::cin >> SqrtSnn;
-      G4double NuclMass = 0.93891875434;
+      G4double NuclMass = nucleonAverMass/CLHEP::GeV;
       G4double CollKinCheck = (SqrtSnn/2.0 - NuclMass);
       G4double KinEnAtFixTargetCheck = (2.0*(CollKinCheck + NuclMass)*(CollKinCheck + NuclMass)/(NuclMass*NuclMass) - 1.0)*NuclMass;
       if(KinEnAtFixTargetCheck < 280.0*MeV/GeV){
@@ -203,10 +203,10 @@ void GRATEmanager::CalcXsectNN()
     filepath += "bystricky.dat";
     XsectFile.open(filepath.c_str());
     while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
-    Tkin[0] = Tkin[1];	
-    xsect[0] = xsect[1];
-    XsectFile >> Tkin[1] >> xsect[1];
-    if (!XsectFile.good()) break;
+      Tkin[0] = Tkin[1];	
+      xsect[0] = xsect[1];
+      XsectFile >> Tkin[1] >> xsect[1];
+      if (!XsectFile.good()) break;
     }
     G4double a = (xsect[1]-xsect[0])/(Tkin[1]-Tkin[0]);
     G4double b = xsect[1] - a*Tkin[1];

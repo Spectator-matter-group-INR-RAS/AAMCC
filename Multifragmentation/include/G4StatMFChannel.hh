@@ -57,27 +57,27 @@ private:
 
     G4bool operator==(const G4StatMFChannel & right) const;
     G4bool operator!=(const G4StatMFChannel & right) const;
-	
+    
 public:
 
     void CreateFragment(G4int A, G4int Z);
-	
+    
     inline size_t GetMultiplicity(void) { return _theFragments.size();}
-	
+    
     // Return false if there is some unphysical fragment
     G4bool CheckFragments(void);
 
     G4double GetFragmentsCoulombEnergy(G4int initA, G4int initZ);
 
     G4double GetFragmentsEnergy(G4double T, G4int initA, G4int initZ) const;
-	
+    
     G4FragmentVector * GetFragments(G4int anA, G4int anZ, G4double T);
-	
+    
 private:
 
     // This method calculates asymptotic fragments momenta.
     void CoulombImpulse(G4int anA, G4int anZ, G4double T);
-	
+    
     void PlaceFragments(G4int anA);
 
     void SolveEqOfMotion(G4int anA, G4int anZ, G4double T);
@@ -85,18 +85,18 @@ private:
     // Calculates fragments momentum components at the breakup instant.
     // Fragment kinetic energies will be calculated according to the
     // Boltzamann distribution at given temperature.
-    void FragmentsMomenta(G4int NF, G4int idx, G4double T);	
+    void FragmentsMomenta(G4int NF, G4int idx, G4double T); 
 
     // Rotates a 3-vector P to close momentum triangle Pa + V + P = 0
     G4ThreeVector RotateMomentum(G4ThreeVector Pa, G4ThreeVector V, 
-				 G4ThreeVector P);
+                 G4ThreeVector P);
 
 private:
 
     std::deque<G4StatMFFragment*> _theFragments;
 
     G4int _NumOfNeutralFragments;
-	
+    
     G4int _NumOfChargedFragments;
 
   struct DeleteFragment 
@@ -111,10 +111,3 @@ private:
 };
 
 #endif
-
-
-
-
-
-
-
