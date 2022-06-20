@@ -21,7 +21,7 @@
 #include "GRATEmanager.hh"
 #include "InitialConditions.hh"
 #include "ExcitationEnergy.hh"
-#include "DeexcitationHandler.hh"
+//#include "DeexcitationHandler.hh"
 #include "GRATEPhysicsList.hh"
 #include "TGlauber/TGlauberMC.hh"
 #include "TGlauber/TGlauNucleon.hh"
@@ -44,6 +44,7 @@
 
 #include "GlauberCollisionReader.hh"
 #include "FermiMomentum.hh"
+#include "AAMCC.hh"
 
 #include <fstream>
 
@@ -154,61 +155,63 @@ int main()
     std::vector<G4int> Ab_cl;
     std::vector<G4int> Zb_cl;
 
+    AAMCCEvent event;
+
     // Histograms will be booked now.
     histoManager.BookHisto();
-    histoManager.GetTree()->Branch("id", &id, "id/i");
-    histoManager.GetTree()->Branch("A_on_A", "std::vector" ,&MassOnSideA);
-    histoManager.GetTree()->Branch("A_on_B", "std::vector" ,&MassOnSideB);
-    histoManager.GetTree()->Branch("Z_on_A", "std::vector" ,&ChargeOnSideA);
-    histoManager.GetTree()->Branch("Z_on_B", "std::vector" ,&ChargeOnSideB);
-    histoManager.GetTree()->Branch("Nhard", &Nhard, "Nhard/I");
+    histoManager.GetTree()->Branch("id", &event.id, "id/i");
+    histoManager.GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
+    histoManager.GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
+    histoManager.GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
+    histoManager.GetTree()->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
+    histoManager.GetTree()->Branch("Nhard", &event.Nhard, "Nhard/I");
     //histoManager.GetTree()->Branch("Nvoid", &Nvoid, "Nvoid/I");
-    histoManager.GetTree()->Branch("Ncoll", &Ncoll, "Ncoll/I");
-    histoManager.GetTree()->Branch("Ncollpp", &Ncollpp, "Ncollpp/I");
-    histoManager.GetTree()->Branch("Ncollpn", &Ncollpn, "Ncollpn/I");
-    histoManager.GetTree()->Branch("Ncollnn", &Ncollnn, "Ncollnn/I");
-    histoManager.GetTree()->Branch("Npart", &Npart, "Npart/I");
-    histoManager.GetTree()->Branch("NpartA", &NpartA, "NpartA/I");
-    histoManager.GetTree()->Branch("NpartB", &NpartB, "NpartB/I");
+    histoManager.GetTree()->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
+    histoManager.GetTree()->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
+    histoManager.GetTree()->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
+    histoManager.GetTree()->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
+    histoManager.GetTree()->Branch("Npart", &event.Npart, "Npart/I");
+    histoManager.GetTree()->Branch("NpartA", &event.NpartA, "NpartA/I");
+    histoManager.GetTree()->Branch("NpartB", &event.NpartB, "NpartB/I");
 
-    histoManager.GetTreeMST()->Branch("Aa_cl", "std::vector" ,&A_cl);
-    histoManager.GetTreeMST()->Branch("Za_cl", "std::vector" ,&Z_cl);
-    histoManager.GetTreeMST()->Branch("d", &d_MstA ,"d/d");
-    histoManager.GetTreeMST()->Branch("Clust_num_a", &ClustNumA ,"Clust_num/I");
-    histoManager.GetTreeMST()->Branch("Ab_cl", "std::vector" ,&Ab_cl);
-    histoManager.GetTreeMST()->Branch("Zb_cl", "std::vector" ,&Zb_cl);
-    histoManager.GetTreeMST()->Branch("d_b", &d_MstB ,"d/d");
-    histoManager.GetTreeMST()->Branch("Clust_num_b", &ClustNumB ,"Clust_num_b/I");
+    histoManager.GetTreeMST()->Branch("Aa_cl", "std::vector" ,&event.A_cl);
+    histoManager.GetTreeMST()->Branch("Za_cl", "std::vector" ,&event.Z_cl);
+    histoManager.GetTreeMST()->Branch("d", &event.d_MstA ,"d/d");
+    histoManager.GetTreeMST()->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
+    histoManager.GetTreeMST()->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
+    histoManager.GetTreeMST()->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
+    histoManager.GetTreeMST()->Branch("d_b", &event.d_MstB ,"d/d");
+    histoManager.GetTreeMST()->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
 
     if(histoManager.WritePseudorapidity()){
-        histoManager.GetTree()->Branch("pseudorapidity_on_A", "std::vector", &pseudorapidity_A);
-        histoManager.GetTree()->Branch("pseudorapidity_on_B", "std::vector", &pseudorapidity_B);
+        histoManager.GetTree()->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A);
+        histoManager.GetTree()->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B);
     }
     if(histoManager.WriteMomentum()){
-        histoManager.GetTree()->Branch("pX_on_A", "std::vector" ,&pXonSideA,128000,1);
-        histoManager.GetTree()->Branch("pY_on_A", "std::vector" ,&pYonSideA,128000,1);
-        histoManager.GetTree()->Branch("pZ_on_A", "std::vector" ,&pZonSideA,128000,1);
-        histoManager.GetTree()->Branch("pX_on_B", "std::vector" ,&pXonSideB,128000,1);
-        histoManager.GetTree()->Branch("pY_on_B", "std::vector" ,&pYonSideB,128000,1);
-        histoManager.GetTree()->Branch("pZ_on_B", "std::vector" ,&pZonSideB,128000,1);
+        histoManager.GetTree()->Branch("pX_on_A", "std::vector" ,&event.pXonSideA,128000,1);
+        histoManager.GetTree()->Branch("pY_on_A", "std::vector" ,&event.pYonSideA,128000,1);
+        histoManager.GetTree()->Branch("pZ_on_A", "std::vector" ,&event.pZonSideA,128000,1);
+        histoManager.GetTree()->Branch("pX_on_B", "std::vector" ,&event.pXonSideB,128000,1);
+        histoManager.GetTree()->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
+        histoManager.GetTree()->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
     }
 
-    histoManager.GetTree()->Branch("impact_parameter", &b, "impact_parameter/f");
+    histoManager.GetTree()->Branch("impact_parameter", &event.b, "impact_parameter/f");
 
-    histoManager.GetTree()->Branch("PhiRotA", &PhiRotA, "PhiRotA/f");
-    histoManager.GetTree()->Branch("ThetaRotA", &ThetaRotA, "ThetaRotA/f");
-    histoManager.GetTree()->Branch("PhiRotB", &PhiRotB, "PhiRotB/f");
-    histoManager.GetTree()->Branch("ThetaRotB", &ThetaRotB, "ThetaRotB/f");
-    histoManager.GetTree()->Branch("Ecc", &Ecc, "Ecc[10]/f");
+    histoManager.GetTree()->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
+    histoManager.GetTree()->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
+    histoManager.GetTree()->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
+    histoManager.GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
+    histoManager.GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
 
-    histoManager.GetTree()->Branch("Ex_En_per_nucleon", &ExEn, "Ex_En_per_nucleon/f");
+    histoManager.GetTree()->Branch("Ex_En_per_nucleon", &event.ExEn, "Ex_En_per_nucleon/f");
 
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &FermiMomA_x, "Fermi_momentumA_x/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &FermiMomA_y, "Fermi_momentumA_y/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &FermiMomA_z, "Fermi_momentumA_y/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &FermiMomB_x, "Fermi_momentumB_x/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &FermiMomB_y, "Fermi_momentumB_y/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &FermiMomB_z, "Fermi_momentumB_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
+    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -278,8 +281,8 @@ int main()
     FermiMomentum FermiMom(&nV, "G");
     FermiMom.SetPzPerNucleon(histoManager.GetInitialContidions().GetPzA()/ sourceA, histoManager.GetInitialContidions().GetPzB() / sourceAb);
 
-    for(G4int count=0;count<histoManager.GetIterations() ;count++){ 
-        id = count;
+    for(G4int count=0;count<histoManager.GetIterations() ;count++){
+        event.id = count;
         //An event generated by GlauberMC is here.
         mcg->Run(1);
 
@@ -287,20 +290,20 @@ int main()
         //Side A $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
         TGlauNucleus *nucA   = mcg->GetNucleusA(); 
         TGlauNucleus *nucB = mcg->GetNucleusB();
-        NpartA = mcg->GetNpartA(); 
-        NpartB = mcg->GetNpartB();
-        Npart = mcg->GetNpart();
-        b = mcg->GetB();
-        PhiRotA = nucA->GetPhiRot();
-        ThetaRotA = nucA->GetThetaRot();
-        PhiRotB = nucB->GetPhiRot();
-        ThetaRotB = nucB->GetThetaRot();
-        for(int k = 0; k<10; k++){Ecc[k] = mcg->GetEcc(k);}
-        Nhard = mcg->GetNhard();
-        Ncoll = mcg->GetNcoll();
-        Ncollpp = mcg->GetNcollpp();
-        Ncollpn = mcg->GetNcollpn();
-        Ncollnn = mcg->GetNcollnn();
+        event.NpartA = mcg->GetNpartA();
+        event.NpartB = mcg->GetNpartB();
+        event.Npart = mcg->GetNpart();
+        event.b = mcg->GetB();
+        event.PhiRotA = nucA->GetPhiRot();
+        event.ThetaRotA = nucA->GetThetaRot();
+        event.PhiRotB = nucB->GetPhiRot();
+        event.ThetaRotB = nucB->GetThetaRot();
+        for(int k = 0; k<10; k++){event.Ecc[k] = mcg->GetEcc(k);}
+        event.Nhard = mcg->GetNhard();
+        event.Ncoll = mcg->GetNcoll();
+        event.Ncollpp = mcg->GetNcollpp();
+        event.Ncollpn = mcg->GetNcollpn();
+        event.Ncollnn = mcg->GetNcollnn();
         TObjArray* nucleons=mcg->GetNucleons();
 
         G4int A = 0;
@@ -320,28 +323,28 @@ int main()
             // Excitation energy is calculated only for unstable clusters
             G4double energy_A = ExEnA->GetEnergy(A);
             G4double energy_B = ExEnB->GetEnergy(Ab);
-            ExEn = energy_A/G4double(A);
+            event.ExEn = energy_A/G4double(A);
             histoManager.GetHisto2(1)->Fill(ExEn, G4double(A)/sourceA);
 
 
             CLHEP::HepLorentzVector Fermi4MomA = FermiMom.GetLorentzVector("A");
             CLHEP::Hep3Vector boostA = Fermi4MomA.boostVector();
-            FermiMomA_x = Fermi4MomA.px();
-            FermiMomA_y = Fermi4MomA.py();
-            FermiMomA_z = Fermi4MomA.pz();
+            event.FermiMomA_x = Fermi4MomA.px();
+            event.FermiMomA_y = Fermi4MomA.py();
+            event.FermiMomA_z = Fermi4MomA.pz();
             CLHEP::HepLorentzVector Fermi4MomB = FermiMom.GetLorentzVector("B");;
             CLHEP::Hep3Vector boostB = Fermi4MomB.boostVector();
-            FermiMomB_x = Fermi4MomB.px();
-            FermiMomB_y = Fermi4MomB.py();
-            FermiMomB_z = Fermi4MomB.pz();
+            event.FermiMomB_x = Fermi4MomB.px();
+            event.FermiMomB_y = Fermi4MomB.py();
+            event.FermiMomB_z = Fermi4MomB.pz();
 
             if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(FermiMomA_x,FermiMomA_y);
 
 
             std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
 
-            d_MstA = clusters->GetCD("A");
-            d_MstB = clusters->GetCD("B");
+            event.d_MstA = clusters->GetCD("A");
+            event.d_MstB = clusters->GetCD("B");
 
             histoManager.GetHisto2(7)->Fill(ExEn, d_MstA);
 
@@ -350,8 +353,8 @@ int main()
                 G4Fragment aFragment = (*MstClustersVector.at(0).at(i));
                 G4LorentzVector p4 = aFragment.GetMomentum();
                 //if((aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()) - ExEn*aFragment.GetA() !=0) && aFragment.GetA() != 1){std::cout<<"dE_x = "<<(aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()))/aFragment.GetA() - ExEn<<"\n";}
-                A_cl.push_back(aFragment.GetA());
-                Z_cl.push_back(aFragment.GetZ());
+                event.A_cl.push_back(aFragment.GetA());
+                event.Z_cl.push_back(aFragment.GetZ());
                 G4double eta_A = 0;
                 //if(abs(p4.px()) < 1) std::cout<<G4double(clfrag_A)<<" "<<G4double(sourceA)<<"\n";
 
@@ -375,8 +378,8 @@ int main()
                         thisFragmentZ = pd->GetAtomicNumber();
                         thisFragmentA = pd->GetAtomicMass();
                         if (pd->GetAtomicMass() == 0) { G4cout << "ERROR, pn = " << pd->GetParticleName() << G4endl;}
-                        MassOnSideA.push_back(thisFragmentA);
-                        ChargeOnSideA.push_back(thisFragmentZ);
+                        event.MassOnSideA.push_back(thisFragmentA);
+                        event.ChargeOnSideA.push_back(thisFragmentZ);
 
                         G4double eeA = (*iVector)->GetTotalEnergy();
                         G4LorentzVector product_p4((*iVector)->GetMomentum().x(), (*iVector)->GetMomentum().y(),
@@ -389,10 +392,10 @@ int main()
                         eta_A = 0.5 * log((std::sqrt(pXonA * pXonA + pYonA * pYonA + pZonA * pZonA) + pZonA) /
                         (std::sqrt(pXonA * pXonA + pYonA * pYonA + pZonA * pZonA) - pZonA));
 
-                        pXonSideA.push_back(pXonA); //if(abs(pXonA) < 1) std::cout<<"thisFragmentZ = "<<thisFragmentZ<<"\n";
-                        pYonSideA.push_back(pYonA);
-                        pZonSideA.push_back(pZonA);
-                        pseudorapidity_A.push_back(eta_A);
+                        event.pXonSideA.push_back(pXonA); //if(abs(pXonA) < 1) std::cout<<"thisFragmentZ = "<<thisFragmentZ<<"\n";
+                        event.pYonSideA.push_back(pYonA);
+                        event.pZonSideA.push_back(pZonA);
+                        event.pseudorapidity_A.push_back(eta_A);
 
 
                         if (thisFragmentZ == 0) {
@@ -420,15 +423,15 @@ int main()
                 delete theProduct;
             }
 
-            ClustNumA = A_cl.size();
+            event.ClustNumA = A_cl.size();
 
 //Side B $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
             for(G4int i = 0; i < MstClustersVector.at(1).size(); ++i) {
                 G4Fragment aFragmentB = (*MstClustersVector.at(1).at(i));
                 G4LorentzVector p4b = aFragmentB.GetMomentum();
-                Ab_cl.push_back(aFragmentB.GetA());
-                Zb_cl.push_back(aFragmentB.GetZ());
+                event.Ab_cl.push_back(aFragmentB.GetA());
+                event. Zb_cl.push_back(aFragmentB.GetZ());
                 G4double eta_B = 0;
 
                 // HANDLER
@@ -445,8 +448,8 @@ int main()
                     if (particleEmittedB != "gamma" && particleEmittedB != "e-" && particleEmittedB != "e+") {
                         thisFragmentZb = pdB->GetAtomicNumber();
                         thisFragmentAb = pdB->GetAtomicMass();
-                        MassOnSideB.push_back(thisFragmentAb);
-                        ChargeOnSideB.push_back(thisFragmentZb);
+                        event.MassOnSideB.push_back(thisFragmentAb);
+                        event.ChargeOnSideB.push_back(thisFragmentZb);
 
                         G4double eeB = (*kVector)->GetTotalEnergy();
                         G4LorentzVector product_p4b((*kVector)->GetMomentum().x(), (*kVector)->GetMomentum().y(), (*kVector)->GetMomentum().z(), eeB);
@@ -457,10 +460,10 @@ int main()
 
                         eta_B = 0.5 * log((std::sqrt(pXonB * pXonB + pYonB * pYonB + pZonB * pZonB) + pZonB) /
                         (std::sqrt(pXonB * pXonB + pYonB * pYonB + pZonB * pZonB) - pZonB));
-                        pXonSideB.push_back(pXonB);
-                        pYonSideB.push_back(pYonB);
-                        pZonSideB.push_back(pZonB);
-                        pseudorapidity_B.push_back(eta_B);
+                        event.pXonSideB.push_back(pXonB);
+                        event.pYonSideB.push_back(pYonB);
+                        event.pZonSideB.push_back(pZonB);
+                        event.pseudorapidity_B.push_back(eta_B);
                     }
                     histoManager.GetHisto(0)->Fill(thisFragmentZb);
                     delete (*kVector);
@@ -468,29 +471,29 @@ int main()
                 delete theProductB;
             }
 
-            ClustNumB = Ab_cl.size();
+            event.ClustNumB = Ab_cl.size();
 
             //Filling histo-s + cleaning
             histoManager.GetTreeMST()->Fill();
             histoManager.GetTreeFermiMom()->Fill();
-            A_cl.clear();
-            Z_cl.clear();
-            Ab_cl.clear();
-            Zb_cl.clear();
+            event.A_cl.clear();
+            event.Z_cl.clear();
+            event.Ab_cl.clear();
+            event.Zb_cl.clear();
 
             histoManager.GetTree()->Fill();
-            MassOnSideA.clear();
-            MassOnSideB.clear();
-            ChargeOnSideB.clear();
-            ChargeOnSideA.clear();
-            pXonSideA.clear();
-            pXonSideB.clear();
-            pYonSideA.clear();
-            pYonSideB.clear();
-            pZonSideA.clear();
-            pZonSideB.clear();
-            pseudorapidity_A.clear();
-            pseudorapidity_B.clear();
+            event.MassOnSideA.clear();
+            event.MassOnSideB.clear();
+            event.ChargeOnSideB.clear();
+            event.ChargeOnSideA.clear();
+            event.pXonSideA.clear();
+            event.pXonSideB.clear();
+            event.pYonSideA.clear();
+            event.pYonSideB.clear();
+            event.pZonSideA.clear();
+            event.pZonSideB.clear();
+            event.pseudorapidity_A.clear();
+            event.pseudorapidity_B.clear();
 
             // Events calc info update
             if (!G4bool(count % 100)) { G4cout << "Program is working," << count << " events calculated    \r" << std::flush; }

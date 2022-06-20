@@ -14,6 +14,7 @@
 #include "G4ExcitationHandler.hh"
 #include "G4NucleiProperties.hh"
 #include "G4Evaporation.hh"
+
 #include "GRATEmanager.hh"
 #include "InitialConditions.hh"
 #include "ExcitationEnergy.hh"
@@ -45,7 +46,11 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TH2D.h"
+
+#ifndef VCollisionReader_h
+#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
+#endif
 
 class AAMCC {
 public:
