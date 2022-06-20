@@ -76,8 +76,6 @@ GRATEmanager::GRATEmanager()
     SqrtSnn = InCond->GetSqrtSnn();
     KinEn = InCond->GetKinEnergy();
   }
-  
-  
 
   sourceA=InCond->GetSourceA();
   sourceAb=InCond->GetSourceAb();

@@ -16,6 +16,7 @@
 #include "GMSTClustering.hh"
 
 #include "AAMCConstants.hh"
+#include "AAMCC.hh"
 
 class TFile;
 class TH1D;
@@ -42,6 +43,7 @@ class GRATEmanager
   void CleanHisto();
   void FillConditionsTree(G4double Xsect);
   void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b);
+  void FillEvent(AAMCCEvent* event);
   void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);  
 
   inline G4String GetSysA() {return SysA;}

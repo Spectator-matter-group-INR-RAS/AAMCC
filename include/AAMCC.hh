@@ -1,21 +1,9 @@
-#include "G4RunManager.hh"
-#include "G4StateManager.hh"
-#include "G4ParticleTypes.hh"
-#include "G4ParticleTable.hh"
-#include "G4BosonConstructor.hh"
-#include "G4LeptonConstructor.hh"
-#include "G4MesonConstructor.hh"
-#include "G4BaryonConstructor.hh"
-#include "G4IonConstructor.hh"
+#ifndef AAMCC_h
+#define AAMCC_h 1
+
 #include "G4SystemOfUnits.hh"
 
 #include "G4ReactionProductVector.hh"
-#include "G4ReactionProduct.hh"
-#include "G4ExcitationHandler.hh"
-#include "G4NucleiProperties.hh"
-#include "G4Evaporation.hh"
-
-#include "GRATEmanager.hh"
 #include "InitialConditions.hh"
 #include "ExcitationEnergy.hh"
 #include "DeexcitationHandler.hh"
@@ -31,7 +19,6 @@
 #include "G4ParticleDefinition.hh"
 #include "G4Threading.hh"
 
-#include "G4UImanager.hh"
 #include "G4IonTable.hh"
 #include "G4GenericIon.hh"
 #include "G4Ions.hh"
@@ -54,7 +41,7 @@
 
 class AAMCC {
 public:
-    explicit AAMCC(GRATEmanager* histoManager);
+    explicit AAMCC();
     ~AAMCC();
 
     template <class CollisionGeneratorOut>
@@ -116,3 +103,4 @@ struct AAMCCEvent{
     std::vector<G4int> Zb_cl;
 
 };
+#endif

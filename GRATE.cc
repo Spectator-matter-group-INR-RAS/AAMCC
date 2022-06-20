@@ -33,7 +33,6 @@
 #include "G4ParticleDefinition.hh"
 #include "G4Threading.hh"
 
-#include "G4UImanager.hh"
 #include "G4IonTable.hh"
 #include "G4GenericIon.hh"
 #include "G4Ions.hh"
@@ -105,56 +104,6 @@ int main()
 
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
-
-    //arrays for tree creation
-    std::vector<G4float> MassOnSideA;
-    std::vector<G4float> MassOnSideB;
-    std::vector<G4float> ChargeOnSideA;
-    std::vector<G4float> ChargeOnSideB;
-    std::vector<G4double> pXonSideA;
-    std::vector<G4double> pYonSideA;
-    std::vector<G4double> pZonSideA;
-    std::vector<G4double> pXonSideB;
-    std::vector<G4double> pYonSideB;
-    std::vector<G4double> pZonSideB;
-    std::vector<G4double> pseudorapidity_A;
-    std::vector<G4double> pseudorapidity_B;
-    G4float b;
-    G4float ExEn;
-    G4int id;
-    G4int Nhard;
-    G4int Ncoll;
-    G4int Ncollpp;
-    G4int Ncollpn;
-    G4int Ncollnn;
-    G4int Npart;
-    G4int NpartA;
-    G4int NpartB;
-
-    // FermiMom Tree
-    G4double FermiMomA_x;
-    G4double FermiMomA_y;
-    G4double FermiMomA_z;
-    G4double FermiMomB_x;
-    G4double FermiMomB_y;
-    G4double FermiMomB_z;
-
-    G4float PhiRotA;
-    G4float ThetaRotA;
-    G4float PhiRotB;
-    G4float ThetaRotB;
-    G4float Ecc[10] = {0};
-
-    // MST Tree
-    G4int ClustNumA;
-    G4int ClustNumB;
-    G4double d_MstA;
-    G4double d_MstB;
-    std::vector<G4int> A_cl;
-    std::vector<G4int> Z_cl;
-    std::vector<G4int> Ab_cl;
-    std::vector<G4int> Zb_cl;
-
     AAMCCEvent event;
 
     // Histograms will be booked now.
@@ -324,7 +273,7 @@ int main()
             G4double energy_A = ExEnA->GetEnergy(A);
             G4double energy_B = ExEnB->GetEnergy(Ab);
             event.ExEn = energy_A/G4double(A);
-            histoManager.GetHisto2(1)->Fill(ExEn, G4double(A)/sourceA);
+            histoManager.GetHisto2(1)->Fill(event.ExEn, G4double(A)/sourceA);
 
 
             CLHEP::HepLorentzVector Fermi4MomA = FermiMom.GetLorentzVector("A");
@@ -338,7 +287,7 @@ int main()
             event.FermiMomB_y = Fermi4MomB.py();
             event.FermiMomB_z = Fermi4MomB.pz();
 
-            if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(FermiMomA_x,FermiMomA_y);
+            if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(event.FermiMomA_x, event.FermiMomA_y);
 
 
             std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
@@ -346,7 +295,7 @@ int main()
             event.d_MstA = clusters->GetCD("A");
             event.d_MstB = clusters->GetCD("B");
 
-            histoManager.GetHisto2(7)->Fill(ExEn, d_MstA);
+            histoManager.GetHisto2(7)->Fill(event.ExEn , event.d_MstA);
 
             for(G4int i = 0; i < MstClustersVector.at(0).size(); ++i) {
 
@@ -423,7 +372,7 @@ int main()
                 delete theProduct;
             }
 
-            event.ClustNumA = A_cl.size();
+            event.ClustNumA = event.A_cl.size();
 
 //Side B $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -471,7 +420,7 @@ int main()
                 delete theProductB;
             }
 
-            event.ClustNumB = Ab_cl.size();
+            event.ClustNumB = event.Ab_cl.size();
 
             //Filling histo-s + cleaning
             histoManager.GetTreeMST()->Fill();
