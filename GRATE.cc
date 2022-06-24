@@ -110,60 +110,7 @@ int main()
 
     // Histograms will be booked now.
     histoManager.BookHisto();
-    /*histoManager.GetTree()->Branch("id", &event.id, "id/i");
-    histoManager.GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
-    histoManager.GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
-    histoManager.GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
-    histoManager.GetTree()->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
-    histoManager.GetTree()->Branch("Nhard", &event.Nhard, "Nhard/I");
-    //histoManager.GetTree()->Branch("Nvoid", &Nvoid, "Nvoid/I");
-    histoManager.GetTree()->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
-    histoManager.GetTree()->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
-    histoManager.GetTree()->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
-    histoManager.GetTree()->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
-    histoManager.GetTree()->Branch("Npart", &event.Npart, "Npart/I");
-    histoManager.GetTree()->Branch("NpartA", &event.NpartA, "NpartA/I");
-    histoManager.GetTree()->Branch("NpartB", &event.NpartB, "NpartB/I");
 
-    histoManager.GetTreeMST()->Branch("Aa_cl", "std::vector" ,&event.A_cl);
-    histoManager.GetTreeMST()->Branch("Za_cl", "std::vector" ,&event.Z_cl);
-    histoManager.GetTreeMST()->Branch("d", &event.d_MstA ,"d/d");
-    histoManager.GetTreeMST()->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
-    histoManager.GetTreeMST()->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
-    histoManager.GetTreeMST()->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
-    histoManager.GetTreeMST()->Branch("d_b", &event.d_MstB ,"d/d");
-    histoManager.GetTreeMST()->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
-
-    if(histoManager.WritePseudorapidity()){
-        histoManager.GetTree()->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A);
-        histoManager.GetTree()->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B);
-    }
-    if(histoManager.WriteMomentum()){
-        histoManager.GetTree()->Branch("pX_on_A", "std::vector" ,&event.pXonSideA,128000,1);
-        histoManager.GetTree()->Branch("pY_on_A", "std::vector" ,&event.pYonSideA,128000,1);
-        histoManager.GetTree()->Branch("pZ_on_A", "std::vector" ,&event.pZonSideA,128000,1);
-        histoManager.GetTree()->Branch("pX_on_B", "std::vector" ,&event.pXonSideB,128000,1);
-        histoManager.GetTree()->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
-        histoManager.GetTree()->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
-    }
-
-    histoManager.GetTree()->Branch("impact_parameter", &event.b, "impact_parameter/f");
-
-    histoManager.GetTree()->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
-    histoManager.GetTree()->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
-    histoManager.GetTree()->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
-    histoManager.GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
-    histoManager.GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
-
-    histoManager.GetTree()->Branch("Ex_En_per_nucleon", &event.ExEn, "Ex_En_per_nucleon/f");
-
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
-    histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
-*/
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
     G4int sourceAb = histoManager.GetInitialContidions().GetSourceAb();
@@ -425,7 +372,7 @@ int main()
             event.ClustNumB = event.Ab_cl.size();
 
             //Filling histo-s + cleaning
-            histoManager.FillEvent(&event);
+            histoManager.FillEventTree(&event);
            /* histoManager.GetTreeMST()->Fill();
             histoManager.GetTreeFermiMom()->Fill();*/
             event.A_cl.clear();

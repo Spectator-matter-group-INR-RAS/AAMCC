@@ -301,7 +301,7 @@ void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_
   Event<<"\nb = "<<b<<" fm \n";
 }
 
-void GRATEmanager::FillEvent(AAMCCEvent *ev_in) {
+void GRATEmanager::FillEventTree(AAMCCEvent *ev_in) {
     event = (*ev_in);
     this->GetTree()->Fill();
     this->GetTreeMST()->Fill();
@@ -413,4 +413,7 @@ void GRATEmanager::InitTree() {
     this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
     this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
     this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
+}
+
+void GRATEmanager::FillHisto(AAMCCEvent ev) {
 }
