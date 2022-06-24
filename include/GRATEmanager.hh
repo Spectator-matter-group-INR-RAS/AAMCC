@@ -76,6 +76,7 @@ class GRATEmanager
   
   private:
 
+  void InitTree();
   
   TFile* fFile;
   TH1D*  histo[20];
@@ -126,6 +127,7 @@ class GRATEmanager
   G4bool   wP = false;
 
   InitialConditions* InCond = new InitialConditions();
+  AAMCCEvent event;
 
   std::ifstream XsectFile;
 

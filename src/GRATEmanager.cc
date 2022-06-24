@@ -181,6 +181,8 @@ void GRATEmanager::BookHisto()
   histo[10] = new TH1D("Neutron distribution B", ";R;entries", Num_ent, 0, Rmax);
   histo[11] = new TH1D("Proton distribution B", ";R;entries", Num_ent, 0, Rmax);
 
+  this->InitTree();
+
   G4cout << "Histograms will be written to " << fileFullName << G4endl;
 }
 
@@ -297,4 +299,118 @@ void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_
     }
   }
   Event<<"\nb = "<<b<<" fm \n";
+}
+
+void GRATEmanager::FillEvent(AAMCCEvent *ev_in) {
+    event = (*ev_in);
+    this->GetTree()->Fill();
+    this->GetTreeMST()->Fill();
+    this->GetTreeFermiMom()->Fill();
+}
+
+void GRATEmanager::InitTree() {
+    this->GetTree()->Branch("id", &event.id, "id/i");
+    this->GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
+    this->GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
+    this->GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
+    this->GetTree()->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
+    this->GetTree()->Branch("Nhard", &event.Nhard, "Nhard/I");
+    this->GetTree()->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
+    this->GetTree()->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
+    this->GetTree()->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
+    this->GetTree()->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
+    this->GetTree()->Branch("Npart", &event.Npart, "Npart/I");
+    this->GetTree()->Branch("NpartA", &event.NpartA, "NpartA/I");
+    this->GetTree()->Branch("NpartB", &event.NpartB, "NpartB/I");
+
+    this->GetTreeMST()->Branch("Aa_cl", "std::vector" ,&event.A_cl);
+    this->GetTreeMST()->Branch("Za_cl", "std::vector" ,&event.Z_cl);
+    this->GetTreeMST()->Branch("d", &event.d_MstA ,"d/d");
+    this->GetTreeMST()->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
+    this->GetTreeMST()->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
+    this->GetTreeMST()->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
+    this->GetTreeMST()->Branch("d_b", &event.d_MstB ,"d/d");
+    this->GetTreeMST()->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
+
+    if(this->WritePseudorapidity()){
+        this->GetTree()->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A);
+        this->GetTree()->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B);
+    }
+    if(this->WriteMomentum()){
+        this->GetTree()->Branch("pX_on_A", "std::vector" ,&event.pXonSideA,128000,1);
+        this->GetTree()->Branch("pY_on_A", "std::vector" ,&event.pYonSideA,128000,1);
+        this->GetTree()->Branch("pZ_on_A", "std::vector" ,&event.pZonSideA,128000,1);
+        this->GetTree()->Branch("pX_on_B", "std::vector" ,&event.pXonSideB,128000,1);
+        this->GetTree()->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
+        this->GetTree()->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
+    }
+
+    this->GetTree()->Branch("impact_parameter", &event.b, "impact_parameter/f");
+
+    this->GetTree()->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
+    this->GetTree()->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
+    this->GetTree()->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
+    this->GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
+    this->GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
+    this->GetTree()->Branch("id", &event.id, "id/i");
+    this->GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
+    this->GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
+    this->GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
+    this->GetTree()->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
+    this->GetTree()->Branch("Nhard", &event.Nhard, "Nhard/I");
+    this->GetTree()->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
+    this->GetTree()->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
+    this->GetTree()->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
+    this->GetTree()->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
+    this->GetTree()->Branch("Npart", &event.Npart, "Npart/I");
+    this->GetTree()->Branch("NpartA", &event.NpartA, "NpartA/I");
+    this->GetTree()->Branch("NpartB", &event.NpartB, "NpartB/I");
+
+    this->GetTreeMST()->Branch("Aa_cl", "std::vector" ,&event.A_cl);
+    this->GetTreeMST()->Branch("Za_cl", "std::vector" ,&event.Z_cl);
+    this->GetTreeMST()->Branch("d", &event.d_MstA ,"d/d");
+    this->GetTreeMST()->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
+    this->GetTreeMST()->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
+    this->GetTreeMST()->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
+    this->GetTreeMST()->Branch("d_b", &event.d_MstB ,"d/d");
+    this->GetTreeMST()->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
+
+    if(this->WritePseudorapidity()){
+        this->GetTree()->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A);
+        this->GetTree()->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B);
+    }
+    if(this->WriteMomentum()){
+        this->GetTree()->Branch("pX_on_A", "std::vector" ,&event.pXonSideA,128000,1);
+        this->GetTree()->Branch("pY_on_A", "std::vector" ,&event.pYonSideA,128000,1);
+        this->GetTree()->Branch("pZ_on_A", "std::vector" ,&event.pZonSideA,128000,1);
+        this->GetTree()->Branch("pX_on_B", "std::vector" ,&event.pXonSideB,128000,1);
+        this->GetTree()->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
+        this->GetTree()->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
+    }
+
+    this->GetTree()->Branch("impact_parameter", &event.b, "impact_parameter/f");
+
+    this->GetTree()->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
+    this->GetTree()->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
+    this->GetTree()->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
+    this->GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
+    this->GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
+
+    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEn, "Ex_En_per_nucleon/f");
+
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
+
+    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEn, "Ex_En_per_nucleon/f");
+
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
+    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
 }

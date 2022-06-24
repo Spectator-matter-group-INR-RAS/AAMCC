@@ -18,17 +18,7 @@
 #include "G4ExcitationHandler.hh"
 #include "G4NucleiProperties.hh"
 #include "G4Evaporation.hh"
-#include "GRATEmanager.hh"
-#include "InitialConditions.hh"
-#include "ExcitationEnergy.hh"
-//#include "DeexcitationHandler.hh"
-#include "GRATEPhysicsList.hh"
-#include "TGlauber/TGlauberMC.hh"
-#include "TGlauber/TGlauNucleon.hh"
-#include "TGlauber/TGlauNucleus.hh"
-#include "TVector3.h"
-#include "TObjArray.h"
-#include "TObject.h"
+
 #include "Randomize.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4Threading.hh"
@@ -39,17 +29,29 @@
 #include "G4DeexPrecoParameters.hh"
 #include "G4NuclearLevelData.hh"
 
-#include "include/GMSTClustering.hh"
+#include "TVector3.h"
+#include "TObjArray.h"
+#include "TObject.h"
+#include "TFile.h"
+#include "TH1D.h"
+#include "TH2D.h"
 
+#include "GRATEmanager.hh"
+/*#include "InitialConditions.hh"
+#include "ExcitationEnergy.hh"
+//#include "DeexcitationHandler.hh"
+#include "GRATEPhysicsList.hh"
+#include "TGlauber/TGlauberMC.hh"
+#include "TGlauber/TGlauNucleon.hh"
+#include "TGlauber/TGlauNucleus.hh"
+
+#include "include/GMSTClustering.hh"
+*/
 #include "GlauberCollisionReader.hh"
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 
 #include <fstream>
-
- #include "TFile.h"
- #include "TH1D.h"
- #include "TH2D.h" 
 
 
 int main()
@@ -108,7 +110,7 @@ int main()
 
     // Histograms will be booked now.
     histoManager.BookHisto();
-    histoManager.GetTree()->Branch("id", &event.id, "id/i");
+    /*histoManager.GetTree()->Branch("id", &event.id, "id/i");
     histoManager.GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
     histoManager.GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
     histoManager.GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
@@ -161,7 +163,7 @@ int main()
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
     histoManager.GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
-
+*/
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
     G4int sourceAb = histoManager.GetInitialContidions().GetSourceAb();
@@ -423,8 +425,9 @@ int main()
             event.ClustNumB = event.Ab_cl.size();
 
             //Filling histo-s + cleaning
-            histoManager.GetTreeMST()->Fill();
-            histoManager.GetTreeFermiMom()->Fill();
+            histoManager.FillEvent(&event);
+           /* histoManager.GetTreeMST()->Fill();
+            histoManager.GetTreeFermiMom()->Fill();*/
             event.A_cl.clear();
             event.Z_cl.clear();
             event.Ab_cl.clear();
