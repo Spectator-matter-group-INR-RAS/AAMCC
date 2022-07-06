@@ -396,7 +396,7 @@ void GRATEmanager::InitTree() {
     this->GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
     this->GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
 
-    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEn, "Ex_En_per_nucleon/f");
+    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEnA, "Ex_En_per_nucleon/f");
 
     this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
     this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
@@ -405,7 +405,7 @@ void GRATEmanager::InitTree() {
     this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
     this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
 
-    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEn, "Ex_En_per_nucleon/f");
+    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEnA, "Ex_En_per_nucleon/f");
 
     this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
     this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");

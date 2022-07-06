@@ -39,20 +39,6 @@
 #include "VCollisionReader.hh"
 #endif
 
-class AAMCC {
-public:
-    explicit AAMCC();
-    ~AAMCC();
-
-    template <class CollisionGeneratorOut>
-           G4ReactionProductVector* Do(CollisionGeneratorOut * CollisionOut);
-
-private:
-    ExcitationEnergy* ExEnA;
-    ExcitationEnergy* ExEnB;
-
-};
-
 struct AAMCCEvent{
 
     std::vector<G4float> MassOnSideA;
@@ -69,7 +55,8 @@ struct AAMCCEvent{
     std::vector<G4double> pseudorapidity_B;
 
     G4float b;
-    G4float ExEn;
+    G4float ExEnA;
+    G4float ExEnB;
     G4int id;
     G4int Nhard;
     G4int Ncoll;
@@ -103,4 +90,27 @@ struct AAMCCEvent{
     std::vector<G4int> Zb_cl;
 
 };
+
+class AAMCC {
+public:
+    explicit AAMCC();
+    ~AAMCC();
+
+    template <class CollisionGeneratorOut>
+           G4ReactionProductVector* Do(CollisionGeneratorOut * CollisionOut);
+
+    inline G4double GetZpfA(AAMCCEvent ev){G4double Zpf = 0; for(auto iZ = ev.ChargeOnSideA.begin(); iZ != ev.ChargeOnSideA.end(); ++iZ){Zpf += *iZ;}; return Zpf;};
+    inline G4double GetZpfB(AAMCCEvent ev){G4double Zpf = 0; for(auto iZ = ev.ChargeOnSideB.begin(); iZ != ev.ChargeOnSideB.end(); ++iZ){Zpf += *iZ;}; return Zpf;};
+    inline G4double GetApfA(AAMCCEvent ev){G4double Apf = 0; for(auto iA = ev.MassOnSideA.begin(); iA != ev.MassOnSideA.end(); ++iA){Apf += *iA;}; return Apf;};
+    inline G4double GetApfB(AAMCCEvent ev){G4double Apf = 0; for(auto iA = ev.MassOnSideB.begin(); iA != ev.MassOnSideB.end(); ++iA){Apf += *iA;}; return Apf;};
+    inline G4double GetMultA(AAMCCEvent ev){return ev.ChargeOnSideA.size();};
+    inline G4double GetMultB(AAMCCEvent ev){return ev.ChargeOnSideB.size();};
+
+
+private:
+    ExcitationEnergy* ExEnA;
+    ExcitationEnergy* ExEnB;
+
+};
+
 #endif

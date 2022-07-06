@@ -221,8 +221,9 @@ int main()
             // Excitation energy is calculated only for unstable clusters
             G4double energy_A = ExEnA->GetEnergy(A);
             G4double energy_B = ExEnB->GetEnergy(Ab);
-            event.ExEn = energy_A/G4double(A);
-            histoManager.GetHisto2(1)->Fill(event.ExEn, G4double(A)/sourceA);
+            event.ExEnA = energy_A / G4double(A);
+            event.ExEnB = energy_B/G4double(Ab);
+            histoManager.GetHisto2(1)->Fill(event.ExEnA, G4double(A) / sourceA);
 
 
             CLHEP::HepLorentzVector Fermi4MomA = FermiMom.GetLorentzVector("A");
@@ -244,13 +245,13 @@ int main()
             event.d_MstA = clusters->GetCD("A");
             event.d_MstB = clusters->GetCD("B");
 
-            histoManager.GetHisto2(7)->Fill(event.ExEn , event.d_MstA);
+            histoManager.GetHisto2(7)->Fill(event.ExEnA , event.d_MstA);
 
             for(G4int i = 0; i < MstClustersVector.at(0).size(); ++i) {
 
                 G4Fragment aFragment = (*MstClustersVector.at(0).at(i));
                 G4LorentzVector p4 = aFragment.GetMomentum();
-                //if((aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()) - ExEn*aFragment.GetA() !=0) && aFragment.GetA() != 1){std::cout<<"dE_x = "<<(aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()))/aFragment.GetA() - ExEn<<"\n";}
+                //if((aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()) - ExEnA*aFragment.GetA() !=0) && aFragment.GetA() != 1){std::cout<<"dE_x = "<<(aFragment.GetMomentum().m() - G4NucleiProperties::GetNuclearMass(aFragment.GetA(), aFragment.GetZ()))/aFragment.GetA() - ExEnA<<"\n";}
                 event.A_cl.push_back(aFragment.GetA());
                 event.Z_cl.push_back(aFragment.GetZ());
                 G4double eta_A = 0;
