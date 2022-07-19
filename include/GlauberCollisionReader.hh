@@ -8,6 +8,7 @@ public:
     ~GlauberCollisionReader() = default;
     void Read(TObjArray* nucleons_in);
     NucleonVector GetNucleons();
+    inline NucleonVector GetNucleons(TObjArray* nucleons_in) {this->Read(nucleons_in); return GetNucleons();};
 
 private:
     NucleonVector nucleonVector;

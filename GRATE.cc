@@ -308,8 +308,9 @@ int main()
         G4int Ab = 0;
         G4int Zb = 0;
 
-        reader.Read(nucleons);
-        nV = reader.GetNucleons();
+        //reader.Read(nucleons);
+        //nV = reader.GetNucleons();
+        nV = reader.GetNucleons(nucleons);
         Z = nV.GetZ("A"); A = nV.GetA("A"); Zb = nV.GetZ("B"); Ab = nV.GetA("B");
 
         if(!(A == 0 && Ab ==0)){
