@@ -33,6 +33,10 @@ public:
     inline G4String GetSysA()     {return  SysA;};
     inline G4String GetSysB()     {return  SysB;};
 
+public:
+
+    G4double GetXsectNN(); //in barn
+
 private:
     G4double KinEn;
     G4double SqrtSnn;
@@ -48,6 +52,7 @@ private:
     G4String SysA;
     G4String SysB;
 
+    G4double XsectNN = -1;
 };
 
 #endif

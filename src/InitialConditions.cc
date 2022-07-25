@@ -97,4 +97,43 @@ void InitialConditions::SetKinematics(G4double Energy_in) {
     PzB*= sourceAb*GeV;
 }
 
+G4double InitialConditions::GetXsectNN() {
+    std::ifstream XsectFile;
+
+    if(XsectNN < 0) {
+        G4double shadowing = 41.5 / 70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
+        G4double KinEnAtFixTarget = 0;
+        if (IsCollider) { KinEnAtFixTarget = (2.0 * (KinEn + nucleonAverMass * G4double(sourceA)) *
+                                              (KinEn + nucleonAverMass * G4double(sourceA)) /
+                                              (nucleonAverMass * G4double(sourceA) * nucleonAverMass *
+                                               G4double(sourceA)) - 1.0) * nucleonAverMass * G4double(sourceA);
+        }
+        else { KinEnAtFixTarget = KinEn; }
+
+        if (KinEnAtFixTarget / G4double(sourceA) < 425 * GeV) {
+            G4double Tkin[2] = {0};
+            G4double xsect[2] = {-1};
+            std::string filepath(__FILE__);
+            std::string filename(basename(__FILE__));
+            filepath.erase(filepath.length() - filename.length(), filename.length());
+            filepath += "bystricky.dat";
+            XsectFile.open(filepath.c_str());
+            while (Tkin[0] * GeV < KinEnAtFixTarget / G4double(sourceA)) {
+                Tkin[0] = Tkin[1];
+                xsect[0] = xsect[1];
+                XsectFile >> Tkin[1] >> xsect[1];
+                if (!XsectFile.good()) break;
+            }
+            G4double a = (xsect[1] - xsect[0]) / (Tkin[1] - Tkin[0]);
+            G4double b = xsect[1] - a * Tkin[1];
+            XsectNN = a * KinEnAtFixTarget / (G4double(sourceA) * GeV) + b;
+        } else {
+            G4double S = SqrtSnn * SqrtSnn;
+            XsectNN = 25.0 + 0.146 * pow(log(S / (GeV * GeV)), 2);
+        }
+        //XsectNN *= shadowing;
+    }
+    return XsectNN;
+}
+
 

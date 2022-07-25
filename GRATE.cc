@@ -132,9 +132,9 @@ int main()
     handlerNew->SetMinExForFermiBreakUp(0.01*MeV);
     handlerNew->SetExForMF(3*MeV, 5*MeV);
     //Setting up Glauber code
-    histoManager.CalcXsectNN();
+    //histoManager.CalcXsectNN();
     G4float omega = -1;
-    G4float signn = histoManager.GetXsectNN();
+    G4float signn = histoManager.GetInitialContidions().GetXsectNN();
     auto seed = static_cast<unsigned long int>(*CLHEP::HepRandom::getTheSeeds()); //setting the same seed to TGlauber
 
     TGlauberMC *mcg=new TGlauberMC(histoManager.GetInitialContidions().GetSysA(),histoManager.GetInitialContidions().GetSysB(),signn,omega,seed);
