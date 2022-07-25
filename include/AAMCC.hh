@@ -1,8 +1,5 @@
-#pragma  once
-
 #ifndef AAMCC_h
 #define AAMCC_h 1
-
 
 #include "G4SystemOfUnits.hh"
 
