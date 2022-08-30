@@ -1,7 +1,7 @@
-#ifndef VCollisionReader_h
-#define VCollisionReader_h 1
+//#ifndef VCollisionReader_h
+//#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
-#endif
+//#endif
 
 
 #include "../TGlauber/TGlauNucleon.hh"

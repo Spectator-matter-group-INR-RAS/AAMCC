@@ -1,13 +1,15 @@
 #ifndef AAMCC_h
 #define AAMCC_h 1
 
+
 #include "G4SystemOfUnits.hh"
 
 #include "G4ReactionProductVector.hh"
 #include "InitialConditions.hh"
 #include "ExcitationEnergy.hh"
 #include "DeexcitationHandler.hh"
-//#include "Nucleon.hh"
+#include "Nucleon.hh"
+#include "AAMCConstants.hh"
 #include "GRATEPhysicsList.hh"
 #include "../TGlauber/TGlauberMC.hh"
 #include "../TGlauber/TGlauNucleon.hh"
@@ -34,70 +36,11 @@
 #include "TH1D.h"
 #include "TH2D.h"
 
-#ifndef VCollisionReader_h
-#define VCollisionReader_h 1
+//#ifndef VCollisionReader_h
+//#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
-#endif
+//#endif
 
-struct AAMCCinput{
-    NucleonVector nucleons;
-    G4int ZinitA;
-    G4int AinitA;
-    G4int ZinitB;
-    G4int AinitB;
-};
-
-struct AAMCCEvent{
-
-    std::vector<G4float> MassOnSideA;
-    std::vector<G4float> MassOnSideB;
-    std::vector<G4float> ChargeOnSideA;
-    std::vector<G4float> ChargeOnSideB;
-    std::vector<G4double> pXonSideA;
-    std::vector<G4double> pYonSideA;
-    std::vector<G4double> pZonSideA;
-    std::vector<G4double> pXonSideB;
-    std::vector<G4double> pYonSideB;
-    std::vector<G4double> pZonSideB;
-    std::vector<G4double> pseudorapidity_A;
-    std::vector<G4double> pseudorapidity_B;
-
-    G4float b;
-    G4float ExEnA;
-    G4float ExEnB;
-    G4int id;
-    G4int Nhard;
-    G4int Ncoll;
-    G4int Ncollpp;
-    G4int Ncollpn;
-    G4int Ncollnn;
-    G4int Npart;
-    G4int NpartA;
-    G4int NpartB;
-
-    G4double FermiMomA_x;
-    G4double FermiMomA_y;
-    G4double FermiMomA_z;
-    G4double FermiMomB_x;
-    G4double FermiMomB_y;
-    G4double FermiMomB_z;
-
-    G4float PhiRotA;
-    G4float ThetaRotA;
-    G4float PhiRotB;
-    G4float ThetaRotB;
-    G4float Ecc[10];
-
-    G4int ClustNumA;
-    G4int ClustNumB;
-    G4double d_MstA;
-    G4double d_MstB;
-    std::vector<G4int> A_cl;
-    std::vector<G4int> Z_cl;
-    std::vector<G4int> Ab_cl;
-    std::vector<G4int> Zb_cl;
-
-};
 
 class AAMCC {
 public:

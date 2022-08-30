@@ -136,4 +136,14 @@ G4double InitialConditions::GetXsectNN() {
     return XsectNN;
 }
 
+void InitialConditions::SetConditions(AAMCCinput cond_in) {
+    SetCollider(cond_in.isCollider);
+    SetKinematics(cond_in.KinEnPerNucl);
+    SetSourceZ(cond_in.ZinitA);
+    SetSourceZb(cond_in.ZinitB);
+    SetSourceA(cond_in.AinitA);
+    SetSourceAb(cond_in.AinitB);
+
+}
+
 
