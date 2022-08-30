@@ -39,6 +39,14 @@
 #include "VCollisionReader.hh"
 #endif
 
+struct AAMCCinput{
+    NucleonVector nucleons;
+    G4int ZinitA;
+    G4int AinitA;
+    G4int ZinitB;
+    G4int AinitB;
+};
+
 struct AAMCCEvent{
 
     std::vector<G4float> MassOnSideA;
