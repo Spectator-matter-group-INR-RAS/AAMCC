@@ -130,11 +130,19 @@ G4FragmentVector * G4StatMFChannel::GetFragments(G4int anA,
 						 G4int anZ,
 						 G4double T)
 {
-  // calculate momenta of charged fragments  
+  if(_NumOfChargedFragments > 1){
+    // calculate momenta of fragments
+    FragmentsMomenta(_NumOfNeutralFragments + _NumOfChargedFragments, 0, T);
+    // calculate coulomb repulsion of charged fragments
   CoulombImpulse(anA,anZ,T);
-	
-  // calculate momenta of neutral fragments
-  FragmentsMomenta(_NumOfNeutralFragments, _NumOfChargedFragments, T);
+  }
+  else if (_NumOfNeutralFragments + _NumOfChargedFragments == 1){
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFChannel::GetFragments: only 1 fragment to deal with, multifragmentation didn't happen");
+  }
+  else{
+    // calculate momenta of all fragments together to fulfill the momentum conservation law
+    FragmentsMomenta(_NumOfNeutralFragments + _NumOfChargedFragments, 0, T);
+  }
 
   G4FragmentVector * theResult = new G4FragmentVector;
   std::deque<G4StatMFFragment*>::iterator i;
@@ -149,17 +157,9 @@ void G4StatMFChannel::CoulombImpulse(G4int anA, G4int anZ, G4double T)
   // First, we have to place the fragments inside of the original nucleus volume
   PlaceFragments(anA);
 	
-  // Second, we sample initial charged fragments momenta. There are
-  // _NumOfChargedFragments charged fragments and they start at the begining
-  // of the vector _theFragments (i.e. 0) 
-  FragmentsMomenta(_NumOfChargedFragments, 0, T);
-
-  // Third, we have to figure out the asymptotic momenta of charged fragments 
-  // For taht we have to solve equations of motion for fragments
-
-  if(_NumOfChargedFragments > 1){
+  // Second, we have to figure out the asymptotic momenta of charged fragments
+  // For that we have to solve equations of motion for fragments
     SolveEqOfMotion(anA,anZ,T);
-  }
 
   return;
 }
@@ -358,11 +358,15 @@ void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
   G4ThreeVector * Accel = new G4ThreeVector[_NumOfChargedFragments];
 
   G4int i;
-  for (i = 0; i < _NumOfChargedFragments; i++) 
+  G4double KineticEnergy = 0;
+  G4ThreeVector p(0.,0.,0.);
+
+  for (i = 0; i < _NumOfChargedFragments; i++)
   {
-    Vel[i] = (1.0/(_theFragments[i]->GetNuclearMass()))*
-    _theFragments[i]->GetMomentum();
+    p = _theFragments[i]->GetMomentum();
+    Vel[i] = (1.0/(_theFragments[i]->GetNuclearMass()))*p;
     Pos[i] = _theFragments[i]->GetPosition();
+    KineticEnergy += p.mag2()/(2.0*_theFragments[i]->GetNuclearMass());
   }
 
   G4ThreeVector distance(0.,0.,0.);
@@ -397,7 +401,6 @@ void G4StatMFChannel::SolveEqOfMotion(G4int anA, G4int anZ, G4double T)
     TotalKineticEnergy += _theFragments[i]->GetNuclearMass()*0.5*Vel[i].mag2();
   }
   // Scaling of fragment velocities
-  G4double KineticEnergy = 1.5*_NumOfChargedFragments*T;
   G4double Eta = (CoulombEnergy + KineticEnergy) / TotalKineticEnergy;
   for (i = 0; i < _NumOfChargedFragments; i++) {
     Vel[i] *= pow(Eta, 0.5);

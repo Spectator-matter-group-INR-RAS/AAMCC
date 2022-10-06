@@ -36,7 +36,7 @@
 // Copy constructor
 G4VStatMFMacroCluster::G4VStatMFMacroCluster(const G4VStatMFMacroCluster & )
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::copy_constructor meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::copy_constructor meant to not be accessible");
 }
 
 // Operators
@@ -44,21 +44,21 @@ G4VStatMFMacroCluster::G4VStatMFMacroCluster(const G4VStatMFMacroCluster & )
 G4VStatMFMacroCluster & G4VStatMFMacroCluster::
 operator=(const G4VStatMFMacroCluster & )
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::operator= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::operator= meant to not be accessible");
     return *this;
 }
 
 
 G4bool G4VStatMFMacroCluster::operator==(const G4VStatMFMacroCluster & ) const
 {
-//	throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::operator== meant to not be accessable");
+//	throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::operator== meant to not be accessible");
     return false;
 }
  
 
 G4bool G4VStatMFMacroCluster::operator!=(const G4VStatMFMacroCluster & ) const
 {
-//	throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::operator!= meant to not be accessable");
+//	throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFMacroCluster::operator!= meant to not be accessible");
     return true;
 }
 

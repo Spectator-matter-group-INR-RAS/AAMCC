@@ -43,20 +43,20 @@
 G4StatMFMacroMultiplicity & 
 G4StatMFMacroMultiplicity::operator=(const G4StatMFMacroMultiplicity & ) 
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiplicity::operator= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiplicity::operator= meant to not be accessible");
     return *this;
 }
 
 G4bool G4StatMFMacroMultiplicity::operator==(const G4StatMFMacroMultiplicity & ) const 
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiplicity::operator== meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiplicity::operator== meant to not be accessible");
     return false;
 }
 
 
 G4bool G4StatMFMacroMultiplicity::operator!=(const G4StatMFMacroMultiplicity & ) const 
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiplicity::operator!= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiplicity::operator!= meant to not be accessible");
     return true;
 }
 

@@ -35,7 +35,7 @@
 // Copy constructor
 G4VStatMFEnsemble::G4VStatMFEnsemble(const G4VStatMFEnsemble & )
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::copy_constructor meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::copy_constructor meant to not be accessible");
 }
 
 // Operators
@@ -43,21 +43,21 @@ G4VStatMFEnsemble::G4VStatMFEnsemble(const G4VStatMFEnsemble & )
 G4VStatMFEnsemble & G4VStatMFEnsemble::
 operator=(const G4VStatMFEnsemble & )
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::operator= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::operator= meant to not be accessible");
     return *this;
 }
 
 
 G4bool G4VStatMFEnsemble::operator==(const G4VStatMFEnsemble & ) const
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::operator== meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::operator== meant to not be accessible");
     return false;
 }
  
 
 G4bool G4VStatMFEnsemble::operator!=(const G4VStatMFEnsemble & ) const
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::operator!= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4VStatMFEnsemble::operator!= meant to not be accessible");
     return true;
 }
 
