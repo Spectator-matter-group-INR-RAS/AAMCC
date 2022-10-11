@@ -1,12 +1,10 @@
-#ifndef AAMCConstants_h
-#define AAMCConstants_h 1
+//#ifndef AAMCConstants_h
+//#define AAMCConstants_h 1
 
+#pragma once
 #include "G4SystemOfUnits.hh"
 #include "Nucleon.hh"
 static constexpr double nucleonAverMass = 0.93891875434*CLHEP::GeV;
-
-
-
 
 struct AAMCCEvent{
 
@@ -68,8 +66,29 @@ struct AAMCCinput{
     G4int ZinitB;
     G4int AinitB;
 
+    G4String SysA;
+    G4String SysB;
+    G4String fileName;
+
     G4double KinEnPerNucl;
     G4bool isCollider;
 };
 
-#endif
+struct AAMCCrun{
+    G4int ZinitA;
+    G4int AinitA;
+    G4int ZinitB;
+    G4int AinitB;
+
+    G4String SysA;
+    G4String SysB;
+    G4String fileName;
+
+    G4double KinEnPerNucl;
+    G4bool isCollider;
+
+    G4int iterations;
+};
+
+
+//#endif

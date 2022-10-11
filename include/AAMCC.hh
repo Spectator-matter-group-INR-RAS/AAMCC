@@ -41,7 +41,6 @@
 #include "VCollisionReader.hh"
 //#endif
 
-
 class AAMCC {
 public:
     explicit AAMCC();
