@@ -47,7 +47,7 @@ G4StatMFMacroMultiNucleon::
 G4StatMFMacroMultiNucleon() :
     G4VStatMFMacroCluster(0)  // Beacuse the def. constr. of base class is private
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::default_constructor meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::default_constructor meant to not be accessible");
 }
 
 // Copy constructor
@@ -55,7 +55,7 @@ G4StatMFMacroMultiNucleon::
 G4StatMFMacroMultiNucleon(const G4StatMFMacroMultiNucleon & ) :
     G4VStatMFMacroCluster(0)  // Beacuse the def. constr. of base class is private
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::copy_constructor meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::copy_constructor meant to not be accessible");
 }
 
 // Operators
@@ -63,13 +63,13 @@ G4StatMFMacroMultiNucleon(const G4StatMFMacroMultiNucleon & ) :
 G4StatMFMacroMultiNucleon & G4StatMFMacroMultiNucleon::
 operator=(const G4StatMFMacroMultiNucleon & ) 
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::operator= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::operator= meant to not be accessible");
     return *this;
 }
 
 G4bool G4StatMFMacroMultiNucleon::operator==(const G4StatMFMacroMultiNucleon & ) const
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::operator== meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroMultiNucleon::operator== meant to not be accessible");
     return false;
 }
  

@@ -44,20 +44,20 @@ static const G4double degeneracy = 3.0;
 G4StatMFMacroBiNucleon & G4StatMFMacroBiNucleon::
 operator=(const G4StatMFMacroBiNucleon & )
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroBiNucleon::operator= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroBiNucleon::operator= meant to not be accessible");
     return *this;
 }
 
 G4bool G4StatMFMacroBiNucleon::operator==(const G4StatMFMacroBiNucleon & ) const
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroBiNucleon::operator== meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroBiNucleon::operator== meant to not be accessible");
     return false;
 }
  
 
 G4bool G4StatMFMacroBiNucleon::operator!=(const G4StatMFMacroBiNucleon & ) const
 {
-    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroBiNucleon::operator!= meant to not be accessable");
+    throw G4HadronicException(__FILE__, __LINE__, "G4StatMFMacroBiNucleon::operator!= meant to not be accessible");
     return true;
 }
 

@@ -6,6 +6,7 @@
 #include "cmath"
 #include "G4SystemOfUnits.hh"
 #include <fstream>
+#include "AAMCConstants.hh"
 
 class InitialConditions {
 public:
@@ -46,7 +47,6 @@ private:
     G4String SysA;
     G4String SysB;
 
-    G4double  nucleonAverMass = 0.931494;
 };
 
 #endif
