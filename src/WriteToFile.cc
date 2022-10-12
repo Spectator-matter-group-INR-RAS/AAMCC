@@ -1,10 +1,4 @@
-#include "G4SystemOfUnits.hh"
-#include "AAMCC.hh"
-#include "TTree.h"
-#include "TFile.h"
-#include "TH1D.h"
-#include "TH2D.h"
-#include <mutex>
+#include "WriteToFile.hh"
 
 std::once_flag flag;
 
@@ -15,6 +9,8 @@ TTree* tClusters;
 TTree* tFermiMom;
 TH1D*  histo[20];
 TH2D*  histo2[10];
+
+int calls = 0;
 
 AAMCCEvent event;
 
@@ -155,7 +151,9 @@ void WriteTrees(AAMCCEvent ev){
     tFermiMom->Fill();
 }
 
-void WriteToFile(AAMCCEvent ev, AAMCCrun run, NucleonVector nucleons){
+void WriteToFile(AAMCCEvent* ev, AAMCCrun run, NucleonVector* nucleons){
     std::call_once(flag,Initialize, run);
-    WriteTrees(ev);
+    WriteTrees((*ev));
+    calls++;
+    if(calls == run.iterations) rFile->Write();
 };

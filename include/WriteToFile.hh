@@ -1,8 +1,7 @@
-//
-// Created by alexsvetlichnyy on 12.10.22.
-//
-
-#ifndef GRATE_WRITETOFILE_HH
-#define GRATE_WRITETOFILE_HH
-
-#endif //GRATE_WRITETOFILE_HH
+#include "G4SystemOfUnits.hh"
+#include "AAMCC.hh"
+#include "TTree.h"
+#include "TFile.h"
+#include "TH1D.h"
+#include "TH2D.h"
+#include <mutex>

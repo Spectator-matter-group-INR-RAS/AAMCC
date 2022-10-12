@@ -45,6 +45,7 @@ class GRATEmanager
   void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b);
   void FillEventTree(AAMCCEvent* ev_in);
   void FillHisto(AAMCCEvent ev);
+  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, void (*func)(AAMCCEvent*, AAMCCrun, NucleonVector*));
   void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);  
 
   inline G4String GetSysA() {return SysA;}
@@ -129,6 +130,7 @@ class GRATEmanager
 
   InitialConditions* InCond = new InitialConditions();
   AAMCCEvent event;
+  AAMCCrun runData;
 
   std::ifstream XsectFile;
 

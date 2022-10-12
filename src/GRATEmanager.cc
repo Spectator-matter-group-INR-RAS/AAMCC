@@ -126,8 +126,11 @@ GRATEmanager::GRATEmanager()
   std::cout << "Please enter the file name to write histograms (.root will be supplied): ";
   std::cin >> fileName; 
 
-  for (G4int j=0; j<20; j++) histo[j] = 0;
-  for (G4int l=0; l<10; l++) histo2[l] = 0;
+  runData.ZinitA = sourceZ; runData.ZinitB = sourceZb; runData.AinitA = sourceA; runData.AinitB = sourceAb; runData.SysA = SysA; runData.SysB = SysB; runData.fileName = fileName;
+  runData.KinEnPerNucl = KinEn; runData.isCollider = IsCollider; runData.iterations = iterations;
+
+  //for (G4int j=0; j<20; j++) histo[j] = 0;
+  //for (G4int l=0; l<10; l++) histo2[l] = 0;
 }
 
 
@@ -416,4 +419,8 @@ void GRATEmanager::InitTree() {
 }
 
 void GRATEmanager::FillHisto(AAMCCEvent ev) {
+}
+
+void GRATEmanager::ToFile(AAMCCEvent* event, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun, NucleonVector*)) {
+ toFile(event, runData, nucleons);
 }
