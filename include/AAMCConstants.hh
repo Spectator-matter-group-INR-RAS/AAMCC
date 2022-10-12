@@ -88,6 +88,9 @@ struct AAMCCrun{
     G4bool isCollider;
 
     G4int iterations;
+
+    G4double XsectNN;
+    G4double XsectTot;
 };
 
 

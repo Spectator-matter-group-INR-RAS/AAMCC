@@ -110,6 +110,11 @@ void InitTrees(AAMCCrun run){
     tFermiMom->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
     tFermiMom->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
     tFermiMom->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
+
+}
+
+void InitRunTree(AAMCCrun run){
+    //needs a realisation
 }
 
 void InitHisto(AAMCCrun run){
@@ -142,18 +147,26 @@ void Initialize(AAMCCrun run){
     InitFile(run);
     InitTrees(run);
     InitHisto(run);
+    InitRunTree(run);
 };
 
-void WriteTrees(AAMCCEvent ev){
+void FillTrees(AAMCCEvent ev){
     event = ev;
     tGlauber->Fill();
     tClusters->Fill();
     tFermiMom->Fill();
+    //tRun->Fill(); //should be activated after reslisation of InitRunTree();
+}
+
+void FillHisto(AAMCCEvent ev, NucleonVector nucleons){
+    //needs a realisation
 }
 
 void WriteToFile(AAMCCEvent* ev, AAMCCrun run, NucleonVector* nucleons){
     std::call_once(flag,Initialize, run);
-    WriteTrees((*ev));
+    FillTrees((*ev));
+    FillHisto((*ev), (*nucleons));
     calls++;
-    if(calls == run.iterations) rFile->Write();
+    if(calls == run.iterations) {rFile->Write();
+    G4cout << "\n----> Data were written into the file " << run.fileName+".root" << G4endl;}
 };

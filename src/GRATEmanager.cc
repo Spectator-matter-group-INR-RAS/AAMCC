@@ -138,89 +138,6 @@ GRATEmanager::~GRATEmanager()
 {
 }
 
-void GRATEmanager::BookHisto()
-{
-  // Open a file to keep histograms inside it
-  if ( fileName.empty()) fileName = "GRATE_"+SysA+SysB+"_"+std::to_string(KinEn/GeV)+"_GeV_"+std::to_string(iterations)+"_events";
-  fileType = "root";
-  fileFullName = fileName+"."+fileType;
-  compressionFactor = 9;
-  fFile = new TFile(fileFullName, "RECREATE", fileName, compressionFactor);
-  //Creating a Trees
-  Glauber = new TTree("Glauber","Events from glauber modeling");
-  modelingCo = new TTree("Conditions","preconditions for modeling");
-  Clusters = new TTree("MST-Clusters","TTree to store clusters");
-  FermiMom = new TTree("FermiMomentum", "Fermi momentum");
-  // Book all histograms there ...
-  histo[0] =  new TH1D("Charge distruibution for side B"," ;Z;entries",sourceZb+1,-0.5, sourceZb+0.5); 
-
-  histo[1] =  new TH1D("M distr"," ;M;entries",100, -0.5, 100+0.5);
-
-  histo[2] =  new TH1D("pz for neutrons, side A",";pz;",1e+3,InCond->GetPzA()/MeV/InCond->GetSourceA() - 20e+3, InCond->GetPzA()/MeV/InCond->GetSourceA() + 20e+3);
-  histo[3] =  new TH1D("pz for protons, side A"," ;pz;",1e+3, InCond->GetPzA()/MeV/InCond->GetSourceA() - 20e+3, InCond->GetPzA()/MeV/InCond->GetSourceA() + 20e+3);
-  histo[4] =  new TH1D("pz (2 < Z < 20), side A"," ;pz;",1e+3, InCond->GetPzA()/MeV/20 - 500e+3, InCond->GetPzA()/MeV/20 + 800e+3);
-  histo[5] =  new TH1D("pz (Z > 20), side A"," ;pz;",1e+3, InCond->GetPzA()/MeV/2 - 1.5e+6, InCond->GetPzA()/MeV/2 + 2e+6);
-
-
-  histo[6] =  new TH1D("Charge distruibution"," ;Z;entries",sourceZ+1,-0.5, sourceZ+0.5);
-
-  histo[7] =  new TH1D("Mass distribution", " ;A,entries",sourceA,0.5, sourceA+0.5);
-
-  histo2[1] = new TH2D("Ex En distribution, side A"," ;E*/A;A_{pf}/A",300, 0, 15, sourceA+1, 0, 1);
-
-  histo2[2] = new TH2D("Mass and Charge distribution"," ;Z;A",sourceZ+1, -0.5, sourceZ+0.5, sourceA+1, -0.5, sourceA+0.5);
-
-  histo2[3] = new TH2D("px vs py for neutrons", ";px;py", 100,-200,200,100,-200,200);
-  histo2[4] = new TH2D("px vs py for protons", ";px;py", 100,-200,200,100,-200,200);
-  histo2[5] = new TH2D("px vs py for IMF", ";px;py", 100,-200,200,100,-200,200);
-  histo2[6] = new TH2D("px vs py for heavy fragments", ";px;py", 100,-200,200,100,-200,200);
-  histo2[7] = new TH2D("Ex En VS d, side A"," ;E*/A;d",300, 0, 15, 280, 0, CritDist + 0.5);
-  histo2[8] = new TH2D("fermi px vs fermi py for deltaA = 1", ";px;py", 50,-200,200,100,-200,200);
-
-  G4int Rmax = 20;
-  G4int Num_ent = 1200;
-  histo[8] = new TH1D ("Neutron distribution A", ";R;entries", Num_ent, 0, Rmax);
-  histo[9] = new TH1D ("Proton distribution A", ";R;entries", Num_ent, 0, Rmax);
-  histo[10] = new TH1D("Neutron distribution B", ";R;entries", Num_ent, 0, Rmax);
-  histo[11] = new TH1D("Proton distribution B", ";R;entries", Num_ent, 0, Rmax);
-
-  this->InitTree();
-
-  G4cout << "Histograms will be written to " << fileFullName << G4endl;
-}
-
-
-void GRATEmanager::CalcXsectNN()
-{
-  G4double shadowing = 41.5/70; //according to Eskola K.J. et al. PHYSICAL REVIEW LETTERS 125, 212301 (2020)
-  G4double KinEnAtFixTarget = 0;
-  if(IsCollider){KinEnAtFixTarget = (2.0*(KinEn + nucleonAverMass*G4double(sourceA))*(KinEn + nucleonAverMass*G4double(sourceA))/(nucleonAverMass*G4double(sourceA)*nucleonAverMass*G4double(sourceA)) - 1.0)*nucleonAverMass*G4double(sourceA);}
-  else{KinEnAtFixTarget = KinEn;}
-
-  if(KinEnAtFixTarget/G4double(sourceA) < 425*GeV){
-    G4double Tkin[2] = {0};
-    G4double xsect[2] = {-1};
-    std::string filepath(__FILE__);
-    std::string filename(basename(__FILE__));
-    filepath.erase(filepath.length() - filename.length(), filename.length());
-    filepath += "bystricky.dat";
-    XsectFile.open(filepath.c_str());
-    while (Tkin[0]*GeV < KinEnAtFixTarget/G4double(sourceA)) {
-      Tkin[0] = Tkin[1];	
-      xsect[0] = xsect[1];
-      XsectFile >> Tkin[1] >> xsect[1];
-      if (!XsectFile.good()) break;
-    }
-    G4double a = (xsect[1]-xsect[0])/(Tkin[1]-Tkin[0]);
-    G4double b = xsect[1] - a*Tkin[1];
-    XsectNN = a*KinEnAtFixTarget/(G4double(sourceA)*GeV)+b;
-  }
-  else{
-    G4double S = SqrtSnn*SqrtSnn;
-    XsectNN = 25.0+0.146*pow(log(S/(GeV*GeV)),2);
-  }
-  //XsectNN *= shadowing;
-}
 
 void GRATEmanager::CalcNucleonDensity(TObjArray* nucleons_pre, G4double b)
 {
@@ -239,16 +156,9 @@ void GRATEmanager::CalcNucleonDensity(TObjArray* nucleons_pre, G4double b)
   }
 }
 
-void GRATEmanager::CleanHisto()
-{
-  fFile->Write();
-  G4cout << "\n----> Histograms were written into the file " << fileFullName << G4endl;
-  delete fFile;
-}
-
 void GRATEmanager::FillConditionsTree(G4double Xsect)
 {
-  G4double XsectTot = 0;
+  XsectTot = 0;
   G4double KineticEnergy = 0;
   G4double pzA = 0;
   G4double pzB = 0;
@@ -304,123 +214,7 @@ void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_
   Event<<"\nb = "<<b<<" fm \n";
 }
 
-void GRATEmanager::FillEventTree(AAMCCEvent *ev_in) {
-    event = (*ev_in);
-    this->GetTree()->Fill();
-    this->GetTreeMST()->Fill();
-    this->GetTreeFermiMom()->Fill();
-}
-
-void GRATEmanager::InitTree() {
-    this->GetTree()->Branch("id", &event.id, "id/i");
-    this->GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
-    this->GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
-    this->GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
-    this->GetTree()->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
-    this->GetTree()->Branch("Nhard", &event.Nhard, "Nhard/I");
-    this->GetTree()->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
-    this->GetTree()->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
-    this->GetTree()->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
-    this->GetTree()->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
-    this->GetTree()->Branch("Npart", &event.Npart, "Npart/I");
-    this->GetTree()->Branch("NpartA", &event.NpartA, "NpartA/I");
-    this->GetTree()->Branch("NpartB", &event.NpartB, "NpartB/I");
-
-    this->GetTreeMST()->Branch("Aa_cl", "std::vector" ,&event.A_cl);
-    this->GetTreeMST()->Branch("Za_cl", "std::vector" ,&event.Z_cl);
-    this->GetTreeMST()->Branch("d", &event.d_MstA ,"d/d");
-    this->GetTreeMST()->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
-    this->GetTreeMST()->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
-    this->GetTreeMST()->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
-    this->GetTreeMST()->Branch("d_b", &event.d_MstB ,"d/d");
-    this->GetTreeMST()->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
-
-    if(this->WritePseudorapidity()){
-        this->GetTree()->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A);
-        this->GetTree()->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B);
-    }
-    if(this->WriteMomentum()){
-        this->GetTree()->Branch("pX_on_A", "std::vector" ,&event.pXonSideA,128000,1);
-        this->GetTree()->Branch("pY_on_A", "std::vector" ,&event.pYonSideA,128000,1);
-        this->GetTree()->Branch("pZ_on_A", "std::vector" ,&event.pZonSideA,128000,1);
-        this->GetTree()->Branch("pX_on_B", "std::vector" ,&event.pXonSideB,128000,1);
-        this->GetTree()->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
-        this->GetTree()->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
-    }
-
-    this->GetTree()->Branch("impact_parameter", &event.b, "impact_parameter/f");
-
-    this->GetTree()->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
-    this->GetTree()->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
-    this->GetTree()->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
-    this->GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
-    this->GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
-    this->GetTree()->Branch("id", &event.id, "id/i");
-    this->GetTree()->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
-    this->GetTree()->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
-    this->GetTree()->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
-    this->GetTree()->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
-    this->GetTree()->Branch("Nhard", &event.Nhard, "Nhard/I");
-    this->GetTree()->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
-    this->GetTree()->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
-    this->GetTree()->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
-    this->GetTree()->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
-    this->GetTree()->Branch("Npart", &event.Npart, "Npart/I");
-    this->GetTree()->Branch("NpartA", &event.NpartA, "NpartA/I");
-    this->GetTree()->Branch("NpartB", &event.NpartB, "NpartB/I");
-
-    this->GetTreeMST()->Branch("Aa_cl", "std::vector" ,&event.A_cl);
-    this->GetTreeMST()->Branch("Za_cl", "std::vector" ,&event.Z_cl);
-    this->GetTreeMST()->Branch("d", &event.d_MstA ,"d/d");
-    this->GetTreeMST()->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
-    this->GetTreeMST()->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
-    this->GetTreeMST()->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
-    this->GetTreeMST()->Branch("d_b", &event.d_MstB ,"d/d");
-    this->GetTreeMST()->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
-
-    if(this->WritePseudorapidity()){
-        this->GetTree()->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A);
-        this->GetTree()->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B);
-    }
-    if(this->WriteMomentum()){
-        this->GetTree()->Branch("pX_on_A", "std::vector" ,&event.pXonSideA,128000,1);
-        this->GetTree()->Branch("pY_on_A", "std::vector" ,&event.pYonSideA,128000,1);
-        this->GetTree()->Branch("pZ_on_A", "std::vector" ,&event.pZonSideA,128000,1);
-        this->GetTree()->Branch("pX_on_B", "std::vector" ,&event.pXonSideB,128000,1);
-        this->GetTree()->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
-        this->GetTree()->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
-    }
-
-    this->GetTree()->Branch("impact_parameter", &event.b, "impact_parameter/f");
-
-    this->GetTree()->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
-    this->GetTree()->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
-    this->GetTree()->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
-    this->GetTree()->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
-    this->GetTree()->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
-
-    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEnA, "Ex_En_per_nucleon/f");
-
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
-
-    this->GetTree()->Branch("Ex_En_per_nucleon", &event.ExEnA, "Ex_En_per_nucleon/f");
-
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
-    this->GetTreeFermiMom()->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
-}
-
-void GRATEmanager::FillHisto(AAMCCEvent ev) {
-}
-
 void GRATEmanager::ToFile(AAMCCEvent* event, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun, NucleonVector*)) {
+ runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
  toFile(event, runData, nucleons);
 }

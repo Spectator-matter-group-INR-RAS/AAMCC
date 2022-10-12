@@ -109,7 +109,8 @@ class GRATEmanager
   G4String     SysB;
   G4int        compressionFactor;
 
-  G4double XsectNN;
+  G4double XsectNN = -1;
+  G4double XsectTot = 0;
 
   G4double KinEn;
   G4double SqrtSnn;
