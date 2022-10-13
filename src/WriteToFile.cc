@@ -13,6 +13,7 @@ TH2D*  histo2[10];
 int calls = 0;
 
 AAMCCEvent event;
+AAMCCrun runData;
 
 void InitFile(AAMCCrun run){
     std::string fileName;
@@ -26,7 +27,6 @@ void InitFile(AAMCCrun run){
 
 void InitTrees(AAMCCrun run){
     tGlauber = new TTree("Glauber","Events from glauber modeling");
-    tRun = new TTree("Conditions","preconditions for modeling");
     tClusters = new TTree("MST-Clusters","TTree to store clusters");
     tFermiMom = new TTree("FermiMomentum", "Fermi momentum");
 
@@ -114,6 +114,18 @@ void InitTrees(AAMCCrun run){
 }
 
 void InitRunTree(AAMCCrun run){
+    tRun = new TTree("Conditions","preconditions for modeling");
+
+    tRun->Branch("Xsect_total", &runData.XsectTot,"Xsect_total/d");
+    tRun->Branch("Xsect_NN", &runData.XsectNN,"Xsect_total/d");
+    tRun->Branch("Kinetic_energy_per_nucleon_of_projectile_in_MeV", &runData.KinEnPerNucl,"Kinetic_energy_of_per_nucleon_projectile_in_MeV/d");
+    tRun->Branch("SqrtS_nn_in_GeV", &runData.SqrtSnn,"SqrtS_nn_in_GeV/d");
+    tRun->Branch("pZ_in_MeV_on_A", &runData.pzA,"pZ_in_MeV_on_A/d");
+    tRun->Branch("pZ_in_MeV_on_B", &runData.pzB,"pZ_in_MeV_on_B/d");
+    tRun->Branch("Mass_on_A", &runData.AinitA,"Mass_on_A/I");
+    tRun->Branch("Mass_on_B", &runData.AinitB,"Mass_on_B/I");
+    tRun->Branch("Charge_on_A", &runData.ZinitA,"Charge_on_A/I");
+    tRun->Branch("Charge_on_B", &runData.ZinitB,"Charge_on_B/I");
     //needs a realisation
 }
 
@@ -158,15 +170,24 @@ void FillTrees(AAMCCEvent ev){
     //tRun->Fill(); //should be activated after reslisation of InitRunTree();
 }
 
+void FillRunTree(AAMCCrun run){
+    runData = run;
+    tRun->Fill();
+}
+
 void FillHisto(AAMCCEvent ev, NucleonVector nucleons){
     //needs a realisation
 }
 
-void WriteToFile(AAMCCEvent* ev, AAMCCrun run, NucleonVector* nucleons){
-    std::call_once(flag,Initialize, run);
+void WriteToFile(AAMCCEvent* ev, AAMCCrun* run, NucleonVector* nucleons){
+    std::call_once(flag,Initialize, (*run));
     FillTrees((*ev));
     FillHisto((*ev), (*nucleons));
     calls++;
-    if(calls == run.iterations) {rFile->Write();
-    G4cout << "\n----> Data were written into the file " << run.fileName+".root" << G4endl;}
+    if(calls == (*run).iterations) {
+        FillRunTree((*run));
+        rFile->Write();
+        G4cout << "\n----> Data were written into the file " << (*run).fileName+".root" << G4endl;
+        delete rFile;
+    }
 };

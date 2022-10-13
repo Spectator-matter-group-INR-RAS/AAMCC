@@ -25,6 +25,7 @@ public:
     void SetConditions(AAMCCinput cond_in);
 
     inline G4double GetKinEnergy(){return KinEn;};
+	inline G4double GetKinEnergyPerNucl(){return KinEn/G4double(sourceA);};
     inline G4double GetSqrtSnn(){return SqrtSnn;};
     inline G4double GetPzA()      {return PzA;};
     inline G4double GetPzB()      {return PzB;};

@@ -31,21 +31,9 @@ class GRATEmanager
 
   public:
 
-  TH1D* GetHisto(G4int id) {return histo[id];};
-  TTree* GetTree() {return Glauber;};
-  TTree* GetTreeMST() {return Clusters;};
-  TTree* GetTreeFermiMom() {return FermiMom;};
-  TH2D* GetHisto2(G4int id) {return histo2[id];};
- 
-       
-  void BookHisto();
-  void CalcXsectNN();
-  void CleanHisto();
-  void FillConditionsTree(G4double Xsect);
-  void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b);
-  void FillEventTree(AAMCCEvent* ev_in);
-  void FillHisto(AAMCCEvent ev);
-  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, void (*func)(AAMCCEvent*, AAMCCrun, NucleonVector*));
+  TH1D* GetHisto(G4int id) {return histo[id];}; //zombie function waining to the migration of this->CalcNucleonDensity() to the WriteToFile()
+  void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b); //calling it will cause the seg fault
+   void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, void (*func)(AAMCCEvent*, AAMCCrun*, NucleonVector*));
   void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);  
 
   inline G4String GetSysA() {return SysA;}
@@ -74,13 +62,12 @@ class GRATEmanager
   inline G4double GetAngle() {return CLHEP::pi*angle/180;} //Left for the future development of polarized beams
   inline G4bool ToFileOrNot() {return InFileOrNot;}
 
+  inline void SetXsectTot(G4double Xsect){XsectTot = Xsect; runData.XsectTot = XsectTot;};
+
 
   
   private:
 
-  void InitTree();
-  
-  TFile* fFile;
   TH1D*  histo[20];
   TH2D*  histo2[10];
   TTree* Glauber;

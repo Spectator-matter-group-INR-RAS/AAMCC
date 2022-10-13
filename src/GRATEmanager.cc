@@ -18,7 +18,6 @@ GRATEmanager::GRATEmanager()
     sourceZ = InCond->GetSourceZ();
   }
 
-
   NucleusInputLabel = 0;
 
   while(!NucleusInputLabel){
@@ -108,7 +107,7 @@ GRATEmanager::GRATEmanager()
   std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
   std::cin >> InFileOrNot;
 
-
+  /*
   if(!InFileOrNot){
     std::cout<<"Write momentum of each fragment?  (1 - yes, 0 - no) ";
     std::cin>>wM;
@@ -116,7 +115,7 @@ GRATEmanager::GRATEmanager()
     std::cout<<"Write pseudorapidity of each fragments?  (1 - yes, 0 - no) ";
     std::cin>>wP;
   }
-
+*/
 
   while ( ((iterations<2) || (iterations>10000000)) && !InFileOrNot ) {
     std::cout<<"Please enter number of events to be generated: ";
@@ -126,8 +125,11 @@ GRATEmanager::GRATEmanager()
   std::cout << "Please enter the file name to write histograms (.root will be supplied): ";
   std::cin >> fileName; 
 
+  XsectNN = InCond->GetXsectNN();
+
   runData.ZinitA = sourceZ; runData.ZinitB = sourceZb; runData.AinitA = sourceA; runData.AinitB = sourceAb; runData.SysA = SysA; runData.SysB = SysB; runData.fileName = fileName;
-  runData.KinEnPerNucl = KinEn; runData.isCollider = IsCollider; runData.iterations = iterations;
+  runData.KinEnPerNucl = InCond->GetKinEnergyPerNucl(); runData.pzA = InCond->GetPzA(); runData.pzB = InCond->GetPzB(); runData.SqrtSnn = InCond->GetSqrtSnn(); runData.XsectNN = XsectNN;
+  runData.isCollider = IsCollider; runData.iterations = iterations;
 
   //for (G4int j=0; j<20; j++) histo[j] = 0;
   //for (G4int l=0; l<10; l++) histo2[l] = 0;
@@ -156,40 +158,6 @@ void GRATEmanager::CalcNucleonDensity(TObjArray* nucleons_pre, G4double b)
   }
 }
 
-void GRATEmanager::FillConditionsTree(G4double Xsect)
-{
-  XsectTot = 0;
-  G4double KineticEnergy = 0;
-  G4double pzA = 0;
-  G4double pzB = 0;
-  G4double Mass_on_A = 0;
-  G4double Mass_on_B = 0;
-  G4double Charge_on_A = 0;
-  G4double Charge_on_B = 0;
-
-  modelingCo->Branch("Xsect_total", &XsectTot,"Xsect_total/d");
-  modelingCo->Branch("Kinetic_energy_per_nucleon_of_projectile_in_GeV", &KineticEnergy,"Kinetic_energy_of_per_nucleon_projectile_in_GeV/d");
-  modelingCo->Branch("SqrtS_nn_in_GeV", &SqrtSnn,"SqrtS_nn_in_GeV/d");
-  modelingCo->Branch("pZ_in_MeV_on_A", &pzA,"pZ_in_MeV_on_A/d");
-  modelingCo->Branch("pZ_in_MeV_on_B", &pzB,"pZ_in_MeV_on_B/d");
-  modelingCo->Branch("Mass_on_A", &Mass_on_A,"Mass_on_A/d");
-  modelingCo->Branch("Mass_on_B", &Mass_on_B,"Mass_on_B/d");
-  modelingCo->Branch("Charge_on_A", &Charge_on_A,"Charge_on_A/d");
-  modelingCo->Branch("Charge_on_B", &Charge_on_B,"Charge_on_B/d");
-
-  XsectTot = Xsect;
-  SqrtSnn = InCond->GetSqrtSnn()/GeV;
-  KineticEnergy = InCond->GetKinEnergy()/(sourceA*GeV);
-  pzA = InCond->GetPzA()/MeV;
-  pzB = InCond->GetPzB()/MeV;
-  Mass_on_A = InCond->GetSourceA();
-  Mass_on_B = InCond->GetSourceAb();
-  Charge_on_A = InCond->GetSourceZ();
-  Charge_on_B = InCond->GetSourceZb();
-
-  modelingCo->Fill();
-}
-
 void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double b)
 {
   ofstream Event("Event.txt");
@@ -214,7 +182,7 @@ void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_
   Event<<"\nb = "<<b<<" fm \n";
 }
 
-void GRATEmanager::ToFile(AAMCCEvent* event, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun, NucleonVector*)) {
+void GRATEmanager::ToFile(AAMCCEvent* event, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun*, NucleonVector*)) {
  runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
- toFile(event, runData, nucleons);
+ toFile(event, &runData, nucleons);
 }

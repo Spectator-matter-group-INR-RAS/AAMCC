@@ -85,6 +85,9 @@ struct AAMCCrun{
     G4String fileName;
 
     G4double KinEnPerNucl;
+    G4double SqrtSnn;
+    G4double pzA;
+    G4double pzB;
     G4bool isCollider;
 
     G4int iterations;

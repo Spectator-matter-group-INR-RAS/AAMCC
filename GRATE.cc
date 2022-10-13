@@ -108,10 +108,7 @@ int main()
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
     AAMCCEvent event;
-    void WriteToFile(AAMCCEvent*, AAMCCrun, NucleonVector*);
-
-    // Histograms will be booked now.
-    //histoManager.BookHisto(); //newData
+    void WriteToFile(AAMCCEvent*, AAMCCrun*, NucleonVector*); //Function that writes the data to the file
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -136,7 +133,7 @@ int main()
     //Setting up Glauber code
     //histoManager.CalcXsectNN();
     G4float omega = -1;
-    G4float signn = histoManager.GetInitialContidions().GetXsectNN();
+    G4float signn = histoManager.GetXsectNN();
     auto seed = static_cast<unsigned long int>(*CLHEP::HepRandom::getTheSeeds()); //setting the same seed to TGlauber
 
     TGlauberMC *mcg=new TGlauberMC(histoManager.GetInitialContidions().GetSysA(),histoManager.GetInitialContidions().GetSysB(),signn,omega,seed);
@@ -374,11 +371,8 @@ int main()
 
             event.ClustNumB = event.Ab_cl.size();
 
-            //Filling histo-s + cleaning
-            //newData  histoManager.FillEventTree(&event);
-           /* histoManager.GetTreeMST()->Fill();
-            histoManager.GetTreeFermiMom()->Fill();*/
 
+           histoManager.SetXsectTot(mcg->GetTotXSect());
            histoManager.ToFile(&event, &nV, &WriteToFile);
 
             event.A_cl.clear();
@@ -386,7 +380,6 @@ int main()
             event.Ab_cl.clear();
             event.Zb_cl.clear();
 
-            //newData  histoManager.GetTree()->Fill();
             event.MassOnSideA.clear();
             event.MassOnSideB.clear();
             event.ChargeOnSideB.clear();
@@ -407,15 +400,14 @@ int main()
     }
 
     G4cout<<"----> collided "<<histoManager.GetIterations()<<" nuclei "<<histoManager.GetSysA()<< " with " << histoManager.GetSysB() <<" at N-N x-section "<<signn<<" mb"<<G4endl;
+
     if(!histoManager.ToFileOrNot()){
         G4cout<<"----> total x-sect = "<<mcg->GetTotXSect()<< " +- " << mcg->GetTotXSectErr() <<" b";
-       //newData histoManager.FillConditionsTree(mcg->GetTotXSect());
     }
     else
     {
         G4cout<<"----> Only 1 event, no tot x-sect";
     }
-    //newData histoManager.CleanHisto();
 
     delete runManager;
     delete clusters;
