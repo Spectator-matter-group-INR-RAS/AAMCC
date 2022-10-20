@@ -1,11 +1,13 @@
 #include "InitialConditions.hh"
 
 InitialConditions::InitialConditions() {
-
 }
 
 InitialConditions::~InitialConditions() {
+}
 
+InitialConditions::InitialConditions(AAMCCrun run) {
+    this->SetConditions(run);
 }
 
 G4bool InitialConditions::SetSysA(G4String SysA_in) {
@@ -136,14 +138,14 @@ G4double InitialConditions::GetXsectNN() {
     return XsectNN;
 }
 
-void InitialConditions::SetConditions(AAMCCinput cond_in) {
+void InitialConditions::SetConditions(AAMCCrun cond_in) {
     SetCollider(cond_in.isCollider);
     SetKinematics(cond_in.KinEnPerNucl);
     SetSourceZ(cond_in.ZinitA);
     SetSourceZb(cond_in.ZinitB);
     SetSourceA(cond_in.AinitA);
     SetSourceAb(cond_in.AinitB);
-
 }
+
 
 

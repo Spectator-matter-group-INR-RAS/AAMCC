@@ -51,6 +51,7 @@
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 #include "WriteToFile.hh"
+#include "AAMCCwriter.hh"
 
 #include <fstream>
 
@@ -108,7 +109,8 @@ int main()
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
     AAMCCEvent event;
-    void WriteToFile(AAMCCEvent*, AAMCCrun*, NucleonVector*); //Function that writes the data to the file
+    //auto writeToFile = wrapWriter<AAMCCwriter>;
+    void WriteToFile(AAMCCEvent*, AAMCCrun*, NucleonVector*);//Function that writes the data to the file
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -374,6 +376,7 @@ int main()
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
            histoManager.ToFile(&event, &nV, &WriteToFile);
+           ///histoManager.ToFile(&event, &nV, writeToFile);
 
             event.A_cl.clear();
             event.Z_cl.clear();
@@ -394,8 +397,11 @@ int main()
             event.pseudorapidity_B.clear();
 
             // Events calc info update
-            if (!G4bool(count % 100)) { G4cout << "Program is working," << count << " events calculated    \r" << std::flush; }
+            if (!G4bool(count % 100)) { G4cout << "Program is working," << count << " events calculated \r" << std::flush;}
 
+        }
+        else{ //costil chtoby rabotal krivoy metod
+            histoManager.ToFile(nullptr, nullptr, WriteToFile);
         }
     }
 

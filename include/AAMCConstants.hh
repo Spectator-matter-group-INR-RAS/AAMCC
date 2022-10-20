@@ -7,7 +7,6 @@
 static constexpr double nucleonAverMass = 0.93891875434*CLHEP::GeV;
 
 struct AAMCCEvent{
-
     std::vector<G4float> MassOnSideA;
     std::vector<G4float> MassOnSideB;
     std::vector<G4float> ChargeOnSideA;
@@ -61,17 +60,12 @@ struct AAMCCEvent{
 
 struct AAMCCinput{
     NucleonVector nucleons;
-    G4int ZinitA;
-    G4int AinitA;
-    G4int ZinitB;
-    G4int AinitB;
-
-    G4String SysA;
-    G4String SysB;
-    G4String fileName;
-
-    G4double KinEnPerNucl;
-    G4bool isCollider;
+    G4double FermiMomA_x;
+    G4double FermiMomA_y;
+    G4double FermiMomA_z;
+    G4double FermiMomB_x;
+    G4double FermiMomB_y;
+    G4double FermiMomB_z;
 };
 
 struct AAMCCrun{
@@ -94,6 +88,11 @@ struct AAMCCrun{
 
     G4double XsectNN;
     G4double XsectTot;
+
+    G4String DeExModel;
+    G4int ExExStatLabel;
+
+    G4bool isQMD;
 };
 
 

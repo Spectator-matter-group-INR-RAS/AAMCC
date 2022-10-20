@@ -13,6 +13,7 @@
 class InitialConditions {
 public:
 	 InitialConditions();
+     InitialConditions(AAMCCrun run);
     ~InitialConditions();
 public:
 
@@ -22,7 +23,7 @@ public:
     inline  void   SetCollider(G4bool IsCollider_in) {IsCollider = IsCollider_in;};
     void   SetKinematics(G4double Energy_in);
 
-    void SetConditions(AAMCCinput cond_in);
+    void SetConditions(AAMCCrun cond_in);
 
     inline G4double GetKinEnergy(){return KinEn;};
 	inline G4double GetKinEnergyPerNucl(){return KinEn/G4double(sourceA);};

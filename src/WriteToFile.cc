@@ -180,11 +180,14 @@ void FillHisto(AAMCCEvent ev, NucleonVector nucleons){
 }
 
 void WriteToFile(AAMCCEvent* ev, AAMCCrun* run, NucleonVector* nucleons){
+
+    if(ev != nullptr && nucleons != nullptr){
     std::call_once(flag,Initialize, (*run));
     FillTrees((*ev));
-    FillHisto((*ev), (*nucleons));
+    FillHisto((*ev), (*nucleons));}
+
     calls++;
-    if(calls == (*run).iterations) {
+    if(calls == (*run).iterations) { //problem here because of nCalls < nIter.
         FillRunTree((*run));
         rFile->Write();
         G4cout << "\n----> Data were written into the file " << (*run).fileName+".root" << G4endl;

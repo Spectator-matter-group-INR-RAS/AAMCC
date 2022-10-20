@@ -7,7 +7,7 @@
 
 
 GRATEmanager::GRATEmanager()
-  : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), StatisticsLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+  : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
 {  
   std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
   while(!NucleusInputLabel){
@@ -89,9 +89,9 @@ GRATEmanager::GRATEmanager()
   upperLimitExEnB *=sourceAb;
   upperLimitExEnB *=MeV;
 
-  while ( (StatisticsLabel<0) || (StatisticsLabel>7) || (upperLimitExEn<lowLimitExEn) ) {
+  while ((ExEnStatLabel < 0) || (ExEnStatLabel > 7) || (upperLimitExEn < lowLimitExEn) ) {
     std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3, 7 - Fit of Hybrid : ";
-    std::cin >> StatisticsLabel;
+    std::cin >> ExEnStatLabel;
   }
 
   while(CritDist < 0) {
@@ -129,15 +129,30 @@ GRATEmanager::GRATEmanager()
 
   runData.ZinitA = sourceZ; runData.ZinitB = sourceZb; runData.AinitA = sourceA; runData.AinitB = sourceAb; runData.SysA = SysA; runData.SysB = SysB; runData.fileName = fileName;
   runData.KinEnPerNucl = InCond->GetKinEnergyPerNucl(); runData.pzA = InCond->GetPzA(); runData.pzB = InCond->GetPzB(); runData.SqrtSnn = InCond->GetSqrtSnn(); runData.XsectNN = XsectNN;
-  runData.isCollider = IsCollider; runData.iterations = iterations;
+  runData.isCollider = IsCollider; runData.iterations = iterations; runData.DeExModel = DeExModel; runData.ExExStatLabel = ExEnStatLabel;
 
   //for (G4int j=0; j<20; j++) histo[j] = 0;
   //for (G4int l=0; l<10; l++) histo2[l] = 0;
 }
 
+GRATEmanager::GRATEmanager(TFile* file, AAMCCrun (*getTheRunData)(TFile* file))
+        : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+{
+    runData = getTheRunData(file);
+    InCond->SetConditions(runData);
+}
+
+GRATEmanager::GRATEmanager(AAMCCrun (*getTheRunData)())
+        : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+{
+    runData = getTheRunData();
+    InCond->SetConditions(runData);
+}
+
 
 GRATEmanager::~GRATEmanager()
 {
+    delete InCond;
 }
 
 
