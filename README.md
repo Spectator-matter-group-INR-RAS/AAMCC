@@ -28,3 +28,5 @@ http://dx.doi.org/10.3390/particles4020021
 http://dx.doi.org/10.1134/S1063779621040493
 
 http://dx.doi.org/10.3103/S1062873820080110
+
+# __This is feature branch, it may contain a lot of bugs. Fot the latest stable version please use master-branch__

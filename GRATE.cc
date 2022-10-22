@@ -37,21 +37,10 @@
 #include "TH2D.h"
 
 #include "GRATEmanager.hh"
-/*#include "InitialConditions.hh"
-#include "ExcitationEnergy.hh"
-//#include "DeexcitationHandler.hh"
-#include "GRATEPhysicsList.hh"
-#include "TGlauber/TGlauberMC.hh"
-#include "TGlauber/TGlauNucleon.hh"
-#include "TGlauber/TGlauNucleus.hh"
-
-#include "include/GMSTClustering.hh"
-*/
 #include "GlauberCollisionReader.hh"
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 #include "WriteToFile.hh"
-#include "AAMCCwriter.hh"
 
 #include <fstream>
 
@@ -109,7 +98,6 @@ int main()
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
     AAMCCEvent event;
-    //auto writeToFile = wrapWriter<AAMCCwriter>;
     void WriteToFile(AAMCCEvent*, AAMCCrun*, NucleonVector*);//Function that writes the data to the file
 
     //Get Z and A of nuclei
@@ -376,7 +364,6 @@ int main()
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
            histoManager.ToFile(&event, &nV, &WriteToFile);
-           ///histoManager.ToFile(&event, &nV, writeToFile);
 
             event.A_cl.clear();
             event.Z_cl.clear();
