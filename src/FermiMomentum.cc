@@ -12,6 +12,19 @@ FermiMomentum::FermiMomentum( NucleonVector* nucleons_in,std::string model_in) {
     nucleons = nucleons_in;
 }
 
+FermiMomentum::FermiMomentum(AAMCCinput *input_in, std::string model_in) {
+    if(model_in == "M") modelInt = 0;
+    if(model_in == "G") modelInt = 1;
+    if(model_in == "V") modelInt = 2;
+
+    engine = new CLHEP::RanecuEngine();
+    randGauss = new CLHEP::RandGauss(engine,0,1);
+    randFlatphi = new CLHEP::RandFlat(engine,6.28318530718);
+    randFlat = new CLHEP::RandFlat(engine, 1.);
+    input = input_in;
+    nucleons = &input_in->nucleons;
+}
+
 vect3 FermiMomentum::GetMomentum(std::string side) {
     //std::cout<<"Called for side "<<side<<std::endl;
     vect3 out = {0, 0, 0};
@@ -122,3 +135,4 @@ CLHEP::Hep3Vector FermiMomentum::GetMomentumHep3(std::string side) {
 CLHEP::HepLorentzVector FermiMomentum::GetLorentzVector(std::string side) {
     return toHepLorentzVector(GetMomentum(side),side);
 }
+

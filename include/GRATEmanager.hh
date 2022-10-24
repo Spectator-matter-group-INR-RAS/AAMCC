@@ -16,6 +16,7 @@
 #include "GMSTClustering.hh"
 
 #include "AAMCConstants.hh"
+#include "AAMCC.hh"
 
 class TFile;
 class TH1D;
@@ -26,34 +27,27 @@ class GRATEmanager
   public:
 
   explicit GRATEmanager();
+  explicit GRATEmanager(TFile* file, AAMCCrun (*getTheRunData)(TFile* file));
+  explicit GRATEmanager(AAMCCrun (*getTheRunData)());
    ~GRATEmanager();
 
   public:
 
-  TH1D* GetHisto(G4int id) {return histo[id];};
-  TTree* GetTree() {return Glauber;};
-  TTree* GetTreeMST() {return Clusters;};
-  TTree* GetTreeFermiMom() {return FermiMom;};
-  TH2D* GetHisto2(G4int id) {return histo2[id];};
- 
-       
-  void BookHisto();
-  void CalcXsectNN();
-  void CleanHisto();
-  void FillConditionsTree(G4double Xsect);
-  void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b);
+  TH1D* GetHisto(G4int id) {return histo[id];}; //zombie function waining to the migration of this->CalcNucleonDensity() to the WriteToFile()
+  void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b); //calling it will cause the seg fault
+  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun*, NucleonVector*));
   void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);  
 
   inline G4String GetSysA() {return SysA;}
   inline G4String GetSysB() {return SysB;}
   inline G4String GetDeexModel() {return DeExModel;};
-  inline G4int GetSourceZ() {return sourceZ;}
-  inline G4int GetSourceA() {return sourceA;}
-  inline G4int GetSourceZb() {return sourceZb;}
-  inline G4int GetSourceAb() {return sourceAb;}
-  inline G4int GetStatType() {return StatisticsLabel;}
+  inline G4int GetSourceZ() {return this->GetInitialContidions().GetSourceZ();}
+  inline G4int GetSourceA() {return this->GetInitialContidions().GetSourceA();}
+  inline G4int GetSourceZb() {return this->GetInitialContidions().GetSourceZb();}
+  inline G4int GetSourceAb() {return this->GetInitialContidions().GetSourceAb();}
+  inline G4int GetStatType() {return ExEnStatLabel;}
   inline G4int GetIterations()  {return iterations;};
-  inline G4double GetXsectNN() {return XsectNN;}
+  inline G4double GetXsectNN() {return this->GetInitialContidions().GetXsectNN();}
   inline G4double GetKinEn() {return KinEn;};
   inline G4double GetSqrtSnn() {return SqrtSnn;};
   inline G4double GetLowEn() {return lowLimitExEn;};
@@ -66,22 +60,17 @@ class GRATEmanager
   inline G4bool   WritePseudorapidity() {return wP;};
   inline InitialConditions GetInitialContidions() {return *InCond;};
   inline G4double GetCriticalDistance() {return CritDist;}
-  inline G4double GetNucleonAverMass() { return nucleonAverMass; }
   inline G4double GetAngle() {return CLHEP::pi*angle/180;} //Left for the future development of polarized beams
   inline G4bool ToFileOrNot() {return InFileOrNot;}
+
+  inline void SetXsectTot(G4double Xsect){XsectTot = Xsect; runData.XsectTot = XsectTot;};
 
 
   
   private:
 
-  
-  TFile* fFile;
   TH1D*  histo[20];
   TH2D*  histo2[10];
-  TTree* Glauber;
-  TTree* modelingCo;
-  TTree* Clusters;
-  TTree* FermiMom;
 
 
   G4int sourceZ;
@@ -89,7 +78,7 @@ class GRATEmanager
   G4int sourceZb;
   G4int sourceAb;
   G4int iterations; 
-  G4int StatisticsLabel;  
+  G4int ExEnStatLabel;
   G4bool NucleusInputLabel;
   G4bool IsCollider;
   G4bool InFileOrNot;
@@ -104,7 +93,8 @@ class GRATEmanager
   G4String     SysB;
   G4int        compressionFactor;
 
-  G4double XsectNN;
+  G4double XsectNN = -1;
+  G4double XsectTot = 0;
 
   G4double KinEn;
   G4double SqrtSnn;
@@ -124,6 +114,8 @@ class GRATEmanager
   G4bool   wP = false;
 
   InitialConditions* InCond = new InitialConditions();
+  AAMCCEvent event;
+  AAMCCrun runData;
 
   std::ifstream XsectFile;
 
