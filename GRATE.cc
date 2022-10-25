@@ -41,6 +41,7 @@
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 #include "WriteToFile.hh"
+#include "AAMCCWriter.hh"
 
 #include <fstream>
 
@@ -363,7 +364,8 @@ int main()
 
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
-           histoManager.ToFile(&event, &nV, &WriteToFile);
+           //histoManager.ToFile(&event, &nV, &WriteToFile);
+           histoManager.ToFile<AAMCCWriter>(&event, &nV);
 
             event.A_cl.clear();
             event.Z_cl.clear();
@@ -388,7 +390,9 @@ int main()
 
         }
         else{ //costil chtoby rabotal krivoy metod
-            histoManager.ToFile(nullptr, nullptr, WriteToFile);
+            //histoManager.ToFile(nullptr, nullptr, WriteToFile);
+            //histoManager.SetXsectTot(mcg->GetTotXSect());
+            //histoManager.ToFile<AAMCCWriter>(&event, &nV);
         }
     }
 

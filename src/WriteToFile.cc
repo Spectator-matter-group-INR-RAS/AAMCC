@@ -187,7 +187,7 @@ void WriteToFile(AAMCCEvent* ev, AAMCCrun* run, NucleonVector* nucleons){
     FillHisto((*ev), (*nucleons));}
 
     calls++;
-    if(calls == (*run).iterations) { //problem here because of nCalls < nIter.
+    if(calls == (*run).iterations) {
         FillRunTree((*run));
         rFile->Write();
         G4cout << "\n----> Data were written into the file " << (*run).fileName+".root" << G4endl;
