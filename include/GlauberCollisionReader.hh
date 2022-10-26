@@ -1,21 +1,19 @@
-//#ifndef VCollisionReader_h
-//#define VCollisionReader_h 1
-#include "VCollisionReader.hh"
-//#endif
 
+#include "VCollisionReader.hh"
+#include "AAMCConstants.hh"
 
 #include "../TGlauber/TGlauNucleon.hh"
 #include "TObjArray.h"
 class GlauberCollisionReader : public VCollisionReader{
 
 public:
-    GlauberCollisionReader();
+    GlauberCollisionReader() = default;
     ~GlauberCollisionReader() = default;
     void Read(TObjArray* nucleons_in);
-    NucleonVector GetNucleons();
-    inline NucleonVector GetNucleons(TObjArray* nucleons_in){this->Read(nucleons_in); return this->GetNucleons();};
+    AAMCCinput operator()() final;
+    inline AAMCCinput GetNucleons(TObjArray* nucleons_in){this->Read(nucleons_in); return (*this)();};
 
 private:
-    NucleonVector nucleonVector;
+    AAMCCinput data;
     TObjArray* nucleons;
 };
