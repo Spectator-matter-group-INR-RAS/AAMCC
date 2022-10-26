@@ -20,7 +20,6 @@
 #include "AAMCC.hh"
 #include "VWriter.hh"
 
-
 class TFile;
 class TH1D;
 class TH2D;
@@ -38,15 +37,16 @@ class GRATEmanager
 
   TH1D* GetHisto(G4int id) {return histo[id];}; //zombie function waining to the migration of this->CalcNucleonDensity() to the WriteToFile()
   void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b); //calling it will cause the seg fault
-  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun*, NucleonVector*));
-  template <class Writer>
-    void ToFile(AAMCCEvent* ev, NucleonVector* nucleons){
-      //__assert(std::is_base_of<VWriter, Writer>::value, "type parameter of this method must be derived form VWriter");
+  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, std::function<void(AAMCCEvent*, AAMCCrun*, NucleonVector*)> toFile) {
       runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
-      static std::unique_ptr<Writer> write (new Writer());
-      (*write.get())(ev, &runData, nucleons);
-  };
-  void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);  
+      toFile(ev, &runData, nucleons);
+  }
+  /*
+  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, VWriter* writer){
+      runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
+      (*writer)(ev, &runData, nucleons);
+  }*/
+  void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);
 
   inline G4String GetSysA() {return SysA;}
   inline G4String GetSysB() {return SysB;}

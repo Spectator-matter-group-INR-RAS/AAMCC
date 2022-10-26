@@ -26,18 +26,6 @@ private:
     AAMCCEvent event;
     AAMCCrun runData;
 
-    void InitFile(AAMCCrun run){
-        std::string fileName;
-        if ( run.fileName.empty()) {fileName = "GRATE_"+run.SysA+run.SysB+"_"+std::to_string(run.KinEnPerNucl/GeV)+"_GeV_"+std::to_string(run.iterations)+"_events";}
-        else {fileName = run.fileName;}
-        std::string  fileType = "root";
-        std::string fileFullName = fileName+"."+fileType;
-        //Int_t compressionFactor = 9;
-        std::unique_ptr<TFile> file( TFile::Open(fileFullName.c_str(), "RECREATE") );
-        //rFile = new TFile(fileFullName.c_str(), "RECREATE", fileName.c_str(),compressionFactor);
-        //rFile.Open(fileFullName.c_str(), "RECREATE", fileName.c_str(),compressionFactor);
-    }
-
     void InitTrees(){
         std::shared_ptr<TTree> glau (new TTree("Glauber","Events from glauber modeling"));
         std::shared_ptr<TTree> clust (new TTree("MST-Clusters","TTree to store clusters"));
@@ -126,9 +114,7 @@ private:
 
     void InitRunTree(){
         std::shared_ptr<TTree> run(new TTree("Conditions","preconditions for modeling"));
-
         tRun = run;
-
         tRun->Branch("Xsect_total", &runData.XsectTot,"Xsect_total/d");
         tRun->Branch("Xsect_NN", &runData.XsectNN,"Xsect_total/d");
         tRun->Branch("Kinetic_energy_per_nucleon_of_projectile_in_MeV", &runData.KinEnPerNucl,"Kinetic_energy_of_per_nucleon_projectile_in_MeV/d");
@@ -139,7 +125,6 @@ private:
         tRun->Branch("Mass_on_B", &runData.AinitB,"Mass_on_B/I");
         tRun->Branch("Charge_on_A", &runData.ZinitA,"Charge_on_A/I");
         tRun->Branch("Charge_on_B", &runData.ZinitB,"Charge_on_B/I");
-        //needs a realisation
     }
 
     void InitHisto(AAMCCrun run){
