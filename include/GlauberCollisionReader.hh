@@ -11,7 +11,7 @@ public:
     ~GlauberCollisionReader() = default;
     void Read(TObjArray* nucleons_in);
     AAMCCinput operator()() final;
-    inline AAMCCinput GetNucleons(TObjArray* nucleons_in){this->Read(nucleons_in); return (*this)();};
+    inline AAMCCinput GetAfInput(TObjArray* nucleons_in){this->Read(nucleons_in); return (*this)();};
 
 private:
     AAMCCinput data;
