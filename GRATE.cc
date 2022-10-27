@@ -41,7 +41,6 @@
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 #include "WriteToFile.hh"
-#include "MciniReader.hh"
 
 #include <fstream>
 
