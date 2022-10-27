@@ -39,6 +39,7 @@
 //#ifndef VCollisionReader_h
 //#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
+#include "Mcini.hh"
 //#endif
 
 class AAMCC {
