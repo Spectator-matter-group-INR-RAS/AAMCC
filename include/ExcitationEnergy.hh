@@ -6,6 +6,7 @@
 #include "G4ExceptionHandler.hh"
 #include "cmath"
 #include <fstream>
+#include <libgen.h>
 
 class ExcitationEnergy {
 public:

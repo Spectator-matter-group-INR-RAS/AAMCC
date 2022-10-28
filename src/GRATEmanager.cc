@@ -8,87 +8,127 @@
 
 GRATEmanager::GRATEmanager()
   : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
-{  
-  std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
-  while(!NucleusInputLabel){
-    std::cout << "Please enter colliding nucleus name (side A). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
-    std::cin >> SysA;
-    NucleusInputLabel = InCond->SetSysA(SysA);
-    sourceA = InCond->GetSourceA();
-    sourceZ = InCond->GetSourceZ();
-  }
+{
+  // Info about first stage
+  std::cout<<"Do you want to read Abrasion stage from file? (1 - yes, 0 - no)" <<std::endl;
+  std::cin >> IsInitFile;
+  if(IsInitFile){
+    std::cout<<"What generator file you want to use: 1 - URQMD" <<std::endl;
+    std::cin >> AbrasionModelInt;
+    switch (AbrasionModelInt) {
+      case 1:
+      {
+        std::cout<<"Please enter the full path to the file" <<std::endl;
+        std::cin >> inputFileName;
+        AAMCCrun getTheRunData(TString inputFile); //Function that reads the input data from the file
+        runData = getTheRunData(inputFileName);
+        InCond->SetConditions(runData);
 
-  NucleusInputLabel = 0;
-
-  while(!NucleusInputLabel){
-    std::cout << "Please enter colliding nucleus name (side B). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
-    std::cin >> SysB;
-    NucleusInputLabel = InCond->SetSysB(SysB);
-    sourceAb = InCond->GetSourceAb();
-    sourceZb = InCond->GetSourceZb();
-  }
-
-  std::cout<<"Input lower limit for impact parameter in fm (MB if negative) : ";
-  std::cin >> lowLimitB;
-
-  if(lowLimitB > -0.000001){
-    std::cout<<"Input upper limit for impact parameter in fm (MB if negative) : ";
-    std::cin >> upperLimitB;
-  }
-  else if(0){
-    lowLimitB = 0;
-    upperLimitB = 20;
-  }
-
-  std::cout<<"Do you want to calculate collisions for collider or for fixed target geometry (1 for collider, 0 for fixed target) : ";
-  std::cin >> IsCollider;
-
-  while ( KinEn<280.0*MeV/GeV && SqrtSnn <0.) {
-    if (!IsCollider) {
-      std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
-      std::cin >> KinEn;
-      if(KinEn<280.0*MeV/GeV){
-        std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
+        SqrtSnn = InCond->GetSqrtSnn();
+        KinEn = InCond->GetKinEnergy();
+        iterations = runData.iterations;
+        break;
       }
-    }
-    else {
-      std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
-      std::cin >> SqrtSnn;
-      G4double NuclMass = nucleonAverMass/CLHEP::GeV;
-      G4double CollKinCheck = (SqrtSnn/2.0 - NuclMass);
-      G4double KinEnAtFixTargetCheck = (2.0*(CollKinCheck + NuclMass)*(CollKinCheck + NuclMass)/(NuclMass*NuclMass) - 1.0)*NuclMass;
-      if(KinEnAtFixTargetCheck < 280.0*MeV/GeV){
-        std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
-        SqrtSnn = -1.0;
+      default:
+      {
+        std::cout<<"default case (URQMD) is chosen" <<std::endl;
+        break;
       }
     }
   }
+  else
+  {
+    std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
+    while(!NucleusInputLabel){
+      std::cout << "Please enter colliding nucleus name (side A). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
+      std::cin >> SysA;
+      NucleusInputLabel = InCond->SetSysA(SysA);
+      sourceA = InCond->GetSourceA();
+      sourceZ = InCond->GetSourceZ();
+    }
 
-  InCond->SetCollider(IsCollider);
-  if(IsCollider){
-    InCond->SetKinematics(SqrtSnn);
-    SqrtSnn = InCond->GetSqrtSnn();
-    KinEn = InCond->GetKinEnergy();
+    NucleusInputLabel = 0;
+
+    while(!NucleusInputLabel){
+      std::cout << "Please enter colliding nucleus name (side B). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
+      std::cin >> SysB;
+      NucleusInputLabel = InCond->SetSysB(SysB);
+      sourceAb = InCond->GetSourceAb();
+      sourceZb = InCond->GetSourceZb();
+    }
+
+    std::cout<<"Input lower limit for impact parameter in fm (MB if negative) : ";
+    std::cin >> lowLimitB;
+
+    if(lowLimitB > -0.000001){
+      std::cout<<"Input upper limit for impact parameter in fm (MB if negative) : ";
+      std::cin >> upperLimitB;
+    }
+    else if(0){
+      lowLimitB = 0;
+      upperLimitB = 20;
+    }
+
+    std::cout<<"Do you want to calculate collisions for collider or for fixed target geometry (1 for collider, 0 for fixed target) : ";
+    std::cin >> IsCollider;
+
+    while ( KinEn<280.0*MeV/GeV && SqrtSnn <0.) {
+      if (!IsCollider) {
+        std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
+        std::cin >> KinEn;
+        if(KinEn<280.0*MeV/GeV){
+          std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
+        }
+      }
+      else {
+        std::cout << "Please enter s^1/2 of colliding nuclei (per nucleon in GeV) : ";
+        std::cin >> SqrtSnn;
+        G4double NuclMass = nucleonAverMass/CLHEP::GeV;
+        G4double CollKinCheck = (SqrtSnn/2.0 - NuclMass);
+        G4double KinEnAtFixTargetCheck = (2.0*(CollKinCheck + NuclMass)*(CollKinCheck + NuclMass)/(NuclMass*NuclMass) - 1.0)*NuclMass;
+        if(KinEnAtFixTargetCheck < 280.0*MeV/GeV){
+          std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
+          SqrtSnn = -1.0;
+        }
+      }
+    }
+
+    InCond->SetCollider(IsCollider);
+    if(IsCollider){
+      InCond->SetKinematics(SqrtSnn);
+      SqrtSnn = InCond->GetSqrtSnn();
+      KinEn = InCond->GetKinEnergy();
+    }
+    else{
+      InCond->SetKinematics(KinEn);
+      SqrtSnn = InCond->GetSqrtSnn();
+      KinEn = InCond->GetKinEnergy();
+    }
+
+    // Do we need this?////
+    lowLimitExEnB = lowLimitExEn;
+    upperLimitExEnB = upperLimitExEn;
+    lowLimitExEn *= sourceA;
+    lowLimitExEn *= MeV;
+    upperLimitExEn *=sourceA;
+    upperLimitExEn *=MeV;
+    lowLimitExEnB *= sourceAb;
+    lowLimitExEnB *= MeV;
+    upperLimitExEnB *=sourceAb;
+    upperLimitExEnB *=MeV;
+    ///////////////////////
+
+    while ( ((iterations<2) || (iterations>10000000)) && !InFileOrNot ) {
+      std::cout<<"Please enter number of events to be generated: ";
+      std::cin >> iterations;
+    }
+
+    runData.ZinitA = sourceZ; runData.ZinitB = sourceZb; runData.AinitA = sourceA; runData.AinitB = sourceAb; runData.SysA = SysA; runData.SysB = SysB;
+    runData.isCollider = IsCollider; runData.iterations = iterations;
+    runData.pzA = InCond->GetPzA(); runData.pzB = InCond->GetPzB(); runData.SqrtSnn = InCond->GetSqrtSnn();
   }
-  else{
-    InCond->SetKinematics(KinEn);
-    SqrtSnn = InCond->GetSqrtSnn();
-    KinEn = InCond->GetKinEnergy();
-  }
 
-  sourceA=InCond->GetSourceA();
-  sourceAb=InCond->GetSourceAb();
-  lowLimitExEnB = lowLimitExEn;
-  upperLimitExEnB = upperLimitExEn;
-  lowLimitExEn *= sourceA;
-  lowLimitExEn *= MeV;
-  upperLimitExEn *=sourceA;
-  upperLimitExEn *=MeV;
-  lowLimitExEnB *= sourceAb;
-  lowLimitExEnB *= MeV;
-  upperLimitExEnB *=sourceAb;
-  upperLimitExEnB *=MeV;
-
+  // Info about second stage
   while ((ExEnStatLabel < 0) || (ExEnStatLabel > 7) || (upperLimitExEn < lowLimitExEn) ) {
     std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3, 7 - Fit of Hybrid : ";
     std::cin >> ExEnStatLabel;
@@ -107,46 +147,16 @@ GRATEmanager::GRATEmanager()
   std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
   std::cin >> InFileOrNot;
 
-  /*
-  if(!InFileOrNot){
-    std::cout<<"Write momentum of each fragment?  (1 - yes, 0 - no) ";
-    std::cin>>wM;
-
-    std::cout<<"Write pseudorapidity of each fragments?  (1 - yes, 0 - no) ";
-    std::cin>>wP;
-  }
-*/
-
-  while ( ((iterations<2) || (iterations>10000000)) && !InFileOrNot ) {
-    std::cout<<"Please enter number of events to be generated: ";
-    std::cin >> iterations;
-  }
-
   std::cout << "Please enter the file name to write histograms (.root will be supplied): ";
-  std::cin >> fileName; 
+  std::cin >> fileName;
 
-  XsectNN = InCond->GetXsectNN();
+  XsectNN = InCond->GetXsectNN(); // Is it only for GlauberMC?
 
-  runData.ZinitA = sourceZ; runData.ZinitB = sourceZb; runData.AinitA = sourceA; runData.AinitB = sourceAb; runData.SysA = SysA; runData.SysB = SysB; runData.fileName = fileName;
-  runData.KinEnPerNucl = InCond->GetKinEnergyPerNucl(); runData.pzA = InCond->GetPzA(); runData.pzB = InCond->GetPzB(); runData.SqrtSnn = InCond->GetSqrtSnn(); runData.XsectNN = XsectNN;
-  runData.isCollider = IsCollider; runData.iterations = iterations; runData.DeExModel = DeExModel; runData.ExExStatLabel = ExEnStatLabel;
-
-  //for (G4int j=0; j<20; j++) histo[j] = 0;
-  //for (G4int l=0; l<10; l++) histo2[l] = 0;
-}
-
-GRATEmanager::GRATEmanager(TFile* file, AAMCCrun (*getTheRunData)(TFile* file))
-        : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
-{
-    runData = getTheRunData(file);
-    InCond->SetConditions(runData);
-}
-
-GRATEmanager::GRATEmanager(AAMCCrun (*getTheRunData)())
-        : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
-{
-    runData = getTheRunData();
-    InCond->SetConditions(runData);
+  runData.XsectNN = XsectNN;
+  runData.KinEnPerNucl = InCond->GetKinEnergyPerNucl();
+  runData.fileName = fileName;
+  runData.DeExModel = DeExModel; 
+  runData.ExExStatLabel = ExEnStatLabel;
 }
 
 
@@ -195,9 +205,4 @@ void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_
     }
   }
   Event<<"\nb = "<<b<<" fm \n";
-}
-
-void GRATEmanager::ToFile(AAMCCEvent* event, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun*, NucleonVector*)) {
- runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
- toFile(event, &runData, nucleons);
 }

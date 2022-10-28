@@ -27,16 +27,17 @@ class GRATEmanager
   public:
 
   explicit GRATEmanager();
-  explicit GRATEmanager(TFile* file, AAMCCrun (*getTheRunData)(TFile* file));
-  explicit GRATEmanager(AAMCCrun (*getTheRunData)());
    ~GRATEmanager();
 
   public:
 
   TH1D* GetHisto(G4int id) {return histo[id];}; //zombie function waining to the migration of this->CalcNucleonDensity() to the WriteToFile()
   void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b); //calling it will cause the seg fault
-  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun*, NucleonVector*));
-  void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);  
+  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, std::function<void(AAMCCEvent*, AAMCCrun*, NucleonVector*)> toFile) {
+      runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
+      toFile(ev, &runData, nucleons);
+  }
+  void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);
 
   inline G4String GetSysA() {return SysA;}
   inline G4String GetSysB() {return SysB;}
@@ -81,7 +82,9 @@ class GRATEmanager
   G4int ExEnStatLabel;
   G4bool NucleusInputLabel;
   G4bool IsCollider;
-  G4bool InFileOrNot;
+  G4bool InFileOrNot = FALSE;
+  G4bool IsInitFile;
+  G4int  AbrasionModelInt;
 
   G4String fileName;
   G4String fileType;
@@ -118,6 +121,7 @@ class GRATEmanager
   AAMCCrun runData;
 
   std::ifstream XsectFile;
+  TString inputFileName;
 
 };
 

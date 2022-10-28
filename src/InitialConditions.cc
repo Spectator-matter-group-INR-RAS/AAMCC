@@ -80,6 +80,24 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     return 1;
 }
 
+G4bool InitialConditions::SetSysA(G4double A_in, G4double Z_in) {
+    if(A_in == 197 && Z_in == 79){SysA = "Au";}
+    else if(A_in == 208 && Z_in == 82){SysA = "Pb*";}
+    else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
+        return 0;
+    }
+    return 1;
+}
+
+G4bool InitialConditions::SetSysB(G4double A_in, G4double Z_in) {
+    if(A_in == 197 && Z_in == 79){SysB = "Au";}
+    else if(A_in == 208 && Z_in == 82){SysB = "Pb*";}
+    else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
+        return 0;
+    }
+    return 1;
+}
+
 void InitialConditions::SetKinematics(G4double Energy_in) {
     G4double NuclMass = nucleonAverMass/CLHEP::GeV;
     if(IsCollider){
@@ -140,11 +158,13 @@ G4double InitialConditions::GetXsectNN() {
 
 void InitialConditions::SetConditions(AAMCCrun cond_in) {
     SetCollider(cond_in.isCollider);
-    SetKinematics(cond_in.KinEnPerNucl);
+    SetKinematics(cond_in.SqrtSnn);
     SetSourceZ(cond_in.ZinitA);
     SetSourceZb(cond_in.ZinitB);
     SetSourceA(cond_in.AinitA);
     SetSourceAb(cond_in.AinitB);
+    SetSysA(cond_in.AinitA, cond_in.ZinitA);
+    SetSysB(cond_in.AinitB, cond_in.ZinitB);
 }
 
 
