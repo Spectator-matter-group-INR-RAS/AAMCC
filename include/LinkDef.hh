@@ -8,5 +8,6 @@
 #pragma link C++ class TGlauNucleon+;
 #pragma link C++ class TGlauNucleus+;
 #pragma link C++ class TGlauberMC+;
+#pragma link C++ class URun+;
 
 #endif

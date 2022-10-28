@@ -17,6 +17,8 @@
 
 #include "AAMCConstants.hh"
 #include "AAMCC.hh"
+#include "Mcini.hh"
+
 
 class TFile;
 class TH1D;
@@ -27,8 +29,6 @@ class GRATEmanager
   public:
 
   explicit GRATEmanager();
-  explicit GRATEmanager(TFile* file, AAMCCrun (*getTheRunData)(TFile* file));
-  explicit GRATEmanager(AAMCCrun (*getTheRunData)());
    ~GRATEmanager();
 
   public:
@@ -82,6 +82,8 @@ class GRATEmanager
   G4bool NucleusInputLabel;
   G4bool IsCollider;
   G4bool InFileOrNot;
+  G4bool IsInitFile;
+  G4int  AbrasionModelInt;
 
   G4String fileName;
   G4String fileType;
@@ -118,6 +120,7 @@ class GRATEmanager
   AAMCCrun runData;
 
   std::ifstream XsectFile;
+  TString inputFileName;
 
 };
 
