@@ -35,13 +35,10 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TH2D.h"
-#include "TTreeReader.h"
-#include "TTreeReaderArray.h"
 
 //#ifndef VCollisionReader_h
 //#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
-#include "Mcini.hh"
 //#endif
 
 class AAMCC {
