@@ -164,9 +164,9 @@ int main()
         ExEnB->SetParametersHybridFit(11.46648905*MeV, -1.84830078*MeV,  -58.53674677*MeV,  284.66431513*MeV, -637.51406293*MeV,  652.80324427*MeV, -251.28205381*MeV, 0.4*MeV, 0.5, 0.2);
     }
 
-    AAMCCinput af_input;
+    AAMCCinput nV;
     GlauberCollisionReader reader;
-    FermiMomentum FermiMom(&af_input, "G");
+    FermiMomentum FermiMom(&nV, "G");
     FermiMom.SetPzPerNucleon(histoManager.GetInitialContidions().GetPzA()/ sourceA, histoManager.GetInitialContidions().GetPzB() / sourceAb);
 
     for(G4int count=0;count<histoManager.GetIterations() ;count++){
@@ -199,8 +199,8 @@ int main()
         G4int Ab = 0;
         G4int Zb = 0;
 
-        af_input = reader.GetAfInput(nucleons);
-        Z = af_input.nucleons.GetZ("A"); A = af_input.nucleons.GetA("A"); Zb = af_input.nucleons.GetZ("B"); Ab = af_input.nucleons.GetA("B");
+        nV = reader.GetNucleons(nucleons);
+        Z = nV.nucleons.GetZ("A"); A = nV.nucleons.GetA("A"); Zb = nV.nucleons.GetZ("B"); Ab = nV.nucleons.GetA("B");
 
         if(!(A == 0 && Ab ==0)){
             G4int thisEventNumFragments = 0;
@@ -229,7 +229,7 @@ int main()
             //if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(event.FermiMomA_x, event.FermiMomA_y);//newData
 
 
-            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&af_input.nucleons, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
+            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV.nucleons, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
 
             event.d_MstA = clusters->GetCD("A");
             event.d_MstB = clusters->GetCD("B");
@@ -364,7 +364,7 @@ int main()
 
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
-           histoManager.ToFile(&event, &af_input.nucleons, &WriteToFile);
+           histoManager.ToFile(&event, &nV.nucleons, &WriteToFile);
 
             event.A_cl.clear();
             event.Z_cl.clear();
