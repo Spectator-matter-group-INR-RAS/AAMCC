@@ -4,9 +4,6 @@
 #pragma once
 #include "G4SystemOfUnits.hh"
 #include "Nucleon.hh"
-#include "G4Types.hh"
-#include "G4String.hh"
-
 static constexpr double nucleonAverMass = 0.93891875434*CLHEP::GeV;
 
 struct AAMCCEvent{
@@ -69,8 +66,6 @@ struct AAMCCinput{
     G4double FermiMomB_x;
     G4double FermiMomB_y;
     G4double FermiMomB_z;
-
-    AAMCCinput() : nucleons(), FermiMomA_x(0), FermiMomA_y(0), FermiMomA_z(0), FermiMomB_x(0), FermiMomB_y(0), FermiMomB_z(0) {}
 };
 
 struct AAMCCrun{

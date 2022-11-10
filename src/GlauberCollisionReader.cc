@@ -1,11 +1,13 @@
 #include "GlauberCollisionReader.hh"
 
-AAMCCinput GlauberCollisionReader::operator()() {
-    return data;
+GlauberCollisionReader::GlauberCollisionReader() {
+}
+NucleonVector GlauberCollisionReader::GetNucleons() {
+    return nucleonVector;
 }
 
 void GlauberCollisionReader::Read(TObjArray *nucleons_in) {
-    data.nucleons.clear();
+    nucleonVector.clear();
     Nucleon nucl;
     nucleons = nucleons_in;
     for(int iArray = 0; iArray < nucleons->GetEntries(); iArray++){
@@ -16,7 +18,7 @@ void GlauberCollisionReader::Read(TObjArray *nucleons_in) {
         nucl.isospin = nucleon->IsProton();
         nucl.isParticipant = nucleon->IsWounded();
         if(nucleon->IsInNucleusA()){nucl.Nucl = "A";} else {nucl.Nucl = "B";};
-        data.nucleons.push_back(nucl);
+        nucleonVector.push_back(nucl);
         nucl.Clean();
     }
 }

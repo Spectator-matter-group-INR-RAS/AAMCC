@@ -4,28 +4,23 @@ FermiMomentum::FermiMomentum( NucleonVector* nucleons_in,std::string model_in) {
     if(model_in == "M") modelInt = 0;
     if(model_in == "G") modelInt = 1;
     if(model_in == "V") modelInt = 2;
-    if(model_in == "F") modelInt = -1;
 
-    if (modelInt >= 0) {
-        engine = new CLHEP::RanecuEngine();
-        randGauss = new CLHEP::RandGauss(engine, 0, 1);
-        randFlatphi = new CLHEP::RandFlat(engine, 6.28318530718);
-        randFlat = new CLHEP::RandFlat(engine, 1.);
-    }
+    engine = new CLHEP::RanecuEngine();
+    randGauss = new CLHEP::RandGauss(engine,0,1);
+    randFlatphi = new CLHEP::RandFlat(engine,6.28318530718);
+	randFlat = new CLHEP::RandFlat(engine, 1.);
+    nucleons = nucleons_in;
 }
 
 FermiMomentum::FermiMomentum(AAMCCinput *input_in, std::string model_in) {
     if(model_in == "M") modelInt = 0;
     if(model_in == "G") modelInt = 1;
     if(model_in == "V") modelInt = 2;
-    if(model_in == "F") modelInt = -1;
 
-    if (modelInt >= 0) {
-        engine = new CLHEP::RanecuEngine();
-        randGauss = new CLHEP::RandGauss(engine, 0, 1);
-        randFlatphi = new CLHEP::RandFlat(engine, 6.28318530718);
-        randFlat = new CLHEP::RandFlat(engine, 1.);
-    }
+    engine = new CLHEP::RanecuEngine();
+    randGauss = new CLHEP::RandGauss(engine,0,1);
+    randFlatphi = new CLHEP::RandFlat(engine,6.28318530718);
+    randFlat = new CLHEP::RandFlat(engine, 1.);
     input = input_in;
     nucleons = &input_in->nucleons;
 }
@@ -38,12 +33,11 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
         Npart = A - Spec;
 
         if(side == "A"){
-            if ((pF.px == 0 && pF.py == 0 && pF.pz == 0) || modelInt == -1){
+            if (pF.px == 0 && pF.py == 0 && pF.pz == 0){
                 switch (modelInt) {
                     case 0: out = GetMorrisey(); break;
                     case 1: out = GetGoldhaber(); break;
                     case 2: out = GetVanBiber(); break;
-                    case -1: out = {input->FermiMomA_x, input->FermiMomA_y, input->FermiMomA_z}; break;
                     default: out = GetMorrisey(); break;
                 }
                 pF = out;
@@ -55,12 +49,11 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                 return out;}
         }
         else if(side == "B") {
-                if ((pF.px == 0 && pF.py == 0 && pF.pz == 0) || modelInt == -1){
+                if (pF.px == 0 && pF.py == 0 && pF.pz == 0){
                     switch (modelInt) {
                         case 0: out = GetMorrisey(); break;
                         case 1: out = GetGoldhaber(); break;
                         case 2: out = GetVanBiber(); break;
-                        case -1: out = {input->FermiMomB_x, input->FermiMomB_y, input->FermiMomB_z}; break;
                         default: out = GetMorrisey(); break;
                     }
                     pF = {-out.px, -out.py, -out.pz};
