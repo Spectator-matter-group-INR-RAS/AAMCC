@@ -7,7 +7,6 @@
 #include "TParticle.h"
 #include <fstream>
 #include <cmath>
-#include <cassert>
 
 #include "../TGlauber/TGlauberMC.hh"
 #include "../TGlauber/TGlauNucleon.hh"
@@ -18,7 +17,6 @@
 
 #include "AAMCConstants.hh"
 #include "AAMCC.hh"
-#include "VWriter.hh"
 
 class TFile;
 class TH1D;
@@ -41,11 +39,6 @@ class GRATEmanager
       runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
       toFile(ev, &runData, nucleons);
   }
-  /*
-  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, VWriter* writer){
-      runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
-      (*writer)(ev, &runData, nucleons);
-  }*/
   void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);
 
   inline G4String GetSysA() {return SysA;}
