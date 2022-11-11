@@ -29,4 +29,19 @@ http://dx.doi.org/10.1134/S1063779621040493
 
 http://dx.doi.org/10.3103/S1062873820080110
 
+http://dx.doi.org/10.1134/S1063779622020691
+
+http://dx.doi.org/10.1134/S1063779622020800
+
+http://dx.doi.org/10.3390/particles5010004
+
+## Conference papers published using AAMCC
+
+http://dx.doi.org/10.22323/1.398.0310
+
+http://dx.doi.org/10.22323/1.397.0223
+
+http://dx.doi.org/10.1063/5.0063284
+
 # __This is feature branch, it may contain a lot of bugs. Fot the latest stable version please use master-branch__
+
