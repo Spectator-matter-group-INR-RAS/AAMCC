@@ -31,6 +31,8 @@
 
 #include <fstream>
 #include <cassert>
+#include <memory>
+#include <functional>
 
 #include "TFile.h"
 #include "TH1D.h"

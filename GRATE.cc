@@ -40,7 +40,7 @@
 #include "GlauberCollisionReader.hh"
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
-#include "WriteToFile.hh"
+#include "AAMCCWriter.hh"
 
 #include <fstream>
 
@@ -98,7 +98,9 @@ int main()
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
     AAMCCEvent event;
-    void WriteToFile(AAMCCEvent*, AAMCCrun*, NucleonVector*);//Function that writes the data to the file
+    AAMCCWriter* writer = new AAMCCWriter();
+    //to pass a functor as a callable w/o copying it can be wrapped into the lambda
+    auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, NucleonVector* ncl){(*writer)(ev, rn, ncl);};
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -363,7 +365,7 @@ int main()
 
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
-           histoManager.ToFile(&event, &nV, &WriteToFile);
+           histoManager.ToFile(&event, &nV, WrtToFl);
 
             event.A_cl.clear();
             event.Z_cl.clear();
@@ -387,9 +389,6 @@ int main()
             if (!G4bool(count % 100)) { G4cout << "Program is working," << count << " events calculated \r" << std::flush;}
 
         }
-        else{ //costil chtoby rabotal krivoy metod
-            histoManager.ToFile(nullptr, nullptr, WriteToFile);
-        }
     }
 
     G4cout<<"----> collided "<<histoManager.GetIterations()<<" nuclei "<<histoManager.GetSysA()<< " with " << histoManager.GetSysB() <<" at N-N x-section "<<signn<<" mb"<<G4endl;
@@ -402,6 +401,7 @@ int main()
         G4cout<<"----> Only 1 event, no tot x-sect";
     }
 
+    delete writer;
     delete runManager;
     delete clusters;
     delete handlerNew;

@@ -196,8 +196,3 @@ void GRATEmanager::WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_
   }
   Event<<"\nb = "<<b<<" fm \n";
 }
-
-void GRATEmanager::ToFile(AAMCCEvent* event, NucleonVector* nucleons, void (*toFile)(AAMCCEvent*, AAMCCrun*, NucleonVector*)) {
- runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
- toFile(event, &runData, nucleons);
-}
