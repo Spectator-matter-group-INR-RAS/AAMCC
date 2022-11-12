@@ -2,10 +2,10 @@
 #include <vector>
 #if !defined(NUCLEON_HH)
 #define NUCLEON_HH
-class Nucleon{
+class NucleonAAMCC{
 public:
-    Nucleon();
-    ~Nucleon() = default;
+    NucleonAAMCC();
+    ~NucleonAAMCC() = default;
     double x;
     double y;
     double z;
@@ -19,7 +19,7 @@ public:
     double GetZ() const {return z;}
 };
 
-class NucleonVector : public std::vector<Nucleon>{
+class NucleonVector : public std::vector<NucleonAAMCC>{
 public:
     int GetA(std::string Nucl);
     int GetZ(std::string Nucl);

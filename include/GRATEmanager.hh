@@ -27,8 +27,6 @@ class GRATEmanager
   public:
 
   explicit GRATEmanager();
-  explicit GRATEmanager(TFile* file, AAMCCrun (*getTheRunData)(TFile* file));
-  explicit GRATEmanager(AAMCCrun (*getTheRunData)());
    ~GRATEmanager();
 
   public:
@@ -84,7 +82,9 @@ class GRATEmanager
   G4int ExEnStatLabel;
   G4bool NucleusInputLabel;
   G4bool IsCollider;
-  G4bool InFileOrNot;
+  G4bool InFileOrNot = FALSE;
+  G4bool IsInitFile = FALSE;
+  G4int  AbrasionModelInt;
 
   G4String fileName;
   G4String fileType;
@@ -121,6 +121,7 @@ class GRATEmanager
   AAMCCrun runData;
 
   std::ifstream XsectFile;
+  TString inputFileName;
 
 };
 

@@ -1,10 +1,10 @@
 #include "Nucleon.hh"
 
-void Nucleon::Clean(){
+void NucleonAAMCC::Clean(){
     x = 0; y = 0; z = 0; isospin = false; isParticipant = false; Nucl = "";
 }
 
-Nucleon::Nucleon() {
+NucleonAAMCC::NucleonAAMCC() {
 }
 
 int NucleonVector::GetZ(std::string Nucl) {

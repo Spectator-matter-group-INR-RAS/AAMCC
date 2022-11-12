@@ -25,9 +25,9 @@ Graph GMSTClustering::ClusterToGraph(NucleonVector* nucleons, G4double A){
     Graph g(A, A*(A-1)/2);
     //  making full graph of nucleons
     for(G4int iArray = 0; iArray < nucleons->size(); iArray++){
-    	Nucleon *nucleon=&(nucleons->at(iArray));
+        NucleonAAMCC *nucleon=&(nucleons->at(iArray));
     	for(G4int iArray_pairs = iArray + 1; iArray_pairs < nucleons->size(); iArray_pairs++){
-    		Nucleon *nucleon_pair=&(nucleons->at(iArray_pairs));
+            NucleonAAMCC *nucleon_pair=&(nucleons->at(iArray_pairs));
     		g.addEdge(iArray, iArray_pairs, std::sqrt(pow(nucleon->GetX() - nucleon_pair->GetX(),2) + pow(nucleon->GetY() - nucleon_pair->GetY(),2) + pow(nucleon->GetZ() - nucleon_pair->GetZ(),2)));
     	}
 	}
@@ -53,7 +53,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
     NucleonVector *nucleons_B = new NucleonVector(); // nucleons from Side B
 
 	for(G4int iArray = 0; iArray < nucleons_in->size(); iArray++){
-		Nucleon *nucleon= &(nucleons_in->at(iArray));
+        NucleonAAMCC *nucleon= &(nucleons_in->at(iArray));
 		if(nucleon->isParticipant == 0 && nucleon->Nucl == "A"){
 			A+=1;
 			nucleons->push_back(nucleons_in->at(iArray));
@@ -92,7 +92,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
     	G4int Z_clust = 0;
     	G4int A_clust = 0;
     	for(G4int j = 0; j < clusters[i].size(); ++j) {
-        	Nucleon *nucleon=&(nucleons->at((clusters[i])[j]));
+            NucleonAAMCC *nucleon=&(nucleons->at((clusters[i])[j]));
         	if(nucleon->isospin == 1)
         	{
         		Z_clust += 1;
@@ -111,7 +111,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
     	G4int Z_clust = 0;
     	G4int A_clust = 0;
     	for(G4int j = 0; j < clusters_B[i].size(); ++j) {
-        	Nucleon *nucleon=&(nucleons_B->at((clusters_B[i])[j]));
+            NucleonAAMCC *nucleon=&(nucleons_B->at((clusters_B[i])[j]));
                 if(nucleon->isospin == 1)
         	{
         		Z_clust += 1;

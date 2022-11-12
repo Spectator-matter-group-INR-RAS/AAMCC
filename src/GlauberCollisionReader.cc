@@ -8,7 +8,7 @@ NucleonVector GlauberCollisionReader::GetNucleons() {
 
 void GlauberCollisionReader::Read(TObjArray *nucleons_in) {
     nucleonVector.clear();
-    Nucleon nucl;
+    NucleonAAMCC nucl;
     nucleons = nucleons_in;
     for(int iArray = 0; iArray < nucleons->GetEntries(); iArray++){
         auto *nucleon=(TGlauNucleon*)(nucleons->At(iArray));
