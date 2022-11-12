@@ -39,26 +39,18 @@ class GRATEmanager
   }
   void WriteNucleonsCoordinatesInFile(GMSTClusterVector clusters_to_excit_A, GMSTClusterVector clusters_to_excit_B, G4double);
 
-  inline G4String GetSysA() {return SysA;}
-  inline G4String GetSysB() {return SysB;}
-  inline G4String GetDeexModel() {return DeExModel;};
-  inline G4int GetSourceZ() {return this->GetInitialContidions().GetSourceZ();}
+  inline G4String GetSysA() {return runData.SysA;}
+  inline G4String GetSysB() {return runData.SysB;}
+  inline G4String GetDeexModel() {return runData.DeExModel;};
+  inline G4int GetSourceZ() {return this->GetInitialContidions().GetSourceZ();} // not used
   inline G4int GetSourceA() {return this->GetInitialContidions().GetSourceA();}
-  inline G4int GetSourceZb() {return this->GetInitialContidions().GetSourceZb();}
+  inline G4int GetSourceZb() {return this->GetInitialContidions().GetSourceZb();} // not used
   inline G4int GetSourceAb() {return this->GetInitialContidions().GetSourceAb();}
-  inline G4int GetStatType() {return ExEnStatLabel;}
-  inline G4int GetIterations()  {return iterations;};
+  inline G4int GetStatType() {return runData.ExExStatLabel;}
+  inline G4int GetIterations()  {return runData.iterations;};
   inline G4double GetXsectNN() {return this->GetInitialContidions().GetXsectNN();}
-  inline G4double GetKinEn() {return KinEn;};
-  inline G4double GetSqrtSnn() {return SqrtSnn;};
-  inline G4double GetLowEn() {return lowLimitExEn;};
-  inline G4double GetUpEn() {return upperLimitExEn;};
-  inline G4double GetLowEnB() {return lowLimitExEnB;};
-  inline G4double GetUpEnB() {return upperLimitExEnB;};
   inline G4double GetLowB() {return lowLimitB;};
   inline G4double GetUpB() {return upperLimitB;};
-  inline G4bool   WriteMomentum() {return wM;};
-  inline G4bool   WritePseudorapidity() {return wP;};
   inline InitialConditions GetInitialContidions() {return *InCond;};
   inline G4double GetCriticalDistance() {return CritDist;}
   inline G4double GetAngle() {return CLHEP::pi*angle/180;} //Left for the future development of polarized beams
@@ -71,56 +63,28 @@ class GRATEmanager
   private:
 
   TH1D*  histo[20];
-  TH2D*  histo2[10];
 
+  G4bool NucleusInputLabel = FALSE;
 
-  G4int sourceZ;
-  G4int sourceA;
-  G4int sourceZb;
-  G4int sourceAb;
-  G4int iterations; 
-  G4int ExEnStatLabel;
-  G4bool NucleusInputLabel;
-  G4bool IsCollider;
   G4bool InFileOrNot = FALSE;
   G4bool IsInitFile = FALSE;
-  G4int  AbrasionModelInt;
+  G4int  AbrasionModelInt = -1;
 
-  G4String fileName;
-  G4String fileType;
-  G4String fileOpenPath;
-  G4String DeExModel;
-
-  G4String     fileFullName;
-  G4String     SysA;
-  G4String     SysB;
-  G4int        compressionFactor;
-
-  G4double XsectNN = -1;
-  G4double XsectTot = 0;
+  G4double XsectNN = -1.0;
+  G4double XsectTot = -1.0;
 
   G4double KinEn;
   G4double SqrtSnn;
-  G4double lowLimitExEn;
-  G4double upperLimitExEn;
-  G4double lowLimitExEnB;
-  G4double upperLimitExEnB;
-  G4double lowLimitB;
-  G4double upperLimitB;
-  G4int    binsExEn;
-  G4int    eventsPerBin;
+
+  G4double lowLimitB = -1.0; // MB if negative
+  G4double upperLimitB = -2.0; // MB if upperLimitB < lowLimitB
 
   G4double CritDist;
   G4double angle;
 
-  G4bool   wM;
-  G4bool   wP = false;
-
   InitialConditions* InCond = new InitialConditions();
-  AAMCCEvent event;
   AAMCCrun runData;
 
-  std::ifstream XsectFile;
   TString inputFileName;
 
 };

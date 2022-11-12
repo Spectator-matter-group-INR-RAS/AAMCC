@@ -7,12 +7,13 @@
 
 
 GRATEmanager::GRATEmanager()
-  : sourceZ(0), sourceA(0), KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), lowLimitExEn( 0.), upperLimitExEn( 100.), binsExEn(1), eventsPerBin(1), ExEnStatLabel(-1), iterations(1), wM(0), wP(0), NucleusInputLabel(0), IsCollider(0), upperLimitB(-1), CritDist(2.7), angle(0), DeExModel("")
+  : KinEn(-1.), SqrtSnn(-1.), XsectNN(-1.), CritDist(2.7), angle(0)
 {
   // Info about first stage
   std::cout<<"Do you want to read Abrasion stage from file? (1 - yes, 0 - no)" <<std::endl;
   std::cin >> IsInitFile;
   if(IsInitFile){
+    // Reading initial information from file 
     std::cout<<"What generator file you want to use: 1 - URQMD" <<std::endl;
     std::cin >> AbrasionModelInt;
     switch (AbrasionModelInt) {
@@ -23,10 +24,6 @@ GRATEmanager::GRATEmanager()
         AAMCCrun getTheRunData(TString inputFile); //Function that reads the input data from the file
         runData = getTheRunData(inputFileName);
         InCond->SetConditions(runData);
-
-        SqrtSnn = InCond->GetSqrtSnn();
-        KinEn = InCond->GetKinEnergy();
-        iterations = runData.iterations;
         break;
       }
       default:
@@ -38,23 +35,24 @@ GRATEmanager::GRATEmanager()
   }
   else
   {
+    // Initial inforomation is given by user
     std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
     while(!NucleusInputLabel){
       std::cout << "Please enter colliding nucleus name (side A). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
-      std::cin >> SysA;
-      NucleusInputLabel = InCond->SetSysA(SysA);
-      sourceA = InCond->GetSourceA();
-      sourceZ = InCond->GetSourceZ();
+      std::cin >> runData.SysA;
+      NucleusInputLabel = InCond->SetSysA(runData.SysA);
+      runData.AinitA = InCond->GetSourceA();
+      runData.ZinitA = InCond->GetSourceZ();
     }
 
     NucleusInputLabel = 0;
 
     while(!NucleusInputLabel){
       std::cout << "Please enter colliding nucleus name (side B). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
-      std::cin >> SysB;
-      NucleusInputLabel = InCond->SetSysB(SysB);
-      sourceAb = InCond->GetSourceAb();
-      sourceZb = InCond->GetSourceZb();
+      std::cin >> runData.SysB;
+      NucleusInputLabel = InCond->SetSysB(runData.SysB);
+      runData.AinitB = InCond->GetSourceAb();
+      runData.ZinitB = InCond->GetSourceZb();
     }
 
     std::cout<<"Input lower limit for impact parameter in fm (MB if negative) : ";
@@ -70,14 +68,19 @@ GRATEmanager::GRATEmanager()
     }
 
     std::cout<<"Do you want to calculate collisions for collider or for fixed target geometry (1 for collider, 0 for fixed target) : ";
-    std::cin >> IsCollider;
+    std::cin >> runData.isCollider;
+    InCond->SetCollider(runData.isCollider);
 
     while ( KinEn<280.0*MeV/GeV && SqrtSnn <0.) {
-      if (!IsCollider) {
+      if (!runData.isCollider) {
         std::cout << "Please enter kinetic enegy of projectile nucleus (per nucleon in GeV) : ";
         std::cin >> KinEn;
         if(KinEn<280.0*MeV/GeV){
           std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
+        }
+        else
+        {
+          InCond->SetKinematics(KinEn);
         }
       }
       else {
@@ -90,48 +93,26 @@ GRATEmanager::GRATEmanager()
           std::cout << "AAMCC works at kinetic energies above 280A MeV, please input higher energy!" << std::endl;
           SqrtSnn = -1.0;
         }
+        else
+        {
+          InCond->SetKinematics(SqrtSnn);
+        }
       }
     }
 
-    InCond->SetCollider(IsCollider);
-    if(IsCollider){
-      InCond->SetKinematics(SqrtSnn);
-      SqrtSnn = InCond->GetSqrtSnn();
-      KinEn = InCond->GetKinEnergy();
-    }
-    else{
-      InCond->SetKinematics(KinEn);
-      SqrtSnn = InCond->GetSqrtSnn();
-      KinEn = InCond->GetKinEnergy();
-    }
-
-    // Do we need this?////
-    lowLimitExEnB = lowLimitExEn;
-    upperLimitExEnB = upperLimitExEn;
-    lowLimitExEn *= sourceA;
-    lowLimitExEn *= MeV;
-    upperLimitExEn *=sourceA;
-    upperLimitExEn *=MeV;
-    lowLimitExEnB *= sourceAb;
-    lowLimitExEnB *= MeV;
-    upperLimitExEnB *=sourceAb;
-    upperLimitExEnB *=MeV;
-    ///////////////////////
-
-    while ( ((iterations<2) || (iterations>10000000)) && !InFileOrNot ) {
+    while ( ((runData.iterations<2) || (runData.iterations>10000000)) && !InFileOrNot ) {
       std::cout<<"Please enter number of events to be generated: ";
-      std::cin >> iterations;
+      std::cin >> runData.iterations;
     }
 
-    runData.ZinitA = sourceZ; runData.ZinitB = sourceZb; runData.AinitA = sourceA; runData.AinitB = sourceAb; runData.SysA = SysA; runData.SysB = SysB;
-    runData.isCollider = IsCollider; runData.iterations = iterations;
+    runData.isQMD = FALSE;
     runData.pzA = InCond->GetPzA(); runData.pzB = InCond->GetPzB(); runData.SqrtSnn = InCond->GetSqrtSnn();
   }
 
-  // Info about second stage
-  while ((ExEnStatLabel < 0) || (ExEnStatLabel > 7) || (upperLimitExEn < lowLimitExEn) ) {
+  // Information about the second stage
+  while ((runData.ExExStatLabel < 0) || (runData.ExExStatLabel > 7)) {
     std::cout << "Please choose the level density function to be used: 1 - Ericson, 2 - Gaimard-Schmidt, 3 - ALADIN parametrization, 4 - Hybrid of 1 and 3, 7 - Fit of Hybrid : ";
-    std::cin >> ExEnStatLabel;
+    std::cin >> runData.ExExStatLabel;
   }
 
   while(CritDist < 0) {
@@ -139,24 +120,22 @@ GRATEmanager::GRATEmanager()
     std::cin >> CritDist;
   }
 
-  while(DeExModel.empty()){
+  while(runData.DeExModel.empty()){
       std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
-      std::cin>>DeExModel;
+      std::cin>>runData.DeExModel;
   }
 
+  // Output information
   std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
   std::cin >> InFileOrNot;
 
   std::cout << "Please enter the file name to write histograms (.root will be supplied): ";
-  std::cin >> fileName;
+  std::cin >> runData.fileName;
 
   XsectNN = InCond->GetXsectNN(); // Is it only for GlauberMC?
 
   runData.XsectNN = XsectNN;
   runData.KinEnPerNucl = InCond->GetKinEnergyPerNucl();
-  runData.fileName = fileName;
-  runData.DeExModel = DeExModel; 
-  runData.ExExStatLabel = ExEnStatLabel;
 }
 
 

@@ -102,9 +102,9 @@ int main()
     //to pass a functor as a callable w/o copying it can be wrapped into the lambda
     auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, NucleonVector* ncl){(*writer)(ev, rn, ncl);};
 
-    //Get Z and A of nuclei
-    G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
-    G4int sourceAb = histoManager.GetInitialContidions().GetSourceAb();
+    //Get A of nuclei
+    G4int sourceA = histoManager.GetSourceA();
+    G4int sourceAb = histoManager.GetSourceAb();
     G4double rA_plus_rB = 1.3*(pow(G4double(sourceA),1./3.)+pow(G4double(sourceAb),1./3.));
 
     //START OF THE MODELLING
