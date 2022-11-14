@@ -43,9 +43,5 @@ http://dx.doi.org/10.22323/1.397.0223
 
 http://dx.doi.org/10.1063/5.0063284
 
-## Prerequisits
-
-Geant4 v9.6 -- v10.4, CERN ROOT v6+ compiled with C++11, lib MCini (only for this branch)
-
-# __This is feature branch, it may contain a lot of bugs. Fot the latest stable version please use master branch__
+# __This is feature branch, it may contain a lot of bugs. Fot the latest stable version please use master-branch__
 
