@@ -5,8 +5,6 @@
 #include "TTree.h"
 #include <string>
 
-using namespace std;
-
 #include "G4SystemOfUnits.hh"
 #include "AAMCC.hh"
 
