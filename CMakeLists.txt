@@ -48,8 +48,8 @@ link_directories(${ROOT_LIBRARY_DIR})
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 add_executable(GRATE GRATE.cc ${sources} ${headers})
-#target_link_libraries(GRATE TGlauNucleon TGlauNucleus TGlauberMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib)
-target_link_libraries(GRATE ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib)
+#target_link_libraries(GRATE ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib)
+target_link_libraries(GRATE ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib McIniData)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
