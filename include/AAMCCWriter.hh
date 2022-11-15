@@ -14,7 +14,7 @@ class AAMCCWriter: public VWriter {
 public:
     AAMCCWriter();
     ~AAMCCWriter();
-    void operator()(AAMCCEvent* ev, AAMCCrun* run, NucleonVector* nucleons);
+    void operator()(AAMCCEvent* ev, AAMCCrun* run, aamcc::NucleonVector* nucleons);
 private:
     std::shared_ptr<TTree> tGlauber;
     std::shared_ptr<TTree> tRun;
@@ -166,7 +166,7 @@ private:
         tRun->Fill();
     }
 
-    void FillHisto(AAMCCEvent ev, NucleonVector nucleons){
+    void FillHisto(AAMCCEvent ev, aamcc::NucleonVector nucleons){
         //needs a realisation
     }
 

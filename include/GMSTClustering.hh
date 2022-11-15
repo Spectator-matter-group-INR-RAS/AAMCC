@@ -104,9 +104,9 @@ class GMSTClustering{
 	inline void SetCD(G4double CD_in) {CritDist = CD_in; d0 = CD_in;}
 	inline G4double GetCD(std::string side) {return (side == "A" ?  CritDistA : CritDist);}
     void SetCDExEn(G4double Ex, G4int A);
-	Graph ClusterToGraph(NucleonVector* nucleons, G4double A);
+	Graph ClusterToGraph(aamcc::NucleonVector* nucleons, G4double A);
 
-	std::vector<G4FragmentVector> GetClusters(NucleonVector* nucleons, G4double ExA, G4double ExB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB);
+	std::vector<G4FragmentVector> GetClusters(aamcc::NucleonVector* nucleons, G4double ExA, G4double ExB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB);
 
 	private:
 
@@ -121,7 +121,7 @@ class GMSTClustering{
 	G4double aColRel = 5.315; //divided by aVol
 	G4double aSurfRel  = 0.017; //divided by aVol
 	G4double aVol     = 0.054;
-    NucleonVector* nucleonVector;
+    aamcc::NucleonVector* nucleonVector;
 
     G4FermiPhaseSpaceDecay phaseSpaceDecay;
 

@@ -1,21 +1,17 @@
-//#ifndef VCollisionReader_h
-//#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
-//#endif
-
 
 #include "../TGlauber/TGlauNucleon.hh"
 #include "TObjArray.h"
-class GlauberCollisionReader : public VCollisionReader{
+class GlauberCollisionReader final : public VCollisionReader{
 
 public:
-    GlauberCollisionReader();
-    ~GlauberCollisionReader() = default;
-    void Read(TObjArray* nucleons_in);
-    NucleonVector GetNucleons();
-    inline NucleonVector GetNucleons(TObjArray* nucleons_in){this->Read(nucleons_in); return this->GetNucleons();};
-
+    GlauberCollisionReader() = default;
+    ~GlauberCollisionReader() final  = default;
+    // No proper memory management due to legacy code. ROOT library has its own garbage collector.
+    // Using delete explicitly or smart pointers results in segmentation violation.
+    void Read(TObjArray*);
+    inline std::unique_ptr<AAMCCinput> operator()() final {return std::move(data);}
+    inline std::unique_ptr<AAMCCinput> GetNucleons(TObjArray* nucleons_in){this->Read(nucleons_in); return (*this)();}
 private:
-    NucleonVector nucleonVector;
-    TObjArray* nucleons;
+    std::unique_ptr<AAMCCinput> data;
 };
