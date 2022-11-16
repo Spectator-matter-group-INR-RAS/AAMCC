@@ -3,7 +3,7 @@
 
 class VWriter{
 public:
-    virtual void operator()(AAMCCEvent* ev, AAMCCrun* run, NucleonVector* nucleons) = 0;
+    virtual void operator()(AAMCCEvent* ev, AAMCCrun* run, aamcc::NucleonVector* nucleons) = 0;
     virtual ~VWriter() = 0;
 };
 

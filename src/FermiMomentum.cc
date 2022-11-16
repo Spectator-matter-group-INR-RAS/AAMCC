@@ -1,18 +1,8 @@
+#include <utility>
+
 #include "FermiMomentum.hh"
 
-FermiMomentum::FermiMomentum( NucleonVector* nucleons_in,std::string model_in) {
-    if(model_in == "M") modelInt = 0;
-    if(model_in == "G") modelInt = 1;
-    if(model_in == "V") modelInt = 2;
-
-    engine = new CLHEP::RanecuEngine();
-    randGauss = new CLHEP::RandGauss(engine,0,1);
-    randFlatphi = new CLHEP::RandFlat(engine,6.28318530718);
-	randFlat = new CLHEP::RandFlat(engine, 1.);
-    nucleons = nucleons_in;
-}
-
-FermiMomentum::FermiMomentum(AAMCCinput *input_in, std::string model_in) {
+FermiMomentum::FermiMomentum(std::shared_ptr<AAMCCinput> input_in, std::string model_in) : input(std::move(input_in)) {
     if(model_in == "M") modelInt = 0;
     if(model_in == "G") modelInt = 1;
     if(model_in == "V") modelInt = 2;
@@ -21,15 +11,13 @@ FermiMomentum::FermiMomentum(AAMCCinput *input_in, std::string model_in) {
     randGauss = new CLHEP::RandGauss(engine,0,1);
     randFlatphi = new CLHEP::RandFlat(engine,6.28318530718);
     randFlat = new CLHEP::RandFlat(engine, 1.);
-    input = input_in;
-    nucleons = &input_in->nucleons;
 }
 
 vect3 FermiMomentum::GetMomentum(std::string side) {
     //std::cout<<"Called for side "<<side<<std::endl;
     vect3 out = {0, 0, 0};
-        A = nucleons->GetTotA(side);
-        Spec = nucleons->GetA(side);
+        A = input->nucleons.GetTotA(side);
+        Spec = input->nucleons.GetA(side);
         Npart = A - Spec;
 
         if(side == "A"){
@@ -41,11 +29,11 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                     default: out = GetMorrisey(); break;
                 }
                 pF = out;
-                out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                 return out;
             }
             else {out = pF; pF = {0, 0, 0};
-                out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                 return out;}
         }
         else if(side == "B") {
@@ -57,18 +45,16 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                         default: out = GetMorrisey(); break;
                     }
                     pF = {-out.px, -out.py, -out.pz};
-                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                     return out;
                 }
                 else {out = {-pF.px, -pF.py, -pF.pz}; pF = {0, 0, 0};
-                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (nucleons->GetA(side)), 2), 0.5));
+                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                     return out;}
 
 
         }
         else {std::cout<< "Error, side argument is invalid. Please, use A or B as an argument"; return out;}
-
-    return out;
 }
 
 vect3 FermiMomentum::GetGoldhaber() {
@@ -107,11 +93,11 @@ void FermiMomentum::SetPzPerNucleon(double pZA, double pZB) {
 }
 
 CLHEP::Hep3Vector FermiMomentum::GetBoost(std::string side) {
-    if(nucleons->GetA(side) != 0){
+    if(input->nucleons.GetA(side) != 0){
         vect3 p = GetMomentum(side);
-    double  E =std::sqrt( p.mag2()/(nucleons->GetA(side)*nucleons->GetA(side)) + nucleonAverMass*nucleonAverMass);
-    CLHEP::HepLorentzVector  futureBoost(p.px/nucleons->GetA(side), p.py/nucleons->GetA(side), p.pz/nucleons->GetA(side), E);
-    if(!futureBoost.isTimelike()) std::cout<<side<<" "<<E<<" nucl = "<<nucleons->GetA(side)<<std::endl;
+    double  E =std::sqrt( p.mag2()/(input->nucleons.GetA(side)*input->nucleons.GetA(side)) + nucleonAverMass*nucleonAverMass);
+    CLHEP::HepLorentzVector  futureBoost(p.px/input->nucleons.GetA(side), p.py/input->nucleons.GetA(side), p.pz/input->nucleons.GetA(side), E);
+    if(!futureBoost.isTimelike()) std::cout<<side<<" "<<E<<" nucl = "<<input->nucleons.GetA(side)<<std::endl;
     return futureBoost.boostVector();}
     else { return CLHEP::Hep3Vector(0,0,0);}
 }
@@ -121,10 +107,10 @@ CLHEP::Hep3Vector FermiMomentum::toHep3Vector(vect3 vectorIn) {
 }
 
 CLHEP::HepLorentzVector FermiMomentum::toHepLorentzVector(vect3 vectorIn , std::string side) {
-    if(nucleons->GetA(side) != 0){
+    if(input->nucleons.GetA(side) != 0){
         vect3 p = vectorIn;
-        double  E =std::sqrt( p.mag2()/(nucleons->GetA(side)*nucleons->GetA(side)) + nucleonAverMass*nucleonAverMass);
-        return CLHEP::HepLorentzVector(p.px, p.py, p.pz, E*nucleons->GetA(side));
+        double  E =std::sqrt( p.mag2()/(input->nucleons.GetA(side)*input->nucleons.GetA(side)) + nucleonAverMass*nucleonAverMass);
+        return CLHEP::HepLorentzVector(p.px, p.py, p.pz, E*input->nucleons.GetA(side));
     } else{return {0,0,0, 0};}
 }
 

@@ -18,8 +18,7 @@ struct vect3{
 
 class FermiMomentum{
 public:
-    explicit FermiMomentum(NucleonVector* nucleons_in, std::string model_in = "M");
-    explicit FermiMomentum(AAMCCinput* input, std::string model_in = "M");
+    explicit FermiMomentum(std::shared_ptr<AAMCCinput> input, std::string model_in = "M");
     ~FermiMomentum() = default;
     vect3 GetMomentum(std::string side);
     CLHEP::Hep3Vector GetBoost(std::string side);
@@ -53,8 +52,7 @@ private:
 	CLHEP::RandFlat* randFlatphi;
 
     int modelInt = 0;
-    NucleonVector* nucleons;
-    AAMCCinput* input;
+    std::shared_ptr<AAMCCinput> input;
 
     vect3 pF = {0, 0, 0};
 

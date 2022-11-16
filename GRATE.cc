@@ -100,7 +100,7 @@ int main()
     AAMCCEvent event;
     AAMCCWriter* writer = new AAMCCWriter();
     //to pass a functor as a callable w/o copying it can be wrapped into the lambda
-    auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, NucleonVector* ncl){(*writer)(ev, rn, ncl);};
+    auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -165,9 +165,9 @@ int main()
         ExEnB->SetParametersHybridFit(11.46648905*MeV, -1.84830078*MeV,  -58.53674677*MeV,  284.66431513*MeV, -637.51406293*MeV,  652.80324427*MeV, -251.28205381*MeV, 0.4*MeV, 0.5, 0.2);
     }
 
-    NucleonVector nV;
+    auto ain = make_shared<AAMCCinput>();
     GlauberCollisionReader reader;
-    FermiMomentum FermiMom(&nV, "G");
+    FermiMomentum FermiMom(ain, "G");
     FermiMom.SetPzPerNucleon(histoManager.GetInitialContidions().GetPzA()/ sourceA, histoManager.GetInitialContidions().GetPzB() / sourceAb);
 
     for(G4int count=0;count<histoManager.GetIterations() ;count++){
@@ -200,8 +200,11 @@ int main()
         G4int Ab = 0;
         G4int Zb = 0;
 
-        nV = reader.GetNucleons(nucleons);
-        Z = nV.GetZ("A"); A = nV.GetA("A"); Zb = nV.GetZ("B"); Ab = nV.GetA("B");
+        ain = reader.GetNucleons(nucleons);
+        Z = ain->nucleons.GetZ("A");
+        A = ain->nucleons.GetA("A");
+        Zb = ain->nucleons.GetZ("B");
+        Ab = ain->nucleons.GetA("B");
 
         if(!(A == 0 && Ab ==0)){
             G4int thisEventNumFragments = 0;
@@ -230,7 +233,7 @@ int main()
             //if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(event.FermiMomA_x, event.FermiMomA_y);//newData
 
 
-            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&nV, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
+            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&ain->nucleons, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
 
             event.d_MstA = clusters->GetCD("A");
             event.d_MstB = clusters->GetCD("B");
@@ -365,7 +368,7 @@ int main()
 
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
-           histoManager.ToFile(&event, &nV, WrtToFl);
+           histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
 
             event.A_cl.clear();
             event.Z_cl.clear();

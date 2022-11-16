@@ -35,7 +35,7 @@ class GRATEmanager
 
   TH1D* GetHisto(G4int id) {return histo[id];}; //zombie function waining to the migration of this->CalcNucleonDensity() to the WriteToFile()
   void CalcNucleonDensity(TObjArray* nucleons_pre, G4double b); //calling it will cause the seg fault
-  void ToFile(AAMCCEvent* ev, NucleonVector* nucleons, std::function<void(AAMCCEvent*, AAMCCrun*, NucleonVector*)> toFile) {
+  void ToFile(AAMCCEvent* ev, aamcc::NucleonVector* nucleons, std::function<void(AAMCCEvent*, AAMCCrun*, aamcc::NucleonVector*)> toFile) {
       runData.XsectNN = XsectNN; runData.XsectTot = XsectTot;
       toFile(ev, &runData, nucleons);
   }
