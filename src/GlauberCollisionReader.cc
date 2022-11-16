@@ -1,7 +1,7 @@
 #include "GlauberCollisionReader.hh"
 
 void GlauberCollisionReader::Read(TObjArray* nucleons_in) {
-    data = make_unique<AAMCCinput>();
+    data = std::unique_ptr<AAMCCinput>(new AAMCCinput());
     aamcc::Nucleon nucl;
     for(int iArray = 0; iArray < nucleons_in->GetEntries(); iArray++){
         auto nucleon = (TGlauNucleon*)(nucleons_in->At(iArray));        //legacy
