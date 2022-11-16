@@ -20,7 +20,7 @@ AAMCCWriter::~AAMCCWriter() {
     G4cout << "\n----> Data were written into the file " << runData.fileName+".root" << G4endl;
 }
 
-void AAMCCWriter::operator()(AAMCCEvent *ev, AAMCCrun *run, NucleonVector *nucleons) {
+void AAMCCWriter::operator()(AAMCCEvent *ev, AAMCCrun *run, aamcc::NucleonVector *nucleons) {
     if(run != nullptr) runData = (*run);
     if(callflag){InitHisto(runData); callflag = false;}
     if(ev != nullptr && nucleons != nullptr){FillTrees((*ev)); FillHisto((*ev), (*nucleons));}

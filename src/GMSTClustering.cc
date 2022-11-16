@@ -21,13 +21,13 @@ CritDist = CD_in;
 GMSTClustering::~GMSTClustering(){
 };
 
-Graph GMSTClustering::ClusterToGraph(NucleonVector* nucleons, G4double A){
+Graph GMSTClustering::ClusterToGraph(aamcc::NucleonVector* nucleons, G4double A){
     Graph g(A, A*(A-1)/2);
     //  making full graph of nucleons
     for(G4int iArray = 0; iArray < nucleons->size(); iArray++){
-    	Nucleon *nucleon=&(nucleons->at(iArray));
+    	aamcc::Nucleon *nucleon=&(nucleons->at(iArray));
     	for(G4int iArray_pairs = iArray + 1; iArray_pairs < nucleons->size(); iArray_pairs++){
-    		Nucleon *nucleon_pair=&(nucleons->at(iArray_pairs));
+    		aamcc::Nucleon *nucleon_pair=&(nucleons->at(iArray_pairs));
     		g.addEdge(iArray, iArray_pairs, std::sqrt(pow(nucleon->GetX() - nucleon_pair->GetX(),2) + pow(nucleon->GetY() - nucleon_pair->GetY(),2) + pow(nucleon->GetZ() - nucleon_pair->GetZ(),2)));
     	}
 	}
@@ -41,7 +41,7 @@ void GMSTClustering::SetCDExEn(G4double Ex, G4int A) {
        CritDist = d0*kappa*std::pow(Ex/(eps0*G4double(A)),1./3.*alphaPow);}
 }
 
-std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleons_in, G4double ExA, G4double ExB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB){
+std::vector<G4FragmentVector> GMSTClustering::GetClusters(aamcc::NucleonVector* nucleons_in, G4double ExA, G4double ExB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB){
 	G4int A = 0;
 	G4int Z = 0;
 	G4int Ab = 0;
@@ -49,11 +49,11 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
     nucleonVector = nucleons_in;
     SpecAa = nucleonVector->GetA("A"); SpecAb = nucleonVector->GetA("B");
 
-	NucleonVector *nucleons = new NucleonVector(); // nucleons from Side A
-    NucleonVector *nucleons_B = new NucleonVector(); // nucleons from Side B
+	auto *nucleons = new aamcc::NucleonVector(); // nucleons from Side A
+    auto *nucleons_B = new aamcc::NucleonVector(); // nucleons from Side B
 
 	for(G4int iArray = 0; iArray < nucleons_in->size(); iArray++){
-		Nucleon *nucleon= &(nucleons_in->at(iArray));
+		aamcc::Nucleon *nucleon= &(nucleons_in->at(iArray));
 		if(nucleon->isParticipant == 0 && nucleon->Nucl == "A"){
 			A+=1;
 			nucleons->push_back(nucleons_in->at(iArray));
@@ -92,7 +92,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
     	G4int Z_clust = 0;
     	G4int A_clust = 0;
     	for(G4int j = 0; j < clusters[i].size(); ++j) {
-        	Nucleon *nucleon=&(nucleons->at((clusters[i])[j]));
+        	aamcc::Nucleon *nucleon=&(nucleons->at((clusters[i])[j]));
         	if(nucleon->isospin == 1)
         	{
         		Z_clust += 1;
@@ -111,7 +111,7 @@ std::vector<G4FragmentVector> GMSTClustering::GetClusters(NucleonVector* nucleon
     	G4int Z_clust = 0;
     	G4int A_clust = 0;
     	for(G4int j = 0; j < clusters_B[i].size(); ++j) {
-        	Nucleon *nucleon=&(nucleons_B->at((clusters_B[i])[j]));
+        	aamcc::Nucleon *nucleon=&(nucleons_B->at((clusters_B[i])[j]));
                 if(nucleon->isospin == 1)
         	{
         		Z_clust += 1;

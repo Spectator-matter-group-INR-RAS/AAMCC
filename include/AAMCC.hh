@@ -42,7 +42,6 @@
 //#define VCollisionReader_h 1
 #include "VCollisionReader.hh"
 //#endif
-
 class AAMCC {
 public:
     explicit AAMCC();
