@@ -97,6 +97,14 @@ int main()
 
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
+
+    // Read Initial information about Run
+    AAMCCReader* InitReader = new AAMCCReader();
+    auto  RdInitCond = [&](AAMCCrun* rn, InitialConditions* InCond){(*InitReader)(rn, InCond);};
+    histoManager.ReadInitCond(RdInitCond);
+
+
+
     AAMCCEvent event;
     AAMCCWriter* writer = new AAMCCWriter();
     //to pass a functor as a callable w/o copying it can be wrapped into the lambda
