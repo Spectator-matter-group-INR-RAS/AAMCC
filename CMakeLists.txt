@@ -35,6 +35,7 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/FermiBrea
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh ${PROJECT_SOURCE_DIR}/photon_evaporation/include/*.hh ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh ${PROJECT_SOURCE_DIR}/Fission/include/*.hh ${PROJECT_SOURCE_DIR}/Multifragmentation/include/*.hh ${PROJECT_SOURCE_DIR}/Abla/include/*.hh)
 
 include_directories(ROOT_BUG)
+include_directories(/usr/local/include)
 
 include_directories(${PROJECT_SOURCE_DIR}/include
                     ${PROJECT_SOURCE_DIR}/Evaporation/include/
@@ -45,6 +46,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include
                     ${ROOT_INCLUDE_DIRS})
 add_subdirectory(TGlauber)
 link_directories(${ROOT_LIBRARY_DIR})
+link_directories(/usr/local/lib)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 add_executable(GRATE GRATE.cc ${sources} ${headers})
@@ -55,4 +57,3 @@ target_link_libraries(GRATE ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib Mc
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 install(TARGETS GRATE DESTINATION bin)
-

@@ -72,31 +72,37 @@ struct AAMCCinput{
 };
 
 struct AAMCCrun{
-    G4int ZinitA;
-    G4int AinitA;
-    G4int ZinitB;
-    G4int AinitB;
+    G4int ZinitA = -1;
+    G4int AinitA = -1;
+    G4int ZinitB = -1;
+    G4int AinitB = -1;
 
-    G4String SysA;
-    G4String SysB;
-    G4String fileName;
+    G4String SysA = "";
+    G4String SysB = "";
+    G4String fileName = "";
 
-    G4double KinEnPerNucl;
-    G4double SqrtSnn;
-    G4double pzA;
-    G4double pzB;
+    G4double KinEnPerNucl = -1.0;
+    G4double SqrtSnn = -1.0;
+    G4double pzA = -1.0;
+    G4double pzB = -1.0;
     G4bool isCollider;
 
-    G4int iterations;
+    G4int iterations = -1;
 
-    G4double XsectNN;
-    G4double XsectTot;
+    G4double XsectNN = -1.0;
+    G4double XsectTot = -1.0;
 
-    G4String DeExModel;
-    G4int ExExStatLabel;
+    G4String DeExModel = "";
+    G4int ExExStatLabel = -1;
+
+    G4double lowLimitB = -1.0; // MB if negative
+    G4double upperLimitB = -2.0; // MB if upperLimitB < lowLimitB
+
+    G4double CritDist = 2.7;
+
+    G4bool InFileOrNot = false;
 
     G4bool isQMD;
 };
-
 
 //#endif

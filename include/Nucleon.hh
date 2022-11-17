@@ -1,12 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <cmath>
+
 
 #if !defined(NUCLEON_HH)
 #define NUCLEON_HH
 
 namespace aamcc {
-
     class Nucleon {
     public:
         Nucleon();
