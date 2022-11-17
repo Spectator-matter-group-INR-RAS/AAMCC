@@ -17,7 +17,7 @@ AAMCCWriter::~AAMCCWriter() {
     file->WriteObject(tFermiMom.get(), "FermiMomentum");
     file->WriteObject(tClusters.get(), "MST-Clusters");
     file->WriteObject(tRun.get(), "Conditions");
-    G4cout << "\n----> Data were written into the file " << runData.fileName+".root" << G4endl;
+    G4cout << "\n----> Data were written into the file " << fileName+".root" << G4endl;
 }
 
 void AAMCCWriter::operator()(AAMCCEvent *ev, AAMCCrun *run, aamcc::NucleonVector *nucleons) {

@@ -41,6 +41,7 @@
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 #include "AAMCCWriter.hh"
+#include "MCiniWriter.hh"
 
 #include <fstream>
 
@@ -98,9 +99,15 @@ int main()
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
     AAMCCEvent event;
-    AAMCCWriter* writer = new AAMCCWriter();
+
+
+    //AAMCCWriter* writer = new AAMCCWriter();
+    //auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
+
+    MCINIWriter* pMciniWriter = new MCINIWriter();
     //to pass a functor as a callable w/o copying it can be wrapped into the lambda
-    auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
+
+    auto  mciniWrite = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*pMciniWriter)(ev, rn, ncl);};
 
     //Get Z and A of nuclei
     G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
@@ -141,6 +148,8 @@ int main()
         mcg->SetBmax(histoManager.GetUpB());
     } 
     else {std::cout << " \n------>Calculation will be MB \n"<<std::endl;}
+    pMciniWriter->SetBMin(histoManager.GetLowB());
+    pMciniWriter->SetBMax(histoManager.GetUpB());
  
     //Setting Excitation Energy
     ExcitationEnergy* ExEnA = new ExcitationEnergy(histoManager.GetStatType(), sourceA);
@@ -368,7 +377,8 @@ int main()
 
 
            histoManager.SetXsectTot(mcg->GetTotXSect());
-           histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
+           //histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
+           histoManager.ToFile(&event, &ain->nucleons, mciniWrite);
 
             event.A_cl.clear();
             event.Z_cl.clear();
@@ -404,7 +414,8 @@ int main()
         G4cout<<"----> Only 1 event, no tot x-sect";
     }
 
-    delete writer;
+    //delete writer;
+    delete pMciniWriter;
     delete runManager;
     delete clusters;
     delete handlerNew;
