@@ -22,6 +22,8 @@ void AAMCCReader::ReadFirstStage(AAMCCrun* runData, InitialConditions* InCond){
         AAMCCrun getTheRunData(TString inputFile); //Function that reads the input data from the file
         *runData = getTheRunData(inputFileName);
         InCond->SetConditions(*runData);
+        runData->SysA = InCond->GetSysA();
+        runData->SysB = InCond->GetSysB();
         break;
       }
       default:

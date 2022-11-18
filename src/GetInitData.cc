@@ -30,5 +30,7 @@ AAMCCrun getTheRunData(TString inputFileName="test.root")
 
 	runData.isQMD = true;
 
+	fIn->Close();
+
 	return runData;
 }

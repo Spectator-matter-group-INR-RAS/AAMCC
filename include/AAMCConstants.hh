@@ -102,7 +102,7 @@ struct AAMCCrun{
 
     G4bool InFileOrNot = false;
 
-    G4bool isQMD;
+    G4bool isQMD = false;
 };
 
 //#endif
