@@ -422,6 +422,7 @@ int main()
     }
 
     //delete writer;
+    delete InitReader;
     delete pMciniWriter;
     delete runManager;
     delete clusters;
