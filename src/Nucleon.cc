@@ -1,6 +1,5 @@
 #include "Nucleon.hh"
 
-
 namespace aamcc {
     void Nucleon::Clean() {
         x = 0;

@@ -98,6 +98,13 @@ int main()
 
     // The user will be asked for the nuclear name to simulate it's collisions.
     GRATEmanager histoManager;
+
+    // Read Initial information about Run
+    AAMCCReader* InitReader = new AAMCCReader();
+    auto  RdInitCond = [&](AAMCCrun* rn, InitialConditions* InCond){(*InitReader)(rn, InCond);};
+    histoManager.ReadInitCond(RdInitCond);
+
+
     AAMCCEvent event;
 
 
@@ -109,9 +116,9 @@ int main()
 
     auto  mciniWrite = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*pMciniWriter)(ev, rn, ncl);};
 
-    //Get Z and A of nuclei
-    G4int sourceA = histoManager.GetInitialContidions().GetSourceA();
-    G4int sourceAb = histoManager.GetInitialContidions().GetSourceAb();
+    //Get A of nuclei
+    G4int sourceA = histoManager.GetSourceA();
+    G4int sourceAb = histoManager.GetSourceAb();
     G4double rA_plus_rB = 1.3*(pow(G4double(sourceA),1./3.)+pow(G4double(sourceAb),1./3.));
 
     //START OF THE MODELLING
@@ -415,6 +422,7 @@ int main()
     }
 
     //delete writer;
+    delete InitReader;
     delete pMciniWriter;
     delete runManager;
     delete clusters;

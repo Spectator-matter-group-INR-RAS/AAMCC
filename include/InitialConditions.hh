@@ -19,6 +19,8 @@ public:
 
     G4bool SetSysA(G4String SysA_in);
     G4bool SetSysB(G4String SysB_in);
+    G4bool SetSysA(G4double A_in, G4double Z_in);
+    G4bool SetSysB(G4double A_in, G4double Z_in);
 
     inline  void   SetCollider(G4bool IsCollider_in) {IsCollider = IsCollider_in;};
     void   SetKinematics(G4double Energy_in);
