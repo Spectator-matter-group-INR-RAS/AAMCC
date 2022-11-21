@@ -24,8 +24,9 @@ public:
     ~McIniReader() final = default;
 
     AAMCCinput operator()() final;
-    // temporary method to provide EventInitialState reading to outside TODO: after implementing normal DTOs should be rewritten to actually return AAMCCevent
-    EventInitialState* getInStateAddress() {return curr_st;};
+    // temporary methods to provide EventInitialState and UEvenet readings to outside TODO: after implementing normal DTOs should be rewritten to actually return AAMCCevent
+    EventInitialState* getInStateAddress() {return curr_st;}
+    UEvent* getEventAdress() {return curr;}
 
 private:
     TTree* ftree;           // Root data structure
