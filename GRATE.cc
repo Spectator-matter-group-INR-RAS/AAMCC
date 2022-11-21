@@ -226,6 +226,7 @@ int main()
         G4int Ab = 0;
         G4int Zb = 0;
 
+        //reinterpret cast to GlauberCollisionReader* since it has a method not present in the base class
         *ain = histoManager.GetReaderID() ? (*reader)() : reinterpret_cast<GlauberCollisionReader*>(reader.get())->GetNucleons(nucleons);
         Z = ain->nucleons.GetZ("A");
         A = ain->nucleons.GetA("A");
