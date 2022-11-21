@@ -2,6 +2,8 @@
 #define GRATE_AAMCCREADER_HH
 
 #include "VReader.hh"
+#include "GetInitData.hh"
+
 #include "G4SystemOfUnits.hh"
 #include "TTree.h"
 #include "TFile.h"

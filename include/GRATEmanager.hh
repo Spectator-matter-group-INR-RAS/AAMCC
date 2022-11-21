@@ -61,6 +61,8 @@ class GRATEmanager
   inline G4double GetCriticalDistance() {return runData.CritDist;}
   inline G4double GetAngle() {return CLHEP::pi*angle/180;} // left for the future development of polarized beams
   inline G4bool ToFileOrNot() {return runData.InFileOrNot;}
+  inline uint GetReaderID() const {return runData.isQMD;}
+  inline std::string GetReadFilename() const {return runData.fileRName;}
   inline void SetXsectTot(G4double Xsect){runData.XsectTot = Xsect;}
   
   private:

@@ -9,7 +9,7 @@ public:
     VCollisionReader& operator=(const VCollisionReader&) = delete;      //It is associated with the file and its state shouldn't be copied.
     virtual ~VCollisionReader() = 0;
 
-    virtual std::unique_ptr<AAMCCinput> operator()() = 0;
+    virtual AAMCCinput operator()() = 0;
 
 protected:
     VCollisionReader() = default;                                       //Protected constructor to prevent instancing

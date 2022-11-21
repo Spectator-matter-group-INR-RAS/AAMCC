@@ -1,5 +1,6 @@
 #include "AAMCCReader.hh"
 
+
 AAMCCReader::AAMCCReader() {
 }
 
@@ -19,16 +20,25 @@ void AAMCCReader::ReadFirstStage(AAMCCrun* runData, InitialConditions* InCond){
       {
         std::cout<<"Please enter the full path to the file" <<std::endl;
         std::cin >> inputFileName;
-        AAMCCrun getTheRunData(TString inputFile); //Function that reads the input data from the file
         *runData = getTheRunData(inputFileName);
         InCond->SetConditions(*runData);
         runData->SysA = InCond->GetSysA();
         runData->SysB = InCond->GetSysB();
+        runData->fileRName = inputFileName;
+        runData->InFileOrNot = true;
         break;
       }
       default:
       {
         std::cout<<"default case (URQMD) is chosen" <<std::endl;
+        std::cout<<"Please enter the full path to the file" <<std::endl;
+        std::cin >> inputFileName;
+        *runData = getTheRunData(inputFileName);
+        InCond->SetConditions(*runData);
+        runData->SysA = InCond->GetSysA();
+        runData->SysB = InCond->GetSysB();
+        runData->fileRName = inputFileName;
+        runData->InFileOrNot = true;
         break;
       }
     }
@@ -126,10 +136,6 @@ void AAMCCReader::ReadSecondStage(AAMCCrun* runData, InitialConditions* InCond){
       std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
       std::cin>>runData->DeExModel;
   }
-
-  // Output information
-  std::cout<<"Write coordinates of nucleons in the text file or not (one event)? (1 - yes, 0 - no): ";
-  std::cin >> runData->InFileOrNot;
 
   std::cout << "Please enter the file name to write histograms (.root will be supplied): ";
   std::cin >> runData->fileName;

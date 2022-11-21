@@ -7,3 +7,5 @@
 #include "AAMCConstants.hh"
 
 #include "URun.h"
+
+AAMCCrun getTheRunData(const TString&);

@@ -1,7 +1,7 @@
 #include "GlauberCollisionReader.hh"
 
 void GlauberCollisionReader::Read(TObjArray* nucleons_in) {
-    data = std::unique_ptr<AAMCCinput>(new AAMCCinput());
+    data.nucleons.clear();
     aamcc::Nucleon nucl;
     for(int iArray = 0; iArray < nucleons_in->GetEntries(); iArray++){
         auto nucleon = (TGlauNucleon*)(nucleons_in->At(iArray));        //legacy
@@ -11,7 +11,7 @@ void GlauberCollisionReader::Read(TObjArray* nucleons_in) {
         nucl.isospin = nucleon->IsProton();
         nucl.isParticipant = nucleon->IsWounded();
         if(nucleon->IsInNucleusA()){nucl.Nucl = "A";} else {nucl.Nucl = "B";};
-        data->nucleons.push_back(nucl);
+        data.nucleons.push_back(nucl);
         nucl.Clean();
     }
 }
