@@ -100,7 +100,7 @@ struct AAMCCrun{
     G4double lowLimitB = -1.0; // MB if negative
     G4double upperLimitB = -2.0; // MB if upperLimitB < lowLimitB
 
-    G4double CritDist = 2.7;
+    G4double CritDist = 2.7; //2.7
 
     G4bool InFileOrNot = false;
 

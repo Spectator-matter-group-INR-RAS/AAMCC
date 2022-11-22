@@ -112,8 +112,8 @@ int main()
     auto ain = make_shared<AAMCCinput>();
     auto reader = histoManager.GetReaderID() ? std::unique_ptr<VCollisionReader>(new McIniReader(inFile)) : std::unique_ptr<VCollisionReader>(new GlauberCollisionReader());
 
-//    AAMCCWriter* writer = new AAMCCWriter();
-//    auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
+    AAMCCWriter* writer = new AAMCCWriter();
+    auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
 
     MCINIWriter* pMciniWriter = new MCINIWriter();
     //to pass a functor as a callable w/o copying it can be wrapped into the lambda
@@ -219,7 +219,11 @@ int main()
             event.Ncollpn = mcg->GetNcollpn();
             event.Ncollnn = mcg->GetNcollnn();
             nucleons = mcg->GetNucleons();
-    }
+    }else{
+            event.b = reinterpret_cast<McIniReader*>(reader.get())->getEventAdress()->GetB();
+            event.Npart = reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress()->getNPart();
+            event.Ncoll = reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress()->getNColl();
+        }
 
         G4int A = 0;
         G4int Z = 0;
@@ -260,9 +264,8 @@ int main()
             event.FermiMomB_z = Fermi4MomB.pz();
 
             //if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(event.FermiMomA_x, event.FermiMomA_y);//newData
-
-
-            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&ain->nucleons, energy_A, energy_B, boostA, boostB); //d = const if energy is negative
+            if(histoManager.GetReaderID()) clusters->SetAlpha(100);
+            std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&ain->nucleons, energy_A,energy_B, boostA, boostB); //d = const if energy is negative
 
             event.d_MstA = clusters->GetCD("A");
             event.d_MstB = clusters->GetCD("B");
@@ -400,7 +403,7 @@ int main()
 
             pMciniWriter->GetEventIniState(reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress());
             pMciniWriter->GetUEvent(reinterpret_cast<McIniReader*>(reader.get())->getEventAdress());
-//            histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
+            histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
             histoManager.ToFile(&event, &ain->nucleons, mciniWrite);
 
             event.A_cl.clear();
@@ -440,7 +443,7 @@ int main()
 
     if(histoManager.GetReaderID())
         inFile->Close();
-//    delete writer;
+    delete writer;
     delete InitReader;
     delete pMciniWriter;
     delete runManager;

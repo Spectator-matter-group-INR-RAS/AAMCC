@@ -104,6 +104,7 @@ class GMSTClustering{
 	inline void SetCD(G4double CD_in) {CritDist = CD_in; d0 = CD_in;}
 	inline G4double GetCD(std::string side) {return (side == "A" ?  CritDistA : CritDist);}
     void SetCDExEn(G4double Ex, G4int A);
+    void SetAlpha(G4double alpha_in){alphaPow = alpha_in;}
 	Graph ClusterToGraph(aamcc::NucleonVector* nucleons, G4double A);
 
 	std::vector<G4FragmentVector> GetClusters(aamcc::NucleonVector* nucleons, G4double ExA, G4double ExB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB);

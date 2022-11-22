@@ -65,7 +65,7 @@ G4FermiPhaseSpaceDecay::KopylovNBodyDecay(const G4double M, const std::vector<G4
       G4double RestMass = mu + T;
 
       PFragMagCM = PtwoBody(Mass,m[k],RestMass);
-      if (PFragMagCM < 0) 
+      if (PFragMagCM < 0)
         {
           throw G4HadronicException(__FILE__, __LINE__, "G4FermiPhaseSpaceDecay::KopylovNBodyDecay: Error sampling fragments momenta!!");
         }
