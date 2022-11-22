@@ -91,6 +91,9 @@ private:
             iniState->setNPart(rawIniState->getNPart());
             iniState->setId(rawIniState->getId());
             iniState->setNucleons(rawIniState->getNucleons());
+        } else{
+            iniState->setNPart(ev->Npart);
+            iniState->setNColl(ev->Ncoll);
         }
         tMCini->Fill();
     }
