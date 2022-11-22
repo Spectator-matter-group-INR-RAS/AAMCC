@@ -10,6 +10,7 @@
 static constexpr double nucleonAverMass = 0.93891875434*CLHEP::GeV;
 
 struct AAMCCEvent{
+
     std::vector<G4float> MassOnSideA;
     std::vector<G4float> MassOnSideB;
     std::vector<G4float> ChargeOnSideA;
@@ -23,52 +24,52 @@ struct AAMCCEvent{
     std::vector<G4double> pseudorapidity_A;
     std::vector<G4double> pseudorapidity_B;
 
-    G4float b;
-    G4float ExEnA;
-    G4float ExEnB;
-    G4int id;
-    G4int Nhard;
-    G4int Ncoll;
-    G4int Ncollpp;
-    G4int Ncollpn;
-    G4int Ncollnn;
-    G4int Npart;
-    G4int NpartA;
-    G4int NpartB;
+    G4float b = 0;
+    G4float ExEnA = 0;
+    G4float ExEnB = 0;
+    G4int id = 0;
+    G4int Nhard = 0;
+    G4int Ncoll = 0;
+    G4int Ncollpp = 0;
+    G4int Ncollpn = 0;
+    G4int Ncollnn = 0;
+    G4int Npart = 0;
+    G4int NpartA = 0;
+    G4int NpartB = 0;
 
-    G4double FermiMomA_x;
-    G4double FermiMomA_y;
-    G4double FermiMomA_z;
-    G4double FermiMomB_x;
-    G4double FermiMomB_y;
-    G4double FermiMomB_z;
+    G4double FermiMomA_x = 0;
+    G4double FermiMomA_y = 0;
+    G4double FermiMomA_z = 0;
+    G4double FermiMomB_x = 0;
+    G4double FermiMomB_y = 0;
+    G4double FermiMomB_z = 0;
 
-    G4float PhiRotA;
-    G4float ThetaRotA;
-    G4float PhiRotB;
-    G4float ThetaRotB;
-    G4float Ecc[10];
+    G4float PhiRotA = 0;
+    G4float ThetaRotA = 0;
+    G4float PhiRotB = 0;
+    G4float ThetaRotB = 0;
+    G4float Ecc[10]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    G4int ClustNumA;
-    G4int ClustNumB;
-    G4double d_MstA;
-    G4double d_MstB;
-    std::vector<G4int> A_cl;
-    std::vector<G4int> Z_cl;
-    std::vector<G4int> Ab_cl;
-    std::vector<G4int> Zb_cl;
+    G4int ClustNumA = 0;
+    G4int ClustNumB = 0;
+    G4double d_MstA = 0;
+    G4double d_MstB = 0;
+    std::vector<G4int> A_cl{0};
+    std::vector<G4int> Z_cl{0};
+    std::vector<G4int> Ab_cl{0};
+    std::vector<G4int> Zb_cl{0};
 
 };
 
 
 struct AAMCCinput{
     aamcc::NucleonVector nucleons;
-    G4double FermiMomA_x;
-    G4double FermiMomA_y;
-    G4double FermiMomA_z;
-    G4double FermiMomB_x;
-    G4double FermiMomB_y;
-    G4double FermiMomB_z;
+    G4double FermiMomA_x = 0;
+    G4double FermiMomA_y = 0;
+    G4double FermiMomA_z = 0;
+    G4double FermiMomB_x = 0;
+    G4double FermiMomB_y = 0;
+    G4double FermiMomB_z = 0;
 };
 
 struct AAMCCrun{
@@ -80,6 +81,7 @@ struct AAMCCrun{
     G4String SysA = "";
     G4String SysB = "";
     G4String fileName = "";
+    G4String fileRName = "";
 
     G4double KinEnPerNucl = -1.0;
     G4double SqrtSnn = -1.0;

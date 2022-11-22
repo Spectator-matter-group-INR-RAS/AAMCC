@@ -1,7 +1,7 @@
 #include "GetInitData.hh"
 
 
-AAMCCrun getTheRunData(TString inputFileName="test.root")
+AAMCCrun getTheRunData(const TString& inputFileName="test.root")
 {
 	AAMCCrun runData;
 	TFile *fIn = new TFile(inputFileName, "read");
@@ -29,6 +29,8 @@ AAMCCrun getTheRunData(TString inputFileName="test.root")
 	runData.isCollider = true;
 
 	runData.isQMD = true;
+
+    runData.fileName = inputFileName;
 
 	fIn->Close();
 

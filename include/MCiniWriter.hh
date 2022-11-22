@@ -40,6 +40,7 @@ private:
     void InitTree(){
         std::shared_ptr<TTree> tmc(new TTree("events", "AAMCC"));
         tMCini = tmc;
+        tMCini->SetDirectory(0);
         tMCini->Branch("event","UEvent",uevent.get());
         tMCini->Branch("iniState", "EventInitialState", iniState.get());
     }

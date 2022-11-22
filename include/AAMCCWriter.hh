@@ -33,6 +33,10 @@ private:
 
         tGlauber = glau; tClusters = clust; tFermiMom = fm;
 
+        tGlauber->SetDirectory(0);
+        tClusters->SetDirectory(0);
+        tFermiMom->SetDirectory(0);
+
         tGlauber->Branch("id", &event.id, "id/i");
         tGlauber->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
         tGlauber->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
@@ -114,7 +118,11 @@ private:
 
     void InitRunTree(){
         std::shared_ptr<TTree> run(new TTree("Conditions","preconditions for modeling"));
+
         tRun = run;
+
+        tRun->SetDirectory(0);
+
         tRun->Branch("Xsect_total", &runData.XsectTot,"Xsect_total/d");
         tRun->Branch("Xsect_NN", &runData.XsectNN,"Xsect_total/d");
         tRun->Branch("Kinetic_energy_per_nucleon_of_projectile_in_MeV", &runData.KinEnPerNucl,"Kinetic_energy_of_per_nucleon_projectile_in_MeV/d");

@@ -18,7 +18,7 @@ struct vect3{
 
 class FermiMomentum{
 public:
-    explicit FermiMomentum(std::shared_ptr<AAMCCinput> input, std::string model_in = "M");
+     FermiMomentum(std::shared_ptr<AAMCCinput> input, const std::string& model_in = "M");
     ~FermiMomentum() = default;
     vect3 GetMomentum(std::string side);
     CLHEP::Hep3Vector GetBoost(std::string side);
@@ -46,10 +46,10 @@ private:
     double betafacA;
     double betafacB;
 
-    CLHEP::RanecuEngine* engine;
-    CLHEP::RandGauss* randGauss;
-    CLHEP::RandFlat* randFlat;
-	CLHEP::RandFlat* randFlatphi;
+    std::unique_ptr<CLHEP::RanecuEngine> engine;
+    std::unique_ptr<CLHEP::RandGauss> randGauss;
+    std::unique_ptr<CLHEP::RandFlat> randFlat;
+    std::unique_ptr<CLHEP::RandFlat> randFlatphi;
 
     int modelInt = 0;
     std::shared_ptr<AAMCCinput> input;
