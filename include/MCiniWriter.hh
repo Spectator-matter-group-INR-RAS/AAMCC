@@ -21,6 +21,8 @@ public:
     void SetBMax(double bMax_in){bMax = bMax_in;}
     void SetPhiMin(double phi){phiMin = phi;}
     void SetPhiMax(double phi){phiMax = phi;}
+    void GetEventIniState(EventInitialState* initialState){rawIniState= initialState;}
+    void GetUEvent(UEvent* uev){rawEv = uev;}
 private:
     std::shared_ptr<TTree> tMCini;
     std::shared_ptr<URun> runMCini;
@@ -36,6 +38,8 @@ private:
 
     std::unique_ptr<UEvent>uevent  = std::unique_ptr<UEvent>(new UEvent());
     std::unique_ptr<EventInitialState> iniState = std::unique_ptr<EventInitialState>(new EventInitialState());
+    EventInitialState* rawIniState;
+    UEvent* rawEv;
 
     void InitTree(){
         std::shared_ptr<TTree> tmc(new TTree("events", "AAMCC"));
@@ -76,8 +80,18 @@ private:
             int pdg = aamcc::IsotopeToPDG(ev->ChargeOnSideB.at(k), ev->MassOnSideB.at(k));
             uevent->AddParticle(partid, pdg, 0,0,0,0,0,child,std::pow(10,-3)*ev->pXonSideB.at(k),std::pow(10,-3)*ev->pYonSideB.at(k),std::pow(10,-3)*ev->pZonSideB.at(k), energy, 0,0,0,1,1.);
         }
-        iniState->setNColl(ev->Ncoll);
-        iniState->setNPart(ev->Npart);
+        if(rawEv != nullptr) {
+            for (int iPart = runData.AinitB + runData.AinitA + 1; iPart < rawEv->GetNpa(); ++iPart) {
+                uevent->AddParticle(*rawEv->GetParticle(iPart));
+            }
+        }
+
+        if(rawIniState != nullptr) {
+            iniState->setNColl(rawIniState->getNColl());
+            iniState->setNPart(rawIniState->getNPart());
+            iniState->setId(rawIniState->getId());
+            iniState->setNucleons(rawIniState->getNucleons());
+        }
         tMCini->Fill();
     }
 

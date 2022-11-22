@@ -228,6 +228,8 @@ int main()
 
         //reinterpret cast to GlauberCollisionReader* since it has a method not present in the base class
         *ain = histoManager.GetReaderID() ? (*reader)() : reinterpret_cast<GlauberCollisionReader*>(reader.get())->GetNucleons(nucleons);
+
+
         Z = ain->nucleons.GetZ("A");
         A = ain->nucleons.GetA("A");
         Zb = ain->nucleons.GetZ("B");
@@ -395,6 +397,9 @@ int main()
 
             if (!histoManager.ToFileOrNot())
                 histoManager.SetXsectTot(mcg->GetTotXSect());
+
+            pMciniWriter->GetEventIniState(reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress());
+            pMciniWriter->GetUEvent(reinterpret_cast<McIniReader*>(reader.get())->getEventAdress());
 //            histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
             histoManager.ToFile(&event, &ain->nucleons, mciniWrite);
 
@@ -423,6 +428,7 @@ int main()
     }
 
     G4cout<<"----> collided "<<histoManager.GetIterations()<<" nuclei "<<histoManager.GetSysA()<< " with " << histoManager.GetSysB() <<" at N-N x-section "<<signn<<" mb"<<G4endl;
+    G4cout<<"----> wait for the data to be written"<<G4endl;
 
     if(!histoManager.ToFileOrNot()){
         G4cout<<"----> total x-sect = "<<mcg->GetTotXSect()<< " +- " << mcg->GetTotXSectErr() <<" b";
