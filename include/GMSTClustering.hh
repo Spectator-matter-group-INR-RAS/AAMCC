@@ -115,7 +115,7 @@ class GMSTClustering{
 
     G4double CritDistA;
     G4double CritDist;
-	G4double kappa;
+	G4double kappa = 1;
 	G4double eps0 = 2.17*MeV;
 	G4double alphaPow = -1.02;
 	G4double d0 = -999;
