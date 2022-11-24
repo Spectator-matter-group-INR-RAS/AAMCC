@@ -38,8 +38,8 @@ private:
 
     std::unique_ptr<UEvent>uevent  = std::unique_ptr<UEvent>(new UEvent());
     std::unique_ptr<EventInitialState> iniState = std::unique_ptr<EventInitialState>(new EventInitialState());
-    EventInitialState* rawIniState;
-    UEvent* rawEv;
+    EventInitialState* rawIniState = nullptr;
+    UEvent* rawEv = nullptr;
 
     void InitTree(){
         std::shared_ptr<TTree> tmc(new TTree("events", "AAMCC"));
@@ -85,7 +85,6 @@ private:
                 uevent->AddParticle(*rawEv->GetParticle(iPart));
             }
         }
-
         if(rawIniState != nullptr) {
             iniState->setNColl(rawIniState->getNColl());
             iniState->setNPart(rawIniState->getNPart());

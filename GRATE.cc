@@ -111,7 +111,6 @@ int main()
     auto inFile = unique_ptr<TFile>(histoManager.GetReaderID() ? new TFile(histoManager.GetReadFilename().c_str()) : new TFile);
     auto ain = make_shared<AAMCCinput>();
     auto reader = histoManager.GetReaderID() ? std::unique_ptr<VCollisionReader>(new McIniReader(inFile)) : std::unique_ptr<VCollisionReader>(new GlauberCollisionReader());
-
     AAMCCWriter* writer = new AAMCCWriter();
     auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
 
@@ -401,10 +400,13 @@ int main()
             if (!histoManager.ToFileOrNot())
                 histoManager.SetXsectTot(mcg->GetTotXSect());
 
+            if(histoManager.GetReaderID()){
             pMciniWriter->GetEventIniState(reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress());
             pMciniWriter->GetUEvent(reinterpret_cast<McIniReader*>(reader.get())->getEventAdress());
-            histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
+            }
             histoManager.ToFile(&event, &ain->nucleons, mciniWrite);
+
+            histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
 
             event.A_cl.clear();
             event.Z_cl.clear();
