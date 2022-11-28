@@ -247,7 +247,7 @@ int main()
             G4double energy_A = ExEnA->GetEnergy(A);
             G4double energy_B = ExEnB->GetEnergy(Ab);
             event.ExEnA = energy_A / G4double(A);
-            event.ExEnB = energy_B/G4double(Ab);
+            event.ExEnB = energy_B / G4double(Ab);
             //histoManager.GetHisto2(1)->Fill(event.ExEnA, G4double(A) / sourceA); //newData
 
 

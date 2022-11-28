@@ -132,6 +132,7 @@ void AAMCCReader::ReadSecondStage(AAMCCrun* runData, InitialConditions* InCond){
     std::cin >> runData->CritDist;
   }
 
+  runData->DeExModel = "G4";
   while(runData->DeExModel.empty()){
       std::cout<<"Choose a model for fragment deexcitation. G4, ABLAXX, AAMCC or MIX (random mix of G4, ABLAXX and AAMCC) options are available: ";
       std::cin>>runData->DeExModel;
