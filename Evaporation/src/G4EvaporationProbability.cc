@@ -230,7 +230,7 @@ G4EvaporationProbability::SampleKineticEnergy(G4double minKinEnergy,
       
       static const G4double ssqr3  = 1.5*std::sqrt(3.0);
       FRk = ssqr3 * Rk * (Q1 - Rk*Rk)/Q2;
-      if(nn > nmax) { break; }
+      if(nn > nmax && false) { std::cout<<"flag"<<std::endl; break; }
       ++nn;
       // Loop checking, 05-Aug-2015, Vladimir Ivanchenko
     } while (FRk < rndm->flat());
@@ -247,7 +247,7 @@ G4EvaporationProbability::SampleKineticEnergy(G4double minKinEnergy,
     std::cout<< " Bad kinetic energy sample in G4EvaporationProbability" << std::endl;
     T = SampleEnergy();
 
-  } 
+  }
   return T;
   //return fLevelData->FindLevel(resZ, resA, resMass, Mass, partMass, T);
 }
