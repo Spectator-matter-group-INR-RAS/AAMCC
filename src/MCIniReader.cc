@@ -4,18 +4,18 @@
 
 #include "G4LorentzVector.hh"
 
-#include "McIniReader.hh"
+#include "MCIniReader.hh"
 
 #include "TClonesArray.h"
 
-McIniReader::McIniReader(McIniReader && rha) noexcept  :
+MCIniReader::MCIniReader(MCIniReader && rha) noexcept  :
     ftree(rha.ftree), curr(nullptr), curr_st(nullptr), asum(rha.asum), iter(rha.iter), treen(rha.treen) {
     rha.ftree = nullptr;
     ftree->SetBranchAddress("event", &curr);
     ftree->SetBranchAddress("iniState", &curr_st);
 }
 
-McIniReader& McIniReader::operator=(McIniReader && rha) noexcept {
+MCIniReader& MCIniReader::operator=(MCIniReader && rha) noexcept {
     if (this == &rha)
         return *this;
     ftree = rha.ftree;
@@ -31,7 +31,7 @@ McIniReader& McIniReader::operator=(McIniReader && rha) noexcept {
     ftree->SetBranchAddress("iniState", &curr_st);
 }
 
-McIniReader::McIniReader(const std::unique_ptr<TFile>& tfile) : curr(nullptr), curr_st(nullptr), iter(0) {
+MCIniReader::MCIniReader(const std::unique_ptr<TFile>& tfile) : curr(nullptr), curr_st(nullptr), iter(0) {
     tfile->GetObject("events", ftree);          // Legacy weirdness. ptr has to be lvalue thus preventing smart pointer usage
     treen = ftree->GetEntries();
     ftree->SetBranchAddress("event", &curr);
@@ -41,7 +41,7 @@ McIniReader::McIniReader(const std::unique_ptr<TFile>& tfile) : curr(nullptr), c
     asum = run_data->GetATarg() + run_data->GetAProj();
 }
 
-AAMCCinput McIniReader::operator()() {
+AAMCCinput MCIniReader::operator()() {
 //    if (iter >= treen)
 //        throw std::out_of_range("No more events in file!");
     ftree->GetEntry(iter);

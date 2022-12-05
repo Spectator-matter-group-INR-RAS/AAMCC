@@ -13,15 +13,15 @@
 #include "VCollisionReader.hh"
 #include "AAMCC.hh"
 
-class McIniReader final : public VCollisionReader{
+class MCIniReader final : public VCollisionReader{
 public:
-    McIniReader() = delete;
-    McIniReader(McIniReader&&) noexcept;
-    McIniReader& operator=(McIniReader&&) noexcept;
+    MCIniReader() = delete;
+    MCIniReader(MCIniReader&&) noexcept;
+    MCIniReader& operator=(MCIniReader&&) noexcept;
 
-    McIniReader(const std::unique_ptr<TFile>&);
+    MCIniReader(const std::unique_ptr<TFile>&);
 
-    ~McIniReader() final = default;
+    ~MCIniReader() final = default;
 
     AAMCCinput operator()() final;
     // temporary methods to provide EventInitialState and UEvenet readings to outside TODO: after implementing normal DTOs should be rewritten to actually return an appropriate DTO

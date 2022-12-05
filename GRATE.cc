@@ -38,7 +38,7 @@
 
 #include "GRATEmanager.hh"
 #include "GlauberCollisionReader.hh"
-#include "McIniReader.hh"
+#include "MCIniReader.hh"
 #include "FermiMomentum.hh"
 #include "AAMCC.hh"
 #include "AAMCCWriter.hh"
@@ -110,7 +110,7 @@ int main()
 
     auto inFile = unique_ptr<TFile>(histoManager.GetReaderID() ? new TFile(histoManager.GetReadFilename().c_str()) : new TFile);
     auto ain = make_shared<AAMCCinput>();
-    auto reader = histoManager.GetReaderID() ? std::unique_ptr<VCollisionReader>(new McIniReader(inFile)) : std::unique_ptr<VCollisionReader>(new GlauberCollisionReader());
+    auto reader = histoManager.GetReaderID() ? std::unique_ptr<VCollisionReader>(new MCIniReader(inFile)) : std::unique_ptr<VCollisionReader>(new GlauberCollisionReader());
     AAMCCWriter* writer = new AAMCCWriter();
     auto  WrtToFl = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*writer)(ev, rn, ncl);};
 
@@ -156,10 +156,14 @@ int main()
     if((histoManager.GetUpB() > 0 && histoManager.GetLowB() >= 0) && (histoManager.GetUpB() > histoManager.GetLowB()) && histoManager.GetUpB() < rA_plus_rB+7.5){
         mcg->SetBmin(histoManager.GetLowB());
         mcg->SetBmax(histoManager.GetUpB());
+        pMciniWriter->SetBMin(histoManager.GetLowB());
+        pMciniWriter->SetBMax(histoManager.GetUpB());
     }
-    else {std::cout << " \n------>Calculation will be MB \n"<<std::endl;}
-    pMciniWriter->SetBMin(histoManager.GetLowB());
-    pMciniWriter->SetBMax(histoManager.GetUpB());
+    else {
+        std::cout << " \n------>Calculation will be MB \n"<<std::endl;
+        pMciniWriter->SetBMin(0);
+        pMciniWriter->SetBMax(rA_plus_rB);
+    }
  
     //Setting Excitation Energy
     ExcitationEnergy* ExEnA = new ExcitationEnergy(histoManager.GetStatType(), sourceA);
@@ -219,9 +223,9 @@ int main()
             event.Ncollnn = mcg->GetNcollnn();
             nucleons = mcg->GetNucleons();
     }else{
-            event.b = reinterpret_cast<McIniReader*>(reader.get())->getEventAdress()->GetB();
-            event.Npart = reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress()->getNPart();
-            event.Ncoll = reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress()->getNColl();
+            event.b = reinterpret_cast<MCIniReader*>(reader.get())->getEventAdress()->GetB();
+            event.Npart = reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()->getNPart();
+            event.Ncoll = reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()->getNColl();
         }
 
         G4int A = 0;
@@ -404,8 +408,8 @@ int main()
                 histoManager.SetXsectTot(mcg->GetTotXSect());
 
             if(histoManager.GetReaderID()){
-            pMciniWriter->GetEventIniState(reinterpret_cast<McIniReader*>(reader.get())->getInStateAddress());
-            pMciniWriter->GetUEvent(reinterpret_cast<McIniReader*>(reader.get())->getEventAdress());
+            pMciniWriter->GetEventIniState(reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress());
+            pMciniWriter->GetUEvent(reinterpret_cast<MCIniReader*>(reader.get())->getEventAdress());
             }
             histoManager.ToFile(&event, &ain->nucleons, mciniWrite);
 

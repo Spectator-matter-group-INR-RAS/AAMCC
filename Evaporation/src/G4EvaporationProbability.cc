@@ -237,12 +237,13 @@ G4EvaporationProbability::SampleKineticEnergy(G4double minKinEnergy,
     
     T = maxKinEnergy * (1.0-Rk*Rk) + minKinEnergy;
 
-  } else {
+  }
+  else {
 
     if(fVerbose > 1) {
       G4cout << "###=== SampleEnergy: " << " Z= " << theZ
-	     << " A= " << theA << " FragZ= " << fragZ 
-	     << " FragA= " << fragA << G4endl; 
+	     << " A= " << theA << " FragZ= " << fragZ
+	     << " FragA= " << fragA << G4endl;
     }
     std::cout<< " Bad kinetic energy sample in G4EvaporationProbability" << std::endl;
     T = SampleEnergy();
