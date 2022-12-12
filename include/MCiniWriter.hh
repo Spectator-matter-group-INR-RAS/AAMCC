@@ -69,17 +69,14 @@ private:
         Int_t child[2] = { 0,0 };
 
         for(int k = 0; k<int(ev->MassOnSideA.size()); ++k){
-            ++partid;
-            double energy = std::sqrt(std::pow(std::pow(10,-3)*ev->pXonSideA.at(k),2) + std::pow(std::pow(10,-3)*ev->pYonSideA.at(k),2) + std::pow(std::pow(10,-3)*ev->pZonSideA.at(k),2) + std::pow(ev->MassOnSideA.at(k)*nucleonAverMass,2));
+            double energy = std::sqrt(std::pow(std::pow(10,-3)*ev->pXonSideA.at(k),2) + std::pow(std::pow(10,-3)*ev->pYonSideA.at(k),2) + std::pow(std::pow(10,-3)*ev->pZonSideA.at(k),2) + std::pow(ev->MassOnSideA.at(k)*nucleonAverMass/GeV,2));
             int pdg = aamcc::IsotopeToPDG(ev->ChargeOnSideA.at(k), ev->MassOnSideA.at(k));
-            energy /= GeV;
             uevent->AddParticle(partid, pdg, 0,0,0,0,0,child,std::pow(10,-3)*ev->pXonSideA.at(k),std::pow(10,-3)*ev->pYonSideA.at(k),std::pow(10,-3)*ev->pZonSideA.at(k), energy, 0,0,0,1,1.);
             ++partid;
         }
         for(int k = 0; k<int(ev->MassOnSideB.size()); ++k){
-            double energy = std::sqrt(std::pow(std::pow(10,-3)*ev->pXonSideB.at(k),2) + std::pow(std::pow(10,-3)*ev->pYonSideB.at(k),2) + std::pow(std::pow(10,-3)*ev->pZonSideB.at(k),2) + std::pow(ev->MassOnSideB.at(k)*nucleonAverMass,2));
+            double energy = std::sqrt(std::pow(std::pow(10,-3)*ev->pXonSideB.at(k),2) + std::pow(std::pow(10,-3)*ev->pYonSideB.at(k),2) + std::pow(std::pow(10,-3)*ev->pZonSideB.at(k),2) + std::pow(ev->MassOnSideB.at(k)*nucleonAverMass/GeV,2));
             int pdg = aamcc::IsotopeToPDG(ev->ChargeOnSideB.at(k), ev->MassOnSideB.at(k));
-            energy /= GeV;
             uevent->AddParticle(partid, pdg, 0,0,0,0,0,child,std::pow(10,-3)*ev->pXonSideB.at(k),std::pow(10,-3)*ev->pYonSideB.at(k),std::pow(10,-3)*ev->pZonSideB.at(k), energy, 0,0,0,1,1.);
             ++partid;
         }
