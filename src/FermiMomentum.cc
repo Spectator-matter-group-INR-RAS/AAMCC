@@ -43,21 +43,21 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                 return out;}
         }
         else if(side == "B") {
-                if ((pF.px == 0 && pF.py == 0 && pF.pz == 0) || modelInt == -1){
-                    switch (modelInt) {
-                        case 0: out = GetMorrisey(); break;
-                        case 1: out = GetGoldhaber(); break;
-                        case 2: out = GetVanBiber(); break;
-                        case -1: out = {input->FermiMomB_x, input->FermiMomB_y, input->FermiMomB_z}; break;
-                        default: out = GetMorrisey(); break;
-                    }
-                    pF = {-out.px, -out.py, -out.pz};
-                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
-                    return out;
+            if ((pF.px == 0 && pF.py == 0 && pF.pz == 0) || modelInt == -1){
+                switch (modelInt) {
+                    case 0: out = GetMorrisey(); break;
+                    case 1: out = GetGoldhaber(); break;
+                    case 2: out = GetVanBiber(); break;
+                    case -1: out = {input->FermiMomB_x, input->FermiMomB_y, input->FermiMomB_z}; break;
+                    default: out = GetMorrisey(); break;
                 }
-                else {out = {-pF.px, -pF.py, -pF.pz}; pF = {0, 0, 0};
-                    out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
-                    return out;}
+                pF = {-out.px, -out.py, -out.pz};
+                out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
+                return out;
+            }
+            else {out = {-pF.px, -pF.py, -pF.pz}; pF = {0, 0, 0};
+                out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
+                return out;}
 
 
         }

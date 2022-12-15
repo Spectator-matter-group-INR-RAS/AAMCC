@@ -70,15 +70,15 @@ AAMCCinput MCIniReader::operator()() {
         nucl.z = particle->Z();
         if(particle->Pz() > 0) {        //proj
             nucl.Nucl = "A";
-            cache.FermiMomA_x += particle->Px();
-            cache.FermiMomA_y += particle->Py();
-            cache.FermiMomA_z += particle->Pz();
+            cache.FermiMomA_x += particle->Px() * GeV;  //MCIni stores energy/impulses in GeV
+            cache.FermiMomA_y += particle->Py() * GeV;
+            cache.FermiMomA_z += particle->Pz() * GeV;
         }
         else {                          //targ
             nucl.Nucl = "B";
-            cache.FermiMomB_x += particle->Px();
-            cache.FermiMomB_y += particle->Py();
-            cache.FermiMomB_z += particle->Pz();
+            cache.FermiMomB_x += particle->Px() * GeV;
+            cache.FermiMomB_y += particle->Py() * GeV;
+            cache.FermiMomB_z += particle->Pz() * GeV;
         }
         cache.nucleons.push_back(std::move(nucl));     //write the nucleon data
     }
