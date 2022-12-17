@@ -51,7 +51,7 @@ AAMCCinput MCIniReader::operator()() {
     int size = curr->GetNpa();
     for (int i = 0; i < size; i++) {
         auto particle = (UParticle*) arr->At(i);
-        if(particle->GetIndex() < asum)
+        if(particle->GetIndex() >= asum)
             continue;
         aamcc::Nucleon nucl;            //new nucleon to write into cache->nucleons
         switch (particle->GetPdg()) {

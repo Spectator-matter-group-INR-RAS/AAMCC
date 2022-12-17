@@ -17,8 +17,8 @@ AAMCCrun getTheRunData(const TString& inputFileName="test.root")
 	runData.AinitB = run->GetATarg();
 	runData.ZinitB = run->GetZTarg();
 
-	runData.pzB = run->GetPProj();
-	runData.pzA = run->GetPTarg();
+	runData.pzB = run->GetPProj()*run->GetAProj()*GeV;
+	runData.pzA = run->GetPTarg()*run->GetATarg()*GeV;
 
 	runData.SqrtSnn = run->GetNNSqrtS();
 
