@@ -35,11 +35,11 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                     default: out = GetMorrisey(); break;
                 }
                 pF = out;
-                out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
+                if(modelInt > 0) out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                 return out;
             }
             else {out = pF; pF = {0, 0, 0};
-                out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
+                if(modelInt > 0) out.pz = gammafacA * (out.pz + betafacA * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                 return out;}
         }
         else if(side == "B") {
@@ -52,11 +52,11 @@ vect3 FermiMomentum::GetMomentum(std::string side) {
                     default: out = GetMorrisey(); break;
                 }
                 pF = {-out.px, -out.py, -out.pz};
-                out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
+                if(modelInt > 0)  out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                 return out;
             }
             else {out = {-pF.px, -pF.py, -pF.pz}; pF = {0, 0, 0};
-                out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
+                if(modelInt > 0)   out.pz = gammafacB * (out.pz - betafacB * pow(out.mag2() + pow (nucleonAverMass * (input->nucleons.GetA(side)), 2), 0.5));
                 return out;}
 
 
