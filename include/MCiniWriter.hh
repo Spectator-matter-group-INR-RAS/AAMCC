@@ -81,6 +81,23 @@ private:
             ++partid;
         }
         if(rawEv != nullptr) {
+            for (int iPart = 1; iPart < runData.AinitB + runData.AinitA+1; ++iPart){
+                if (rawIniState->getNucleon(iPart).getCollisionType() > 0) {
+                    Int_t child[2] = {rawEv->GetParticle(iPart)->GetFirstChild(),rawEv->GetParticle(iPart)->GetLastChild()};
+                    uevent->AddParticle(partid,
+                                        rawEv->GetParticle(iPart)->GetPdg(),
+                                        rawEv->GetParticle(iPart)->GetStatus(),
+                                        rawEv->GetParticle(iPart)->GetParent(),
+                                        rawEv->GetParticle(iPart)->GetParentDecay(),
+                                        rawEv->GetParticle(iPart)->GetMate(),
+                                        rawEv->GetParticle(iPart)->GetDecay(),
+                                        child,
+                                        rawEv->GetParticle(iPart)->GetMomentum(),
+                                        rawEv->GetParticle(iPart)->GetPosition(),
+                                        rawEv->GetParticle(iPart)->GetWeight());
+                }
+                ++partid;
+            }
             for (int iPart = runData.AinitB + runData.AinitA+1; iPart < rawEv->GetNpa(); ++iPart) {
                 uevent->AddParticle(*rawEv->GetParticle(iPart));
             }
