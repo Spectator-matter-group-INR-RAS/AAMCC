@@ -32,7 +32,9 @@ private:
     TTree* ftree;           // Root data structure
     UEvent* curr;           // Event info from file cache
     EventInitialState* curr_st;  //Event initial state
-    unsigned short asum;    // Total atomic mass for indexing purposes
+    unsigned short asum; // Total atomic mass for indexing purposes
+    unsigned short aa;
+    unsigned short ab;
     size_t iter;
     size_t treen;
 };

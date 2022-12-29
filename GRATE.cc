@@ -241,7 +241,6 @@ int main()
         A = ain->nucleons.GetA("A");
         Zb = ain->nucleons.GetZ("B");
         Ab = ain->nucleons.GetA("B");
-
         if(!(A == 0 && Ab ==0)){
             G4int thisEventNumFragments = 0;
             std::cout.setf(std::ios::scientific, std::ios::floatfield);

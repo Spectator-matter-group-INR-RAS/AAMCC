@@ -65,7 +65,7 @@ private:
         iniState->Clear();
         uevent->SetParameters(ev->id, ev->b, ev->PhiRotA, 1, 0,0);
 
-        int partid = 0;
+        int partid = 1;
         Int_t child[2] = { 0,0 };
 
         for(int k = 0; k<int(ev->MassOnSideA.size()); ++k){
@@ -81,7 +81,7 @@ private:
             ++partid;
         }
         if(rawEv != nullptr) {
-            for (int iPart = runData.AinitB + runData.AinitA; iPart < rawEv->GetNpa(); ++iPart) {
+            for (int iPart = runData.AinitB + runData.AinitA+1; iPart < rawEv->GetNpa(); ++iPart) {
                 uevent->AddParticle(*rawEv->GetParticle(iPart));
             }
         }

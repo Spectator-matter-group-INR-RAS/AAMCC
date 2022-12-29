@@ -37,7 +37,9 @@ MCIniReader::MCIniReader(const std::unique_ptr<TFile>& tfile) : curr(nullptr), c
     ftree->SetBranchAddress("event", &curr);
     ftree->SetBranchAddress("iniState", &curr_st);
     URun* run_data;
-    tfile->GetObject("run", run_data);          // legacy
+    tfile->GetObject("run", run_data);// legacy
+    aa = run_data->GetAProj();
+    ab = run_data->GetATarg();
     asum = run_data->GetATarg() + run_data->GetAProj();
 }
 
@@ -51,9 +53,11 @@ AAMCCinput MCIniReader::operator()() {
     int size = curr->GetNpa();
     for (int i = 0; i < size; i++) {
         auto particle = (UParticle*) arr->At(i);
-        if(particle->GetIndex() >= asum)
+        //new nucleon to write into cache->nucleons
+        //std::cout<<particle->GetIndex()<< "\r" <<std::flush; //errors with indexing leads to out of range
+        if(particle->GetIndex() >= asum || (particle->GetIndex() < asum && particle->GetIndex() != 0 ? curr_st->getNucleon(particle->GetIndex()).getCollisionType() : 1000)  > 0) //TODO: Add collision type check nucleon->collisionType == 0 (no collision), 1 (el. collision with initial nucleus), 2 (el. collision with produced particle), 3 (nonel. with init nucl), 4 (nonel. with produced)
             continue;
-        aamcc::Nucleon nucl;            //new nucleon to write into cache->nucleons
+        aamcc::Nucleon nucl;
         switch (particle->GetPdg()) {
             case 2212:                  //proton pdg code
                 nucl.isospin = true;
@@ -68,7 +72,8 @@ AAMCCinput MCIniReader::operator()() {
         nucl.x = particle->X();
         nucl.y = particle->Y();         //coords
         nucl.z = particle->Z();
-        if(particle->Pz() > 0) {        //proj
+       if(particle->Pz() > 0) {        //proj
+        //if(particle->GetIndex() < aa) {        //proj
             nucl.Nucl = "A";
             cache.FermiMomA_x += particle->Px() * GeV;  //MCIni stores energy/impulses in GeV
             cache.FermiMomA_y += particle->Py() * GeV;
