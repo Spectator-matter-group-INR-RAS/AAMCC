@@ -55,7 +55,7 @@ AAMCCinput MCIniReader::operator()() {
         auto particle = (UParticle*) arr->At(i);
         //new nucleon to write into cache->nucleons
         //std::cout<<particle->GetIndex()<< "\r" <<std::flush; //errors with indexing leads to out of range
-        if(particle->GetIndex() >= asum || (particle->GetIndex() < asum && particle->GetIndex() != 0 ? curr_st->getNucleon(particle->GetIndex()).getCollisionType() : 1000)  > 0) //TODO: Add collision type check nucleon->collisionType == 0 (no collision), 1 (el. collision with initial nucleus), 2 (el. collision with produced particle), 3 (nonel. with init nucl), 4 (nonel. with produced)
+        if(particle->GetIndex() > asum || (particle->GetIndex() < asum && particle->GetIndex() != 0 ? curr_st->getNucleon(particle->GetIndex()).getCollisionType() : 1000)  > 0) //TODO: Add collision type check nucleon->collisionType == 0 (no collision), 1 (el. collision with initial nucleus), 2 (el. collision with produced particle), 3 (nonel. with init nucl), 4 (nonel. with produced)
             continue;
         aamcc::Nucleon nucl;
         switch (particle->GetPdg()) {

@@ -95,8 +95,8 @@ private:
                                         rawEv->GetParticle(iPart)->GetMomentum(),
                                         rawEv->GetParticle(iPart)->GetPosition(),
                                         rawEv->GetParticle(iPart)->GetWeight());
+                                        ++partid;
                 }
-                ++partid;
             }
             for (int iPart = runData.AinitB + runData.AinitA+1; iPart < rawEv->GetNpa(); ++iPart) {
                 uevent->AddParticle(*rawEv->GetParticle(iPart));
