@@ -84,7 +84,7 @@ private:
             for (int iPart = runData.AinitB + runData.AinitA+1; iPart < rawEv->GetNpa(); ++iPart) {
                 uevent->AddParticle(*rawEv->GetParticle(iPart));
             }
-            partid = rawEv->GetNpa();
+            partid = rawEv->GetNpa()+1;
             for (int iPart = 1; iPart < runData.AinitB + runData.AinitA+1; ++iPart){
                 if (rawIniState->getNucleon(iPart).getCollisionType() > 0) {
                     Int_t child[2] = {rawEv->GetParticle(iPart)->GetFirstChild(),rawEv->GetParticle(iPart)->GetLastChild()};
