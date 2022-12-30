@@ -81,6 +81,10 @@ private:
             ++partid;
         }
         if(rawEv != nullptr) {
+            for (int iPart = runData.AinitB + runData.AinitA+1; iPart < rawEv->GetNpa(); ++iPart) {
+                uevent->AddParticle(*rawEv->GetParticle(iPart));
+            }
+            partid = rawEv->GetNpa();
             for (int iPart = 1; iPart < runData.AinitB + runData.AinitA+1; ++iPart){
                 if (rawIniState->getNucleon(iPart).getCollisionType() > 0) {
                     Int_t child[2] = {rawEv->GetParticle(iPart)->GetFirstChild(),rawEv->GetParticle(iPart)->GetLastChild()};
@@ -97,9 +101,6 @@ private:
                                         rawEv->GetParticle(iPart)->GetWeight());
                                         ++partid;
                 }
-            }
-            for (int iPart = runData.AinitB + runData.AinitA+1; iPart < rawEv->GetNpa(); ++iPart) {
-                uevent->AddParticle(*rawEv->GetParticle(iPart));
             }
         }
         if(rawIniState != nullptr) {
