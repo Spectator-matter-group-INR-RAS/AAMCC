@@ -243,6 +243,7 @@ int main()
     mcg->SetCalcArea(0);
     mcg->SetCalcCore(0);
     mcg->SetDetail(99);
+    mcg->SetNNProf(0.4);//1 for hard sphere, 0 for gaussian. method parameter is an omega from gamma-distributions
 
     if((histoManager.GetUpB() > 0 && histoManager.GetLowB() >= 0) && (histoManager.GetUpB() > histoManager.GetLowB()) && histoManager.GetUpB() < rA_plus_rB+7.5){
         mcg->SetBmin(histoManager.GetLowB());

@@ -126,7 +126,7 @@ class TGlauberMC : public TNamed
     Double_t      fPsiN[10];       //Psi N
     Double_t      fEccN[10];       //Ecc N
     Double_t      f2Cx;            //Two-component x
-    TF1          *fPTot;           //Cross section distribution
+    TF1          *fPTot;           //Cross-section distribution
     TF1          *fNNProf;         //NN profile (hard-sphere == 0 by default)
     Event         fEv;             //Glauber event (results of calculation stored in tree)
     Bool_t        fBC[999][999];   //Array to record binary collision
@@ -194,6 +194,12 @@ class TGlauberMC : public TNamed
     void                SetLattice(Int_t i)          {fANucleus.SetLattice(i); fBNucleus.SetLattice(i);}
     void                SetMinDistance(Double_t d)   {fANucleus.SetMinDist(d); fBNucleus.SetMinDist(d);}
     void                SetNNProf(TF1 *f1)           {fNNProf = f1;}
+    void                SetNNProf(Double_t omega)    {
+                                                        if ((omega>=0) && (omega<=1) && fXSect > 1e-10) {
+                                                        TF1 *f1 = getNNProf(fXSect, omega);
+                                                        this->SetNNProf(f1);}
+                                                        else{std::cout<<"Warning: omega should be from 0 to 1. NN profile is not set"<<std::endl;}
+                                                     }
     void                SetNodeDistance(Double_t d)  {fANucleus.SetNodeDist(d); fBNucleus.SetNodeDist(d);}
     void                SetRecenter(Int_t b)         {fANucleus.SetRecenter(b); fBNucleus.SetRecenter(b);}
     void                SetShiftMax(Double_t s)      {fANucleus.SetShiftMax(s); fBNucleus.SetShiftMax(s);}
