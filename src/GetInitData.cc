@@ -34,6 +34,8 @@ AAMCCrun getTheRunData(const TString& inputFileName="test.root")
 
     runData.fileName = inputFileName;
 
+    runData.CritDist = 2.7; //TODO: adjust number to describe the data
+
 	fIn->Close();
 
 	return runData;

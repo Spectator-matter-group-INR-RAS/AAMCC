@@ -128,6 +128,9 @@ int main()
     //Setting up GMST
     GMSTClustering* clusters = new GMSTClustering(histoManager.GetCriticalDistance(),sourceA,sourceAb);
     clusters->SetCD(histoManager.GetCriticalDistance());
+    if(histoManager.GetReaderID()) {
+        clusters->SetAlpha(100);
+    }
 
     //Setting up ExcitationHandler
     DeexcitationHandler* handlerNew = new DeexcitationHandler();
@@ -267,9 +270,6 @@ int main()
             event.FermiMomB_z = Fermi4MomB.pz();
 
             //if(sourceA - A == 1 ) histoManager.GetHisto2(8)->Fill(event.FermiMomA_x, event.FermiMomA_y);//newData
-            if(histoManager.GetReaderID()) {
-                clusters->SetAlpha(100);
-            }
 
             std::vector<G4FragmentVector> MstClustersVector = clusters->GetClusters(&ain->nucleons, energy_A,energy_B, boostA, boostB); //d = const if energy is negative
 
