@@ -226,8 +226,8 @@ int main()
             nucleons = mcg->GetNucleons();
     }else{
             event.b = reinterpret_cast<MCIniReader*>(reader.get())->getEventAdress()->GetB();
-            event.Npart = reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()->getNPart();
-            event.Ncoll = reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()->getNColl();
+            //event.Npart = reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()->getNPart(); //TODO:make it back when iniState is back
+            //event.Ncoll = reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()->getNColl(); //TODO:make it back when iniState is back
         }
 
         G4int A = 0;
@@ -408,7 +408,7 @@ int main()
                 histoManager.SetXsectTot(mcg->GetTotXSect());
 
             if(histoManager.GetReaderID()){
-            pMciniWriter->GetEventIniState(reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress());
+            //pMciniWriter->GetEventIniState(reinterpret_cast<MCIniReader*>(reader.get())->getInStateAddress()); //TODO:make it back when iniState is back
             pMciniWriter->GetUEvent(reinterpret_cast<MCIniReader*>(reader.get())->getEventAdress());
             }
             histoManager.ToFile(&event, &ain->nucleons, mciniWrite);

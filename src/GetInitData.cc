@@ -24,8 +24,10 @@ AAMCCrun getTheRunData(const TString& inputFileName="test.root")
 
 	runData.XsectTot = run->GetSigma();
 
-	runData.iterations = run->GetNEvents();
+	//runData.iterations = run->GetNEvents();
 
+    runData.iterations = ((TTree *)fIn->Get("events"))->GetEntries();
+    
 	runData.isCollider = true;
 
 	runData.isQMD = true;

@@ -19,5 +19,5 @@ MCINIWriter::~MCINIWriter() noexcept {
 
 void MCINIWriter::operator()(AAMCCEvent *ev, AAMCCrun *run, aamcc::NucleonVector *nucleons) {
     if(run != nullptr) runData = (*run);
-    if(ev != nullptr && nucleons != nullptr){ FillTree(ev);}
+    if(ev != nullptr && nucleons != nullptr){ FillTree(ev); }
 }
