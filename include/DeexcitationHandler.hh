@@ -15,7 +15,7 @@
  #include "G4Pow.hh"
  #include "G4FermiPhaseSpaceDecay.hh"
  #include "../FermiBreakUp/G4FermiBreakUp.hh"
- #include "../Abla/include/AblaEvaporation.hh"
+// #include "../Abla/include/AblaEvaporation.hh"
  #include "../Multifragmentation/include/G4StatMF.hh"
 
  class DeexcitationHandler: public G4ExcitationHandler {
@@ -64,7 +64,7 @@
 
     G4FermiPhaseSpaceDecay PhaseSpaceDecay;
     G4FermiBreakUp FermiBreakUp;
-    AblaEvaporation ablaEvaporation;
+    //AblaEvaporation ablaEvaporation;
     G4StatMF theMultifragmentation;
 
 };
