@@ -15,84 +15,56 @@ G4ReactionProductVector *DeexcitationHandler::G4BreakItUp(const G4Fragment &theI
     else{ return BreakItUp(theInitialFragment);} //parent class method
 } 
 
-G4ReactionProductVector *DeexcitationHandler::AAMCCBreakItUp(const G4Fragment &theInitialFragment) {
-    G4FragmentVector* tempResult = new G4FragmentVector();
-    G4ReactionProductVector* theResult = new G4ReactionProductVector();
+G4ReactionProductVector *DeexcitationHandler::AAMCCBreakItUp(const G4Fragment &theInitialFragment) { //legacy
+    G4FragmentVector *tempResult = new G4FragmentVector();
+    G4ReactionProductVector *theResult = new G4ReactionProductVector();
     //G4ReactionProductVector* ablaTempResult = new G4ReactionProductVector();
-    G4ReactionProductVector* evapTempResult = new G4ReactionProductVector();
-    G4FragmentVector* toDecayVector = new G4FragmentVector();
+    G4ReactionProductVector *evapTempResult = new G4ReactionProductVector();
+    G4FragmentVector *toDecayVector = new G4FragmentVector();
 
     //if(ablaEvaporation.GetFreezeOutT() < 0) ablaEvaporation.SetFreezeOutT(1e100);
 
     G4double Ain = theInitialFragment.GetA();
     G4double Zin = theInitialFragment.GetZ();
     G4double exEn = theInitialFragment.GetExcitationEnergy();
-    bool isMF = isMultifragmentation(Ain,Zin,exEn); //not to apply FBU for one fragment twice
+    bool isMF = isMultifragmentation(Ain, Zin, exEn); //not to apply FBU for one fragment twice
 
-    if(isDecayOfPureNeutrons(Ain, Zin)){return BreakUpPureNeutrons(theInitialFragment);}
+    if (isDecayOfPureNeutrons(Ain, Zin)) { return BreakUpPureNeutrons(theInitialFragment); }
 
-    if(isDecay(Ain, Zin, exEn)) {
+    if (isDecay(Ain, Zin, exEn)) {
         if (isMF) {
             tempResult = theMultifragmentation.BreakItUp(theInitialFragment);
-        } else if (isFermiBreakUp(Ain,Zin,exEn)) {
+        } else if (isFermiBreakUp(Ain, Zin, exEn)) {
             tempResult = FermiBreakUp.BreakItUp(theInitialFragment);
         } else {
             //theResult = ablaEvaporation.DeExcite(theInitialFragment);
             this->GetEvaporation()->BreakFragment(tempResult, new G4Fragment(theInitialFragment));
             return theResult;
         }
-    } else{theResult->push_back(toReactionProduct(const_cast<G4Fragment *>(&theInitialFragment))); return theResult;}
+    } else {
+        theResult->push_back(toReactionProduct(const_cast<G4Fragment *>(&theInitialFragment)));
+        return theResult;
+    }
 
 
     for (G4FragmentVector::iterator j = tempResult->begin(); j != tempResult->end(); ++j) {
         if (!isDecay((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
-             theResult->push_back(toReactionProduct((*j)));
-        }
-        else { toDecayVector->push_back((*j)); }
+            theResult->push_back(toReactionProduct((*j)));
+        } else { toDecayVector->push_back((*j)); }
     }
     tempResult->clear();
-
-
+    //TODO remove double MF call
         G4FragmentVector::iterator j = toDecayVector->begin();
         while (j != toDecayVector->end()) {
-            if (isFermiBreakUp((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy()) && isMF) {
-                tempResult = FermiBreakUp.BreakItUp(*(*j));
-            } else {
-                //ablaTempResult = ablaEvaporation.DeExcite(*(*j));
-                this->GetEvaporation()->BreakFragment(tempResult, *j);
-                //theResult->insert(theResult->end(), ablaTempResult->begin(), ablaTempResult->end());
-            }
+            evapTempResult = this->BreakItUp(*(*j));
+            theResult->insert(theResult->end(), evapTempResult->begin(), evapTempResult->end());
             j = toDecayVector->erase(j);
         }
-
-        for (G4FragmentVector::iterator j = tempResult->begin(); j != tempResult->end(); ++j) {
-            if (!isDecay((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
-                theResult->push_back(toReactionProduct((*j)));
-            }
-            else { toDecayVector->push_back((*j)); }
-        }
-        tempResult->clear();
-
-        G4FragmentVector::iterator t = toDecayVector->begin();
-        while (t != toDecayVector->end()) {
-            //ablaTempResult = ablaEvaporation.DeExcite(*(*t));
-            //theResult->insert(theResult->end(), ablaTempResult->begin(), ablaTempResult->end());
-            this->GetEvaporation()->BreakFragment(tempResult, *t);
-            t = toDecayVector->erase(t);
-        }
-
-   delete tempResult;
-   //delete ablaTempResult;
-   delete toDecayVector;
+    delete tempResult;
+    delete toDecayVector;
 
    return theResult;
 }
-/*
-G4ReactionProductVector *DeexcitationHandler::AblaBreakItUp(const G4Fragment &theInitialFragment) {
-    if(ablaEvaporation.GetFreezeOutT() > 0) ablaEvaporation.SetFreezeOutT(-6.5); //Let ABLAXX decide freeze-out T
-    return ablaEvaporation.DeExcite(theInitialFragment);
-}
-*/
 G4ReactionProductVector *DeexcitationHandler::BreakUpPureNeutrons(const G4Fragment &theInitialFragment) {
     G4ParticleDefinition *neutron = G4Neutron::NeutronDefinition();
     G4ReactionProductVector *outVec = new G4ReactionProductVector();
@@ -118,14 +90,7 @@ G4ReactionProductVector *DeexcitationHandler::BreakUpPureNeutrons(const G4Fragme
 
 G4ReactionProductVector *DeexcitationHandler::BreakUp(const G4Fragment &theInitialFragment, G4String modelName) {
     if      (modelName == "G4")     return G4BreakItUp(theInitialFragment);
-    //else if (modelName == "ABLAXX") return AblaBreakItUp(theInitialFragment);
     else if (modelName == "AAMCC")  return AAMCCBreakItUp(theInitialFragment);
-    /*else if (modelName == "MIX") {
-        G4double w = G4RandFlat::shoot()*3;
-        if(w < 1)      return G4BreakItUp(theInitialFragment);
-        else if(w < 2) return AblaBreakItUp(theInitialFragment);
-        else           return AAMCCBreakItUp(theInitialFragment);
-    }*/
     else std::cout<<"Wrong model name "<<modelName<<" G4, ABLAXX, AAMCC or MIX is available \n"; return AAMCCBreakItUp(theInitialFragment);
 }
 
