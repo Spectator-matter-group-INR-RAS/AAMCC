@@ -28,6 +28,9 @@ find_package(ROOT REQUIRED)
 find_package(ROOT CONFIG REQUIRED)
 find_package(ROOT COMPONENTS MathMore)
 
+#MCINI
+find_library(MCINI NAMES McIniData PATHS $ENV{MCINI}/build)
+
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #

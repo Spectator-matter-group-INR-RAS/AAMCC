@@ -119,6 +119,8 @@ int main()
 
     auto  mciniWrite = [&](AAMCCEvent* ev, AAMCCrun* rn, aamcc::NucleonVector* ncl){(*pMciniWriter)(ev, rn, ncl);};
 
+
+
     //Get A of nuclei
     G4int sourceA = histoManager.GetSourceA();
     G4int sourceAb = histoManager.GetSourceAb();
@@ -413,7 +415,7 @@ int main()
             }
             histoManager.ToFile(&event, &ain->nucleons, mciniWrite);
 
-            histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
+            //histoManager.ToFile(&event, &ain->nucleons, WrtToFl);
 
             event.A_cl.clear();
             event.Z_cl.clear();
