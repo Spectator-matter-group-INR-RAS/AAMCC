@@ -41,6 +41,7 @@ include_directories(ROOT_BUG)
 include_directories(/usr/local/include)
 if(MCINI)
   include_directories($ENV{MCINI}/include)
+  link_directories($ENV{MCINI}/build)
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include
