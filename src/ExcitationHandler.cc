@@ -23,12 +23,12 @@
 #include "G4Evaporation.hh"
 #include "G4PhotonEvaporation.hh"
 #include "G4StatMF.hh"
-#include "AAMCCFermiBreakUp.h"
-//#include "G4FermiBreakUpVI.hh"
+#include "MyFermiBreakUp/AAMCCFermiBreakUp.hh"
+#include "ExcitationHandler.hh"
 
-#include "ExcitationHandler.h"
+const size_t ExcitationHandler::EvaporationIterationThreshold = 1e3;
 
-static const size_t evaporation_iteration_threshold = 1e3;
+const char* ExcitationHandler::ErrorNoModel = "no model was applied, check conditions";
 
 ExcitationHandler::ExcitationHandler()
     : multi_fragmentation_model_(DefaultMultiFragmentation()),
@@ -66,28 +66,40 @@ ExcitationHandler::ExcitationHandler()
 
 std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fragment) {
   auto nist = G4NistManager::Instance();
-  G4SmartFragmentVector results;
-  std::queue<G4SmartFragment> evaporation_queue;
-  std::queue<G4SmartFragment> photon_evaporation_queue;
+  G4FragmentVector results;
+  std::queue<G4Fragment*> evaporation_queue;
+  std::queue<G4Fragment*> photon_evaporation_queue;
 
   /// In case A <= 1 the fragment will not perform any nucleon emission
   auto initial_fragment_ptr = std::make_unique<G4Fragment>(fragment);
-  if (fragment.GetA_asInt() <= 1 || (IsStable(fragment)
-      && nist->GetIsotopeAbundance(fragment.GetZ_asInt(), fragment.GetA_asInt()) > 0)) {
-    results.emplace_back(std::move(initial_fragment_ptr));
+  if (IsStable(fragment, nist)) {
+    results.push_back(initial_fragment_ptr.release());
   } else {
     if (multi_fragmentation_condition_(fragment)) {
       ApplyMultiFragmentation(std::move(initial_fragment_ptr), results, evaporation_queue);
     } else {
-      evaporation_queue.emplace(std::move(initial_fragment_ptr));
+      evaporation_queue.push(initial_fragment_ptr.release());
     }
 
     for (size_t iteration_count = 0; !evaporation_queue.empty(); ++iteration_count) {
-      G4SmartFragment fragment_ptr = std::move(evaporation_queue.front());
+      auto fragment_ptr = std::unique_ptr<G4Fragment>(evaporation_queue.front());
       evaporation_queue.pop();
 
       /// infinite loop
-      if (iteration_count == evaporation_iteration_threshold) {
+      if (iteration_count == EvaporationIterationThreshold) {
+        /// exception safety
+        for (auto ptr : results) {
+          delete ptr;
+        }
+        while (!evaporation_queue.empty()) {
+          delete evaporation_queue.front();
+          evaporation_queue.pop();
+        }
+        while (!photon_evaporation_queue.empty()) {
+          delete photon_evaporation_queue.front();
+          photon_evaporation_queue.pop();
+        }
+
         EvaporationError(fragment, *fragment_ptr, iteration_count);
         /// process is dead
       }
@@ -101,12 +113,15 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
       /// Evaporation part
       if (evaporation_condition_(*fragment_ptr)) {
         ApplyEvaporation(std::move(fragment_ptr), results, evaporation_queue);
+        continue;
       }
+
+      throw std::runtime_error(ErrorNoModel);
     }
 
     /// Photon Evaporation part
     while (!photon_evaporation_queue.empty()) {
-      G4SmartFragment fragment_ptr = std::move(photon_evaporation_queue.front());
+      auto fragment_ptr = std::unique_ptr<G4Fragment>(photon_evaporation_queue.front());
       photon_evaporation_queue.pop();
 
       if (photon_evaporation_condition_(*fragment_ptr)) {
@@ -116,6 +131,10 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
   }
 
   auto reaction_products = ConvertResults(results);
+
+  for (auto ptr : results) {
+    delete ptr;
+  }
 
   return reaction_products;
 }
@@ -182,40 +201,45 @@ ExcitationHandler::Condition ExcitationHandler::DefaultPhotonEvaporationConditio
   return [](const G4Fragment&) { return true; };
 }
 
-bool ExcitationHandler::IsStable(const G4Fragment& fragment) const {
+bool ExcitationHandler::IsGroundState(const G4Fragment& fragment) const {
   return fragment.GetExcitationEnergy() < stable_threshold_;
 }
 
-void ExcitationHandler::ApplyMultiFragmentation(G4SmartFragment fragment,
-                                                G4SmartFragmentVector& results,
-                                                std::queue<G4SmartFragment>& next_stage) {
+bool ExcitationHandler::IsStable(const G4Fragment& fragment, const G4NistManager* nist) const {
+  return fragment.GetA_asInt() <= 1
+      || (IsGroundState(fragment) && nist->GetIsotopeAbundance(fragment.GetZ_asInt(), fragment.GetA_asInt()) > 0);
+}
+
+void ExcitationHandler::ApplyMultiFragmentation(std::unique_ptr<G4Fragment> fragment,
+                                                G4FragmentVector& results,
+                                                std::queue<G4Fragment*>& next_stage) {
   auto fragments = std::unique_ptr<G4FragmentVector>(multi_fragmentation_model_->BreakItUp(*fragment));
   if (fragments == nullptr || fragments->size() <= 1) {
-    next_stage.push(std::move(fragment));
+    next_stage.push(fragment.release());
     return;
   }
 
-  SortFragments(*fragments, results, next_stage);
+  GroupFragments(*fragments, results, next_stage);
 }
 
-void ExcitationHandler::ApplyFermiBreakUp(G4SmartFragment fragment,
-                                          G4SmartFragmentVector& results,
-                                          std::queue<G4SmartFragment>& next_stage) {
+void ExcitationHandler::ApplyFermiBreakUp(std::unique_ptr<G4Fragment> fragment,
+                                          G4FragmentVector& results,
+                                          std::queue<G4Fragment*>& next_stage) {
   G4FragmentVector fragments;
   fermi_break_up_model_->BreakFragment(&fragments, fragment.get());
   // auto fragments = std::unique_ptr<G4FragmentVector>(fermi_break_up_model_->BreakItUp(fragment.get()))
 
   if (fragments.size() == 1) {
-    next_stage.emplace(std::move(fragment));
+    next_stage.emplace(fragment.release());
     return;
   }
 
-  SortFragments(fragments, results, next_stage);
+  GroupFragments(fragments, results, next_stage);
 }
 
-void ExcitationHandler::ApplyEvaporation(G4SmartFragment fragment,
-                                         G4SmartFragmentVector& results,
-                                         std::queue<G4SmartFragment>& next_stage) {
+void ExcitationHandler::ApplyEvaporation(std::unique_ptr<G4Fragment> fragment,
+                                         G4FragmentVector& results,
+                                         std::queue<G4Fragment*>& next_stage) {
   G4FragmentVector fragments;
   evaporation_model_->BreakFragment(&fragments, fragment.get());
   // auto fragments = std::unique_ptr<G4FragmentVector>(evaporation_model_->BreakItUp(fragment.get()))
@@ -231,12 +255,12 @@ void ExcitationHandler::ApplyEvaporation(G4SmartFragment fragment,
     return;
   }
 
-  SortFragments(fragments, results, next_stage);
+  GroupFragments(fragments, results, next_stage);
 }
 
-void ExcitationHandler::ApplyPhotonEvaporation(G4SmartFragment fragment, G4SmartFragmentVector& results) {
+void ExcitationHandler::ApplyPhotonEvaporation(std::unique_ptr<G4Fragment> fragment, G4FragmentVector& results) {
   /// photon de-excitation only for hot fragments
-  if (!IsStable(*fragment)) {
+  if (!IsGroundState(*fragment)) {
     G4FragmentVector fragments;
 
     evaporation_model_->GetPhotonEvaporation()->BreakUpChain(&fragments, fragment.get());
@@ -246,19 +270,18 @@ void ExcitationHandler::ApplyPhotonEvaporation(G4SmartFragment fragment, G4Smart
     }
 
     /// primary fragment is kept
-    results.emplace_back(std::move(fragment));
+    results.emplace_back(fragment.release());
   }
 }
 
-void ExcitationHandler::SortFragments(const G4FragmentVector& fragments,
-                                      G4SmartFragmentVector& results,
-                                      std::queue<G4SmartFragment>& next_stage) {
+void ExcitationHandler::GroupFragments(const G4FragmentVector& fragments,
+                                       G4FragmentVector& results,
+                                       std::queue<G4Fragment*>& next_stage) {
   auto nist = G4NistManager::Instance();
 
   for (auto fragment_ptr : fragments) { /// fragment pointers is moved to unique and will be deleted later
     /// gamma, p, n or stable nuclei
-    if (fragment_ptr->GetA_asInt() <= 1 || (IsStable(*fragment_ptr)
-        && nist->GetIsotopeAbundance(fragment_ptr->GetZ_asInt(), fragment_ptr->GetA_asInt()) > 0.0)) {
+    if (IsStable(*fragment_ptr, nist)) {
       results.emplace_back(fragment_ptr);
     } else {
       next_stage.emplace(fragment_ptr);
@@ -306,7 +329,7 @@ G4ParticleDefinition* ExcitationHandler::SpecialParticleDefinition(const G4Fragm
   return nullptr;
 }
 
-std::vector<G4ReactionProduct> ExcitationHandler::ConvertResults(const G4SmartFragmentVector& results) {
+std::vector<G4ReactionProduct> ExcitationHandler::ConvertResults(const G4FragmentVector& results) {
   std::vector<G4ReactionProduct> reaction_products;
   reaction_products.reserve(results.size());
   auto ion_table = G4ParticleTable::GetParticleTable()->GetIonTable();
@@ -316,7 +339,7 @@ std::vector<G4ReactionProduct> ExcitationHandler::ConvertResults(const G4SmartFr
     if (fragment_definition == nullptr) {
       auto excitation_energy = fragment_ptr->GetExcitationEnergy();
       auto level = fragment_ptr->GetFloatingLevelNumber();
-      if (IsStable(*fragment_ptr)) {
+      if (IsGroundState(*fragment_ptr)) {
         excitation_energy = 0;
         level = 0;
       }
@@ -325,17 +348,16 @@ std::vector<G4ReactionProduct> ExcitationHandler::ConvertResults(const G4SmartFr
     }
     /// fragment wasn't found, ground state is created
     if (fragment_definition == nullptr) {
-      fragment_definition = ion_table->GetIon(fragment_ptr->GetZ_asInt(), fragment_ptr->GetA_asInt(), 0.0, noFloat, 0);
+      fragment_definition = ion_table->GetIon(fragment_ptr->GetZ_asInt(), fragment_ptr->GetA_asInt(), 0, noFloat, 0);
       if (fragment_definition == nullptr) {
-        throw std::runtime_error("ion table is't created");
+        throw std::runtime_error("ion table isn't created");
       }
       G4double ion_mass = fragment_definition->GetPDGMass();
       if (fragment_ptr->GetMomentum().e() <= ion_mass) {
         fragment_ptr->SetMomentum(G4LorentzVector(ion_mass));
       } else {
         auto momentum = fragment_ptr->GetMomentum();
-        G4double momentum_modulus =
-            std::sqrt((fragment_ptr->GetMomentum().e() - ion_mass) * (fragment_ptr->GetMomentum().e() + ion_mass));
+        G4double momentum_modulus = std::sqrt((momentum.e() - ion_mass) * (momentum.e() + ion_mass));
         momentum.setVect(momentum.vect().unit() * momentum_modulus);
         fragment_ptr->SetMomentum(momentum);
       }
@@ -359,24 +381,3 @@ void ExcitationHandler::EvaporationError(const G4Fragment& fragment, const G4Fra
   G4Exception("ExcitationHandler::BreakItUp", "", FatalException,
               ed, "Stop execution");
 }
-
-ExcitationHandler& ExcitationHandler::SetMultiFragmentation(std::unique_ptr<G4VMultiFragmentation>&& model) {
-  multi_fragmentation_model_ = std::move(model);
-  return *this;
-}
-
-ExcitationHandler& ExcitationHandler::SetFermiBreakUp(std::unique_ptr<G4VFermiBreakUp>&& model) {
-  fermi_break_up_model_ = std::move(model);
-  return *this;
-}
-
-ExcitationHandler& ExcitationHandler::SetEvaporation(std::unique_ptr<G4VEvaporation>&& model) {
-  evaporation_model_ = std::move(model);
-  return *this;
-}
-
-ExcitationHandler& ExcitationHandler::SetPhotonEvaporation(std::unique_ptr<G4VEvaporationChannel>&& model) {
-  evaporation_model_->SetPhotonEvaporation(model.release());
-  return *this;
-}
-

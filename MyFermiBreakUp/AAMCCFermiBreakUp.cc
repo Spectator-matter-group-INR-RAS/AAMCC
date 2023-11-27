@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "G4Fragment.hh"
-#include "AAMCCFermiBreakUp.h"
+#include "AAMCCFermiBreakUp.hh"
 #include "FermiBreakUp.h"
 
 AAMCCFermiBreakUp::AAMCCFermiBreakUp() : fermi_model_(std::make_unique<FermiBreakUp>()) {}

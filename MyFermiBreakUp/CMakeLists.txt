@@ -9,7 +9,7 @@ find_package(Geant4 REQUIRED)
 
 include(${Geant4_USE_FILE})
 
-add_library(AAMCCFermiBreakUp STATIC AAMCCFermiBreakUp.cpp)
+add_library(AAMCCFermiBreakUp STATIC AAMCCFermiBreakUp.cc)
 
 add_subdirectory(lib)
 target_link_libraries(AAMCCFermiBreakUp FermiBreakUp ${Geant4_LIBRARIES})

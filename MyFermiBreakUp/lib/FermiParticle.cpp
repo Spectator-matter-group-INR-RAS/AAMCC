@@ -86,7 +86,7 @@ std::ostream& operator<<(std::ostream& out, const FermiParticle& particle) {
 
   out << std::setprecision(3)
       << ", U = " << particle.GetExcitationEnergy() / CLHEP::MeV
-      << " MeV  IsStable= " << particle.IsStable() << std::endl
+      << " MeV  IsGroundState= " << particle.IsStable() << std::endl
       << "          P = ("
       << particle.GetMomentum().x() / CLHEP::MeV << ","
       << particle.GetMomentum().y() / CLHEP::MeV << ","
