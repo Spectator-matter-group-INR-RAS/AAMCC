@@ -53,6 +53,9 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
 
       /// infinite loop
       if (iteration_count == EvaporationIterationThreshold) {
+        /// exception safety
+        CleanUp(results, evaporation_queue, photon_evaporation_queue);
+
         EvaporationError(fragment, *fragment_ptr, iteration_count);
         /// process is dead
       }
@@ -68,6 +71,8 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
         continue;
       }
 
+      /// exception safety
+      CleanUp(results, evaporation_queue, photon_evaporation_queue);
       throw std::runtime_error(ErrorNoModel);
     }
   }

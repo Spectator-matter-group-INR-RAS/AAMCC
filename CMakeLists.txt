@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(GRATE)
 set(CMAKE_PLATFORM_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 17)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -31,8 +32,25 @@ find_package(ROOT COMPONENTS MathMore)
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.cc ${PROJECT_SOURCE_DIR}/photon_evaporation/src/*.cc ${PROJECT_SOURCE_DIR}/Evaporation/src/*.cc ${PROJECT_SOURCE_DIR}/Fission/src/*.cc ${PROJECT_SOURCE_DIR}/Multifragmentation/src/*.cc ${PROJECT_SOURCE_DIR}/Abla/src/*.cc ${PROJECT_SOURCE_DIR}/PureNeutrons/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh ${PROJECT_SOURCE_DIR}/photon_evaporation/include/*.hh ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh ${PROJECT_SOURCE_DIR}/Fission/include/*.hh ${PROJECT_SOURCE_DIR}/Multifragmentation/include/*.hh ${PROJECT_SOURCE_DIR}/Abla/include/*.hh ${PROJECT_SOURCE_DIR}/PureNeutrons/include/*.hh)
+file(GLOB sources
+        ${PROJECT_SOURCE_DIR}/src/*.cc
+        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.cc
+        ${PROJECT_SOURCE_DIR}/PhotonEvaporation/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Evaporation/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Fission/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Multifragmentation/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Abla/src/*.cc
+        ${PROJECT_SOURCE_DIR}/PureNeutrons/src/*.cc)
+
+file(GLOB headers
+        ${PROJECT_SOURCE_DIR}/include/*.hh
+        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh
+        ${PROJECT_SOURCE_DIR}/PhotonEvaporation/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Fission/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Multifragmentation/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Abla/include/*.hh
+        ${PROJECT_SOURCE_DIR}/PureNeutrons/include/*.hh)
 
 include_directories(ROOT_BUG)
 
@@ -40,10 +58,11 @@ include_directories(${PROJECT_SOURCE_DIR}/include
                     ${PROJECT_SOURCE_DIR}/Evaporation/include/
                     ${PROJECT_SOURCE_DIR}/Fission/include/
                     ${PROJECT_SOURCE_DIR}/Multifragmentation/include/
-                    ${PROJECT_SOURCE_DIR}/photon_evaporation/include/
+                    ${PROJECT_SOURCE_DIR}/PhotonEvaporation/include/
                     ${PROJECT_SOURCE_DIR}
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIRS})
+
 add_subdirectory(TGlauber)
 add_subdirectory(MyFermiBreakUp)
 link_directories(${ROOT_LIBRARY_DIR})

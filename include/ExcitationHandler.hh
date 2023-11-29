@@ -156,6 +156,8 @@ class ExcitationHandler {
 
   static Condition DefaultPhotonEvaporationCondition();
 
+  static void CleanUp(G4FragmentVector& v, std::queue<G4Fragment*>& q1, std::queue<G4Fragment*>& q2);
+
   bool IsGroundState(const G4Fragment& fragment) const;
 
   bool IsStable(const G4Fragment& fragment, const G4NistManager*nist) const;

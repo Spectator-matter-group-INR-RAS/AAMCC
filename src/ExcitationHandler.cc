@@ -64,6 +64,20 @@ ExcitationHandler::ExcitationHandler()
   ion_table->CreateAllIsomer();
 }
 
+void ExcitationHandler::CleanUp(G4FragmentVector& v, std::queue<G4Fragment*>& q1, std::queue<G4Fragment*>& q2) {
+  for (auto ptr : v) {
+    delete ptr;
+  }
+  while (!q1.empty()) {
+    delete q1.front();
+    q1.pop();
+  }
+  while (!q2.empty()) {
+    delete q2.front();
+    q2.pop();
+  }
+}
+
 std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fragment) {
   auto nist = G4NistManager::Instance();
   G4FragmentVector results;
@@ -88,17 +102,7 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
       /// infinite loop
       if (iteration_count == EvaporationIterationThreshold) {
         /// exception safety
-        for (auto ptr : results) {
-          delete ptr;
-        }
-        while (!evaporation_queue.empty()) {
-          delete evaporation_queue.front();
-          evaporation_queue.pop();
-        }
-        while (!photon_evaporation_queue.empty()) {
-          delete photon_evaporation_queue.front();
-          photon_evaporation_queue.pop();
-        }
+        CleanUp(results, evaporation_queue, photon_evaporation_queue);
 
         EvaporationError(fragment, *fragment_ptr, iteration_count);
         /// process is dead
@@ -116,6 +120,8 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
         continue;
       }
 
+      /// exception safety
+      CleanUp(results, evaporation_queue, photon_evaporation_queue);
       throw std::runtime_error(ErrorNoModel);
     }
 
