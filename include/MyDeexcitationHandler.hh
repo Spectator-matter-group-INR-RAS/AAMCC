@@ -9,14 +9,13 @@
 #include "G4ParticleTypes.hh"
 
 #include "Abla/include/MyAblaEvaporation.hh"
-#include "Abla/include/AblaEvaporation.hh"
 #include "PureNeutrons/include/PureNeutrons.hh"
 
 #include "ExcitationHandler.hh"
 
 class MyDeexcitationHandler : public ExcitationHandler {
  public:
-  MyDeexcitationHandler() = default;
+  MyDeexcitationHandler();
 
   MyDeexcitationHandler(const MyDeexcitationHandler&) = delete;
 
@@ -77,6 +76,10 @@ class MyDeexcitationHandler : public ExcitationHandler {
   const Condition& GetPureNeutronsCondition() const { return pure_neutrons_condition_; }
 
  private:
+  void ApplyAblaEvaporation(std::unique_ptr<G4Fragment> fragment,
+                            G4FragmentVector& results,
+                            std::queue<G4Fragment*>& next_stage);
+
   static std::unique_ptr<MyAblaEvaporation> DefaultAblaEvaporation();
 
   static std::unique_ptr<PureNeutrons> DefaultPureNeutrons();

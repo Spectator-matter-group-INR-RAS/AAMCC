@@ -6,6 +6,12 @@
 
 #include "MyDeexcitationHandler.hh"
 
+MyDeexcitationHandler::MyDeexcitationHandler() :
+    pure_neutrons_(DefaultPureNeutrons()),
+    abla_evaporation_(DefaultAblaEvaporation()),
+    pure_neutrons_condition_(DefaultPureNeutronsCondition()),
+    abla_condition_(DefaultAblaEvaporationCondition()) {}
+
 std::vector<G4ReactionProduct> MyDeexcitationHandler::G4BreakItUp(const G4Fragment& fragment) {
   if (pure_neutrons_condition_(fragment)) {
     return BreakUpPureNeutrons(fragment);
@@ -30,19 +36,19 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
   auto nist = G4NistManager::Instance();
   G4FragmentVector results;
   std::queue<G4Fragment*> evaporation_queue;
-  std::queue<G4Fragment*> photon_evaporation_queue;
+  std::queue<G4Fragment*> secondary_evaporation_queue;
 
   auto initial_fragment_ptr = std::make_unique<G4Fragment>(fragment);
   if (IsStable(fragment, nist)) {
     results.push_back(initial_fragment_ptr.release());
   } else {
-    if (multi_fragmentation_condition_(fragment)) {
+    auto is_multi_fragmentation = multi_fragmentation_condition_(fragment);
+    if (is_multi_fragmentation) {
       ApplyMultiFragmentation(std::move(initial_fragment_ptr), results, evaporation_queue);
     } else if (fermi_condition_(fragment)) {
       ApplyFermiBreakUp(std::move(initial_fragment_ptr), results, evaporation_queue);
     } else if (abla_condition_(fragment)) {
-      auto fragments = abla_evaporation_->BreakItUp(fragment);
-      results.insert(results.end(), fragments.begin(), fragments.end());
+      ApplyAblaEvaporation(std::move(initial_fragment_ptr), results, evaporation_queue);
     } else {
       throw std::runtime_error(ErrorNoModel);
     }
@@ -54,33 +60,33 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
       /// infinite loop
       if (iteration_count == EvaporationIterationThreshold) {
         /// exception safety
-        CleanUp(results, evaporation_queue, photon_evaporation_queue);
+        CleanUp(results, evaporation_queue, secondary_evaporation_queue);
 
         EvaporationError(fragment, *fragment_ptr, iteration_count);
         /// process is dead
       }
 
-      if (fermi_condition_(*fragment_ptr)) {
-        ApplyFermiBreakUp(std::move(fragment_ptr), results, photon_evaporation_queue);
+      if (fermi_condition_(*fragment_ptr) && is_multi_fragmentation) {
+        ApplyFermiBreakUp(std::move(fragment_ptr), results, secondary_evaporation_queue);
         continue;
       }
 
       if (abla_condition_(*fragment_ptr)) {
-        auto fragments = abla_evaporation_->BreakItUp(fragment);
+        auto fragments = abla_evaporation_->BreakItUp(*fragment_ptr);
         results.insert(results.end(), fragments.begin(), fragments.end());
         continue;
       }
 
       /// exception safety
-      CleanUp(results, evaporation_queue, photon_evaporation_queue);
+      CleanUp(results, evaporation_queue, secondary_evaporation_queue);
       throw std::runtime_error(ErrorNoModel);
     }
   }
 
-  while (!photon_evaporation_queue.empty()) {
-    auto fragment_ptr = std::unique_ptr<G4Fragment>(photon_evaporation_queue.front());
-    photon_evaporation_queue.pop();
-    auto fragments = abla_evaporation_->BreakItUp(fragment);
+  while (!secondary_evaporation_queue.empty()) {
+    auto fragment_ptr = std::unique_ptr<G4Fragment>(secondary_evaporation_queue.front());
+    secondary_evaporation_queue.pop();
+    auto fragments = abla_evaporation_->BreakItUp(*fragment_ptr);
     results.insert(results.end(), fragments.begin(), fragments.end());
   }
 
@@ -95,7 +101,7 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
 
 std::vector<G4ReactionProduct> MyDeexcitationHandler::AblaBreakItUp(const G4Fragment& fragment) {
   if (abla_evaporation_->GetFreezeOutT() > 0) {
-    abla_evaporation_->SetFreezeOutT(-6.5); //Let ABLAXX decide freeze-out T
+    abla_evaporation_->SetFreezeOutT(-6.5); // Let ABLAXX decide freeze-out T
   }
   auto fragments = abla_evaporation_->BreakItUp(fragment);
   return ConvertResults(fragments);
@@ -145,12 +151,24 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::BreakUp(const G4Fragment& 
       if (model == Models::ABLAXX) return AblaBreakItUp(fragment);
       return AAMCCBreakItUp(fragment);
     }
-
     default: {
       std::cout << "Wrong model name " << modelName << ". G4, ABLAXX, AAMCC or MIX are available \n";
       return AAMCCBreakItUp(fragment);
     }
   }
+}
+
+void MyDeexcitationHandler::ApplyAblaEvaporation(std::unique_ptr<G4Fragment> fragment,
+                                                 G4FragmentVector& results,
+                                                 std::queue<G4Fragment*>& next_stage) {
+  auto fragments = abla_evaporation_->BreakItUp(*fragment);
+
+  if (fragments.size() == 1) {
+    next_stage.emplace(fragment.release());
+    return;
+  }
+
+  GroupFragments(fragments, results, next_stage);
 }
 
 std::unique_ptr<MyAblaEvaporation> MyDeexcitationHandler::DefaultAblaEvaporation() {

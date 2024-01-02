@@ -24,7 +24,7 @@ const FermiFloat NativeNucleiProperties::He3_mass = 2.808391 * CLHEP::GeV;
 
 FermiFloat NativeNucleiProperties::GetNuclearMass(MassNumber mass_number, ChargeNumber charge_number) const {
   if (IsInvalidNuclei(mass_number, charge_number)) {
-    std::cerr << "G4NucleiProperties::GetNuclearMass: Wrong values for A = " << mass_number
+    std::cerr << "NucleiProperties::GetNuclearMass: Wrong values for A = " << mass_number
               << " and Z = " << charge_number << std::endl;
     return 0;
   }

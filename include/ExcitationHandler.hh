@@ -18,7 +18,11 @@
 #include "G4NistManager.hh"
 
 #include "G4VMultiFragmentation.hh"
-#include "G4VEvaporation.hh"
+#include "G4PhotonEvaporation.hh"
+#include "Evaporation/include/G4VEvaporation.hh"
+#include "Evaporation/include/G4VEvaporationChannel.hh"
+#include "Evaporation/include/G4Evaporation.hh"
+#include "G4StatMF.hh"
 #include "G4VFermiBreakUp.hh"
 
 class ExcitationHandler {

@@ -5,8 +5,9 @@
 #ifndef GRATE_ABLA_INCLUDE_MYABLAEVAPORATION_H_
 #define GRATE_ABLA_INCLUDE_MYABLAEVAPORATION_H_
 
-#include "globals.hh"
 #include <memory>
+
+#include "globals.hh"
 
 #include "G4VPreCompoundModel.hh"
 #include "G4ReactionProduct.hh"

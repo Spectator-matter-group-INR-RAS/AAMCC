@@ -51,24 +51,24 @@ G4ReactionProductVector *DeexcitationHandler::AAMCCBreakItUp(const G4Fragment &t
     tempResult->clear();
 
 
-        G4FragmentVector::iterator j = toDecayVector->begin();
-        while (j != toDecayVector->end()) {
-            if (isFermiBreakUp((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy()) && isMF) {
-                tempResult = FermiBreakUp.BreakItUp(*(*j));
-            } else {
-                ablaTempResult = ablaEvaporation.DeExcite(*(*j));
-                theResult->insert(theResult->end(), ablaTempResult->begin(), ablaTempResult->end());
-            }
-            j = toDecayVector->erase(j);
+    G4FragmentVector::iterator j = toDecayVector->begin();
+    while (j != toDecayVector->end()) {
+        if (isFermiBreakUp((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy()) && isMF) {
+            tempResult = FermiBreakUp.BreakItUp(*(*j));
+        } else {
+            ablaTempResult = ablaEvaporation.DeExcite(*(*j));
+            theResult->insert(theResult->end(), ablaTempResult->begin(), ablaTempResult->end());
         }
+        j = toDecayVector->erase(j);
+    }
 
-        for (G4FragmentVector::iterator j = tempResult->begin(); j != tempResult->end(); ++j) {
-            if (!isDecay((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
-                theResult->push_back(toReactionProduct((*j)));
-            }
-            else { toDecayVector->push_back((*j)); }
+    for (G4FragmentVector::iterator j = tempResult->begin(); j != tempResult->end(); ++j) {
+        if (!isDecay((*j)->GetA(), (*j)->GetZ(), (*j)->GetExcitationEnergy())) {
+            theResult->push_back(toReactionProduct((*j)));
         }
-        tempResult->clear();
+        else { toDecayVector->push_back((*j)); }
+    }
+    tempResult->clear();
 
     G4FragmentVector::iterator t = toDecayVector->begin();
     while (t != toDecayVector->end()) {

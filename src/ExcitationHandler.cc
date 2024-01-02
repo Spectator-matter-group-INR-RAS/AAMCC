@@ -132,7 +132,12 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
 
       if (photon_evaporation_condition_(*fragment_ptr)) {
         ApplyPhotonEvaporation(std::move(fragment_ptr), results);
+        continue;
       }
+
+      /// exception safety
+      CleanUp(results, evaporation_queue, photon_evaporation_queue);
+      throw std::runtime_error(ErrorNoModel);
     }
   }
 
@@ -274,10 +279,10 @@ void ExcitationHandler::ApplyPhotonEvaporation(std::unique_ptr<G4Fragment> fragm
     for (auto fragment_ptr : fragments) {
       results.emplace_back(fragment_ptr);
     }
-
-    /// primary fragment is kept
-    results.emplace_back(fragment.release());
   }
+
+  /// primary fragment is kept
+  results.emplace_back(fragment.release());
 }
 
 void ExcitationHandler::GroupFragments(const G4FragmentVector& fragments,
