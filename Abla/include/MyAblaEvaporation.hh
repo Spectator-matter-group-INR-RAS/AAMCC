@@ -47,7 +47,7 @@ class MyAblaEvaporation {
   G4Volant volant_;
   std::unique_ptr<G4Abla> abla_model_;
 
-  G4long event_counter_ = 0;
+  G4int event_counter_ = 0;
 
   G4double T_freeze_out = 1e100;
 };

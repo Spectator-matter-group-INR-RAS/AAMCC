@@ -28,14 +28,14 @@ G4FragmentVector MyAblaEvaporation::BreakItUp(const G4Fragment& fragment) {
   G4FragmentVector results;
   results.reserve(abla_result_.ntrack);
 
-  for (G4int i = 0; i < abla_result_.ntrack; ++i) {
+  for (auto i = 0; i < abla_result_.ntrack; ++i) {
     auto A = abla_result_.avv[i];
     auto Z = abla_result_.zvv[i];
-    results.push_back(new G4Fragment(A, Z,
-                                     G4LorentzVector(G4NucleiProperties::GetNuclearMass(A, Z) + abla_result_.enerj[i],
-                                                     abla_result_.pxlab[i],
-                                                     abla_result_.pylab[i],
-                                                     abla_result_.pzlab[i])));
+    auto additional_energy = (A == 0 && Z == 0) ? 0 : G4NucleiProperties::GetNuclearMass(A, Z);
+    results.push_back(new G4Fragment(A, Z, G4LorentzVector(abla_result_.enerj[i] + additional_energy,
+                                                           abla_result_.pxlab[i],
+                                                           abla_result_.pylab[i],
+                                                           abla_result_.pzlab[i])));
   }
 
   return results;
