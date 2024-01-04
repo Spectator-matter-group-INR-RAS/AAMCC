@@ -21,7 +21,12 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::G4BreakItUp(const G4Fragme
 
 std::vector<G4ReactionProduct> MyDeexcitationHandler::BreakUpPureNeutrons(const G4Fragment& fragment) {
   auto fragments = pure_neutrons_->BreakItUp(fragment);
-  return ConvertResults(fragments);
+  auto reaction_products = ConvertResults(fragments);
+
+  for (auto fragment_ptr : fragments) {
+    delete fragment_ptr;
+  }
+  return reaction_products;
 }
 
 std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fragment& fragment) {
@@ -48,7 +53,8 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
     } else if (fermi_condition_(fragment)) {
       ApplyFermiBreakUp(std::move(initial_fragment_ptr), results, evaporation_queue);
     } else if (abla_condition_(fragment)) {
-      ApplyAblaEvaporation(std::move(initial_fragment_ptr), results, evaporation_queue);
+      auto fragments = abla_evaporation_->BreakItUp(fragment);
+      results.insert(results.end(), fragments.begin(), fragments.end());
     } else {
       throw std::runtime_error(ErrorNoModel);
     }
@@ -92,9 +98,7 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AAMCCBreakItUp(const G4Fra
 
   auto reaction_products = ConvertResults(results);
 
-  for (auto fragment_ptr : results) {
-    delete fragment_ptr;
-  }
+  CleanUp(results, evaporation_queue, secondary_evaporation_queue);
 
   return reaction_products;
 }
@@ -104,7 +108,13 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::AblaBreakItUp(const G4Frag
     abla_evaporation_->SetFreezeOutT(-6.5); // Let ABLAXX decide freeze-out T
   }
   auto fragments = abla_evaporation_->BreakItUp(fragment);
-  return ConvertResults(fragments);
+  auto reaction_products = ConvertResults(fragments);
+
+  for (auto fragment_ptr : fragments) {
+    delete fragment_ptr;
+  }
+
+  return reaction_products;
 }
 
 enum class Models {
@@ -145,7 +155,7 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::BreakUp(const G4Fragment& 
     case Models::AAMCC:return AAMCCBreakItUp(fragment);
 
     case Models::MIX: {
-      const int OptionsCount = 3;
+      const int OptionsCount = static_cast<int>(Models::MIX);
       auto model = Models(rand() % OptionsCount);
       if (model == Models::G4) return G4BreakItUp(fragment);
       if (model == Models::ABLAXX) return AblaBreakItUp(fragment);
@@ -156,19 +166,6 @@ std::vector<G4ReactionProduct> MyDeexcitationHandler::BreakUp(const G4Fragment& 
       return AAMCCBreakItUp(fragment);
     }
   }
-}
-
-void MyDeexcitationHandler::ApplyAblaEvaporation(std::unique_ptr<G4Fragment> fragment,
-                                                 G4FragmentVector& results,
-                                                 std::queue<G4Fragment*>& next_stage) {
-  auto fragments = abla_evaporation_->BreakItUp(*fragment);
-
-  if (fragments.size() == 1) {
-    next_stage.emplace(fragment.release());
-    return;
-  }
-
-  GroupFragments(fragments, results, next_stage);
 }
 
 std::unique_ptr<MyAblaEvaporation> MyDeexcitationHandler::DefaultAblaEvaporation() {

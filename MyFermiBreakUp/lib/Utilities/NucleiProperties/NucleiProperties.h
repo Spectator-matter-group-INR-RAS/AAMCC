@@ -8,7 +8,6 @@
 #include "Utilities/DataTypes.h"
 #include "VNucleiProperties.h"
 #include "FermiNucleiProperties.h"
-//#include "NativeNucleiProperties.h"
 
 namespace properties {
 

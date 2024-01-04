@@ -40,7 +40,7 @@ class MyAblaEvaporation {
     abla_model_->SetFreezeOutT(T);
   };
 
-  G4double GetFreezeOutT() { return T_freeze_out; }
+  G4double GetFreezeOutT() const { return T_freeze_out; }
 
  private:
   G4VarNtp abla_result_;

@@ -18,11 +18,11 @@ G4FragmentVector MyAblaEvaporation::BreakItUp(const G4Fragment& fragment) {
 
   abla_model_->DeexcitationAblaxx(fragment.GetA_asInt(),
                                   fragment.GetZ_asInt(),
-                                  fragment.GetExcitationEnergy() / CLHEP::MeV,
+                                  fragment.GetExcitationEnergy(),
                                   fragment.GetAngularMomentum().mag() / CLHEP::hbar_Planck,
-                                  fragment.GetMomentum().x() / CLHEP::MeV,
-                                  fragment.GetMomentum().y() / CLHEP::MeV,
-                                  fragment.GetMomentum().z() / CLHEP::MeV,
+                                  fragment.GetMomentum().x(),
+                                  fragment.GetMomentum().y(),
+                                  fragment.GetMomentum().z(),
                                   event_counter_);
 
   G4FragmentVector results;
@@ -32,10 +32,10 @@ G4FragmentVector MyAblaEvaporation::BreakItUp(const G4Fragment& fragment) {
     auto A = abla_result_.avv[i];
     auto Z = abla_result_.zvv[i];
     auto additional_energy = (A == 0 && Z == 0) ? 0 : G4NucleiProperties::GetNuclearMass(A, Z);
-    results.push_back(new G4Fragment(A, Z, G4LorentzVector(abla_result_.enerj[i] + additional_energy,
-                                                           abla_result_.pxlab[i],
+    results.push_back(new G4Fragment(A, Z, G4LorentzVector(abla_result_.pxlab[i],
                                                            abla_result_.pylab[i],
-                                                           abla_result_.pzlab[i])));
+                                                           abla_result_.pzlab[i],
+                                                           abla_result_.enerj[i] + additional_energy)));
   }
 
   return results;

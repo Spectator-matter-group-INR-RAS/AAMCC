@@ -76,10 +76,6 @@ class MyDeexcitationHandler : public ExcitationHandler {
   const Condition& GetPureNeutronsCondition() const { return pure_neutrons_condition_; }
 
  private:
-  void ApplyAblaEvaporation(std::unique_ptr<G4Fragment> fragment,
-                            G4FragmentVector& results,
-                            std::queue<G4Fragment*>& next_stage);
-
   static std::unique_ptr<MyAblaEvaporation> DefaultAblaEvaporation();
 
   static std::unique_ptr<PureNeutrons> DefaultPureNeutrons();

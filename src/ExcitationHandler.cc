@@ -312,6 +312,18 @@ G4ParticleDefinition* ExcitationHandler::SpecialParticleDefinition(const G4Fragm
       return G4Electron::ElectronDefinition();
     }
 
+    case HashParticle(-1, 1): {
+      return G4PionPlus::PionPlus();
+    }
+
+    case HashParticle(-1, -1): {
+      return G4PionMinus::PionMinus();
+    }
+
+    case HashParticle(-1, 0): {
+      return G4PionZero::PionZero();
+    }
+
     case HashParticle(1, 0): {
       return G4Neutron::NeutronDefinition();
     }
