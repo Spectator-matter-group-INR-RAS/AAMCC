@@ -1,3 +1,11 @@
+//
+// Created by Artem Novikov on 25.11.2023.
+//
+
+#ifndef GRATE_ABLA_INCLUDE_MYABLAEVAPORATION_H_
+#define GRATE_ABLA_INCLUDE_MYABLAEVAPORATION_H_
+
+#include <memory>
 
 #include "globals.hh"
 
@@ -12,27 +20,36 @@
 #include "G4IonTable.hh"
 
 class AblaEvaporation {
-    public:
-     AblaEvaporation();
-     ~AblaEvaporation();
+ public:
+  AblaEvaporation();
 
-     G4ReactionProductVector *DeExcite(const G4Fragment &aFragment);
+  AblaEvaporation(const AblaEvaporation&) = delete;
 
-     inline void SetFreezeOutT(G4double T){T_freeze_out = T; if(theABLAModel) theABLAModel->SetFreezeOutT(T);};
-     inline G4double GetFreezeOutT() {return T_freeze_out;}
+  AblaEvaporation(AblaEvaporation&&) = default;
 
-    private:
-        G4VarNtp *ablaResult;
-        G4Volant *volant;
-        G4Abla *theABLAModel;
-        G4long eventNumber;
+  AblaEvaporation& operator=(const AblaEvaporation&) = delete;
 
-        G4double T_freeze_out = 1e100;
+  AblaEvaporation& operator=(AblaEvaporation&&) = default;
 
-        /// \brief Convert an Abla particle to a G4ReactionProduct
-        G4ReactionProduct *toG4Particle(G4int A, G4int Z , G4double kinE, G4double px, G4double py, G4double pz) const;
+  ~AblaEvaporation() = default;
 
-        /// \brief Convert A and Z to a G4ParticleDefinition
-        G4ParticleDefinition *toG4ParticleDefinition (G4int A, G4int Z) const;
+  G4FragmentVector BreakItUp(const G4Fragment& fragment);
 
-    };
+  void SetFreezeOutT(G4double T) {
+    T_freeze_out = T;
+    abla_model_->SetFreezeOutT(T);
+  };
+
+  G4double GetFreezeOutT() const { return T_freeze_out; }
+
+ private:
+  G4VarNtp abla_result_;
+  G4Volant volant_;
+  std::unique_ptr<G4Abla> abla_model_;
+
+  G4int event_counter_ = 0;
+
+  G4double T_freeze_out = 1e100;
+};
+
+#endif //GRATE_ABLA_INCLUDE_MYABLAEVAPORATION_H_

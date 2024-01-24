@@ -22,7 +22,7 @@
 #include "InitialConditions.hh"
 #include "ExcitationEnergy.hh"
 #include "GRATEPhysicsList.hh"
-#include "MyDeexcitationHandler.hh"
+#include "DeexcitationHandler.hh"
 #include "TGlauber/TGlauberMC.hh"
 #include "TGlauber/TGlauNucleon.hh"
 #include "TGlauber/TGlauNucleus.hh"
@@ -230,7 +230,7 @@ int main() {
   clusters->SetCD(histoManager.GetCriticalDistance());
 
   //Setting up ExcitationHandler
-  MyDeexcitationHandler handler;
+  DeexcitationHandler handler;
   handler.SetStableThreshold(1e-4 * MeV);
   handler.SetFermiBreakUpCondition([](const G4Fragment& fragment) {
     return fragment.GetA_asInt() < 19 && fragment.GetZ_asInt() < 9

@@ -34,7 +34,6 @@ find_package(ROOT COMPONENTS MathMore)
 #
 file(GLOB sources
         ${PROJECT_SOURCE_DIR}/src/*.cc
-        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.cc
         ${PROJECT_SOURCE_DIR}/PhotonEvaporation/src/*.cc
         ${PROJECT_SOURCE_DIR}/Evaporation/src/*.cc
         ${PROJECT_SOURCE_DIR}/Fission/src/*.cc
@@ -44,7 +43,6 @@ file(GLOB sources
 
 file(GLOB headers
         ${PROJECT_SOURCE_DIR}/include/*.hh
-        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh
         ${PROJECT_SOURCE_DIR}/PhotonEvaporation/include/*.hh
         ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh
         ${PROJECT_SOURCE_DIR}/Fission/include/*.hh
@@ -64,7 +62,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include
                     ${ROOT_INCLUDE_DIRS})
 
 add_subdirectory(TGlauber)
-add_subdirectory(MyFermiBreakUp)
+add_subdirectory(FermiBreakUp)
 link_directories(${ROOT_LIBRARY_DIR})
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries

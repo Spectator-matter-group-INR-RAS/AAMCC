@@ -1,70 +1,94 @@
+//
+// Created by Artem Novikov on 25.11.2023.
+//
 
-#include <list>
-#include <math.h>
+#ifndef GRATE_INCLUDE_MYDEEXCITATIONHANDLER_H_
+#define GRATE_INCLUDE_MYDEEXCITATIONHANDLER_H_
 
- #include "G4ExcitationHandler.hh"
- #include "G4SystemOfUnits.hh"
- #include "G4LorentzVector.hh"
- #include "G4NistManager.hh"
- #include "G4ParticleTable.hh"
- #include "G4ParticleTypes.hh"
- #include "G4Ions.hh"
- #include "G4Evaporation.hh"
- #include "G4StatMF.hh"
- #include "G4PhotonEvaporation.hh"
- #include "G4Pow.hh"
- #include "G4FermiPhaseSpaceDecay.hh"
- #include "../FermiBreakUp/G4FermiBreakUp.hh"
- #include "../Abla/include/AblaEvaporation.hh"
- #include "../Multifragmentation/include/G4StatMF.hh"
+#include <memory>
+#include "G4ParticleTypes.hh"
 
- class DeexcitationHandler: public G4ExcitationHandler {
+#include "Abla/include/AblaEvaporation.hh"
+#include "PureNeutrons/include/PureNeutrons.hh"
+
+#include "ExcitationHandler.hh"
+
+class DeexcitationHandler : public ExcitationHandler {
  public:
-     DeexcitationHandler();
-    ~DeexcitationHandler();
+  DeexcitationHandler();
 
-    G4ReactionProductVector* G4BreakItUp(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* BreakUpPureNeutrons(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* AAMCCBreakItUp(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* AblaBreakItUp(const G4Fragment &theInitialFragment);
-    G4ReactionProductVector* BreakUp(const G4Fragment &theInitialFragment, G4String modelName);
+  DeexcitationHandler(const DeexcitationHandler&) = delete;
 
-    inline void SetMaxAforPureNeutronFragments(G4int in_A) {MaxAforFermiBreakUpForPureNeutronFragments = in_A;};
-    inline void SetMaxAforFermiBreakUp(G4int in_A) {MaxAforFermiBreakUp = in_A;};
-    inline void SetMaxZforFermiBreakUp(G4int in_Z) {MaxZforFermiBreakUp = in_Z;};
-    inline void SetMinExForFermiBreakUp(G4double in_Ex) {minExForFBU = in_Ex;};
+  DeexcitationHandler(DeexcitationHandler&&) = default;
 
-    inline void SetExForMF(G4double in_lowEx, G4double in_upEx) {
-        lowBoundTransitionForMF = in_lowEx; upBoundTransitionForMF = in_upEx;
-        aE = 1/(2.*(upBoundTransitionForMF - lowBoundTransitionForMF));
-        E0 = (upBoundTransitionForMF + lowBoundTransitionForMF)/2.;
-    };
+  DeexcitationHandler& operator=(const DeexcitationHandler&) = delete;
 
-    inline void SetMinEx(G4double in_minEx) {minEx = in_minEx;};
+  DeexcitationHandler& operator=(DeexcitationHandler&&) = default;
+
+  std::vector<G4ReactionProduct> G4BreakItUp(const G4Fragment &fragment);
+
+  std::vector<G4ReactionProduct> BreakUpPureNeutrons(const G4Fragment &fragment);
+
+  std::vector<G4ReactionProduct> AAMCCBreakItUp(const G4Fragment &fragment);
+
+  std::vector<G4ReactionProduct> AblaBreakItUp(const G4Fragment &fragment);
+
+  std::vector<G4ReactionProduct> BreakUp(const G4Fragment &fragment, const G4String& modelName);
+
+  /// parameters setters
+  ExcitationHandler& SetAblaEvaporation(std::unique_ptr<AblaEvaporation>&& model = DefaultAblaEvaporation()) {
+    abla_evaporation_ = std::move(model);
+    return *this;
+  }
+
+  ExcitationHandler& SetPureNeutrons(std::unique_ptr<PureNeutrons>&& model = DefaultPureNeutrons()) {
+    pure_neutrons_ = std::move(model);
+    return *this;
+  }
+
+  template <class F>
+  ExcitationHandler& SetAblaEvaporationCondition(F&& f) {
+    abla_evaporation_ = std::forward<F>(f);
+    return *this;
+  }
+
+  template <class F>
+  ExcitationHandler& SetPureNeutronsCondition(F&& f) {
+    pure_neutrons_ = std::forward<F>(f);
+    return *this;
+  }
+
+  /// parameters getters
+  std::unique_ptr<AblaEvaporation>& GetAblaEvaporation() { return abla_evaporation_; }
+
+  const std::unique_ptr<AblaEvaporation>& GetAblaEvaporation() const { return abla_evaporation_; }
+
+  std::unique_ptr<PureNeutrons>& GetPureNeutrons() { return pure_neutrons_; }
+
+  const std::unique_ptr<PureNeutrons>& GetPureNeutrons() const { return pure_neutrons_; }
+
+  Condition& GetAblaEvaporationCondition() { return abla_condition_; }
+
+  const Condition& GetAblaEvaporationCondition() const { return abla_condition_; }
+
+  Condition& GetPureNeutronsCondition() { return pure_neutrons_condition_; }
+
+  const Condition& GetPureNeutronsCondition() const { return pure_neutrons_condition_; }
+
  private:
-    G4int MaxAforFermiBreakUpForPureNeutronFragments = 200;
-    G4int MaxAforFermiBreakUp = 19;
-    G4int MaxZforFermiBreakUp =  9;
-    G4double minExForFBU = 0.1*MeV;
-    G4double mn = 939.5731*MeV;//TODO switch nucelon mass to Geant4 nucleon mass. ALSO FOR FERMI MOMENTUM.
-    G4double lowBoundTransitionForMF = 3*MeV;
-    G4double upBoundTransitionForMF = 5*MeV;
-    G4double minEx = 0.001*MeV;
+  static std::unique_ptr<AblaEvaporation> DefaultAblaEvaporation();
 
-    G4double aE = 1;
-    G4double E0 = 0;
+  static std::unique_ptr<PureNeutrons> DefaultPureNeutrons();
 
-    static G4Fragment* toFragment(G4ReactionProduct* product);
-    G4ReactionProduct* toReactionProduct(G4Fragment* fragment);
-    static G4ParticleDefinition* toParticleDefinition(G4int A, G4int Z) ;
-    bool isMultifragmentation(G4double A, G4double Z, G4double Ex);
-    bool isFermiBreakUp(G4double A, G4double Z, G4double Ex);
-    bool isDecay(G4double A, G4double Z, G4double Ex);
-    bool isDecayOfPureNeutrons(G4double A, G4double Z);
+  static Condition DefaultAblaEvaporationCondition();
 
-    G4FermiPhaseSpaceDecay PhaseSpaceDecay;
-    G4FermiBreakUp FermiBreakUp;
-    AblaEvaporation ablaEvaporation;
-    G4StatMF theMultifragmentation;
+  static Condition DefaultPureNeutronsCondition();
 
+  std::unique_ptr<PureNeutrons> pure_neutrons_;
+  std::unique_ptr<AblaEvaporation> abla_evaporation_;
+
+  Condition pure_neutrons_condition_;
+  Condition abla_condition_;
 };
+
+#endif //GRATE_INCLUDE_MYDEEXCITATIONHANDLER_H_
