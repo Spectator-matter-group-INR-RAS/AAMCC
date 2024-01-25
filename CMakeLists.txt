@@ -34,8 +34,23 @@ find_library(MCINI NAMES McIniData PATHS $ENV{MCINI}/build)
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.cc ${PROJECT_SOURCE_DIR}/photon_evaporation/src/*.cc ${PROJECT_SOURCE_DIR}/Evaporation/src/*.cc ${PROJECT_SOURCE_DIR}/Fission/src/*.cc ${PROJECT_SOURCE_DIR}/Multifragmentation/src/*.cc) # ${PROJECT_SOURCE_DIR}/Abla/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh ${PROJECT_SOURCE_DIR}/photon_evaporation/include/*.hh ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh ${PROJECT_SOURCE_DIR}/Fission/include/*.hh ${PROJECT_SOURCE_DIR}/Multifragmentation/include/*.hh)  #${PROJECT_SOURCE_DIR}/Abla/include/*.hh)
+file(GLOB sources
+        ${PROJECT_SOURCE_DIR}/src/*.cc
+        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.cc
+        ${PROJECT_SOURCE_DIR}/photon_evaporation/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Evaporation/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Fission/src/*.cc
+        ${PROJECT_SOURCE_DIR}/Multifragmentation/src/*.cc
+        ${PROJECT_SOURCE_DIR}/PureNeutrons/src/*.cc) # ${PROJECT_SOURCE_DIR}/Abla/src/*.cc)
+
+file(GLOB headers
+        ${PROJECT_SOURCE_DIR}/include/*.hh
+        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh
+        ${PROJECT_SOURCE_DIR}/photon_evaporation/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Fission/include/*.hh
+        ${PROJECT_SOURCE_DIR}/Multifragmentation/include/*.hh
+        ${PROJECT_SOURCE_DIR}/PureNeutrons/include/*.hh)  #${PROJECT_SOURCE_DIR}/Abla/include/*.hh)
 
 include_directories(ROOT_BUG)
 include_directories(/usr/local/include)
@@ -49,16 +64,18 @@ include_directories(${PROJECT_SOURCE_DIR}/include
                     ${PROJECT_SOURCE_DIR}/Fission/include/
                     ${PROJECT_SOURCE_DIR}/Multifragmentation/include/
                     ${PROJECT_SOURCE_DIR}/photon_evaporation/include/
+                    ${PROJECT_SOURCE_DIR}
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIRS})
 add_subdirectory(TGlauber)
+add_subdirectory(MyFermiBreakUp)
 link_directories(${ROOT_LIBRARY_DIR})
 link_directories(/usr/local/lib)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 add_executable(GRATE GRATE.cc ${sources} ${headers})
 #target_link_libraries(GRATE TGlauNucleon TGlauNucleus TGlauberMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib)
-target_link_libraries(GRATE ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib McIniData)
+target_link_libraries(GRATE ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TGlauberLib McIniData AAMCCFermiBreakUp)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
