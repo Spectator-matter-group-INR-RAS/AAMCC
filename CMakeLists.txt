@@ -36,7 +36,6 @@ find_library(MCINI NAMES McIniData PATHS $ENV{MCINI}/build)
 #
 file(GLOB sources
         ${PROJECT_SOURCE_DIR}/src/*.cc
-        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.cc
         ${PROJECT_SOURCE_DIR}/photon_evaporation/src/*.cc
         ${PROJECT_SOURCE_DIR}/Evaporation/src/*.cc
         ${PROJECT_SOURCE_DIR}/Fission/src/*.cc
@@ -45,7 +44,6 @@ file(GLOB sources
 
 file(GLOB headers
         ${PROJECT_SOURCE_DIR}/include/*.hh
-        ${PROJECT_SOURCE_DIR}/FermiBreakUp/*.hh
         ${PROJECT_SOURCE_DIR}/photon_evaporation/include/*.hh
         ${PROJECT_SOURCE_DIR}/Evaporation/include/*.hh
         ${PROJECT_SOURCE_DIR}/Fission/include/*.hh
@@ -68,7 +66,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIRS})
 add_subdirectory(TGlauber)
-add_subdirectory(MyFermiBreakUp)
+add_subdirectory(FermiBreakUp)
 link_directories(${ROOT_LIBRARY_DIR})
 link_directories(/usr/local/lib)
 #----------------------------------------------------------------------------

@@ -23,7 +23,7 @@
 #include "G4Evaporation.hh"
 #include "G4PhotonEvaporation.hh"
 #include "G4StatMF.hh"
-#include "MyFermiBreakUp/AAMCCFermiBreakUp.hh"
+#include "FermiBreakUp/AAMCCFermiBreakUp.hh"
 #include "ExcitationHandler.hh"
 
 const size_t ExcitationHandler::EvaporationIterationThreshold = 1e3;
