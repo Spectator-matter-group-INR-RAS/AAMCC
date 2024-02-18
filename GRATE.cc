@@ -43,6 +43,11 @@
 #include "AAMCC.hh"
 #include "AAMCCWriter.hh"
 #include "MCiniWriter.hh"
+#include "DeexcitationHandler.hh"
+
+#include "FermiBreakUp/AAMCCFermiBreakUp.hh"
+#include "FermiBreakUp/lib/Configurations/FastFermiConfigurations.h"
+#include "FermiBreakUp/lib/FermiBreakUp.h"
 
 #include <fstream>
 
@@ -135,22 +140,21 @@ int main()
     }
 
     //Setting up ExcitationHandler
-    DeexcitationHandler* handlerNew = new DeexcitationHandler();
-    //handlerNew->SetMinEForMultiFrag(3*MeV);
-    handlerNew->SetMaxAandZForFermiBreakUp(19, 9);
-    handlerNew->SetMinExcitation(1e-4*MeV);
-    handlerNew->SetMaxAforFermiBreakUp(19);
-    handlerNew->SetMaxZforFermiBreakUp(9);
-    handlerNew->SetMaxAforPureNeutronFragments(200);
-    handlerNew->SetMinExForFermiBreakUp(0.01*MeV);
-    handlerNew->SetExForMF(3*MeV, 5*MeV);
+    DeexcitationHandler handler;
+    auto fermi = std::make_unique<FermiBreakUp>(std::make_unique<FastFermiConfigurations>());
+    handler.SetFermiBreakUp(std::make_unique<AAMCCFermiBreakUp>(std::move(fermi)));
+    handler.SetStableThreshold(1e-4 * MeV);
+    handler.SetFermiBreakUpCondition([](const G4Fragment& fragment) {
+      return fragment.GetA_asInt() < 19 && fragment.GetZ_asInt() < 9
+          && fragment.GetExcitationEnergy() > 0.01 * MeV * fragment.GetA_asInt();
+    });
     //Setting up Glauber code
     //histoManager.CalcXsectNN();
     G4float omega = -1;
     G4float signn = histoManager.GetXsectNN();
     auto seed = static_cast<unsigned long int>(*CLHEP::HepRandom::getTheSeeds()); //setting the same seed to TGlauber
 
-    TGlauberMC *mcg=new TGlauberMC(histoManager.GetInitialContidions().GetSysA(),histoManager.GetInitialContidions().GetSysB(),signn,omega,seed);
+    TGlauberMC *mcg = new TGlauberMC(histoManager.GetInitialContidions().GetSysA(),histoManager.GetInitialContidions().GetSysB(),signn,omega,seed);
     mcg->SetMinDistance(0.4);
     //mcg->SetNodeDistance(0);
     mcg->SetCalcLength(0);
@@ -295,17 +299,16 @@ int main()
 
 
                 // HANDLER
-                G4ReactionProductVector * theProduct = handlerNew->BreakUp(aFragment, histoManager.GetDeexModel());
-
-                thisEventNumFragments = theProduct->size();
+                auto products = handler.BreakUp(aFragment, histoManager.GetDeexModel());
+                thisEventNumFragments = products.size();
 
                 //histoManager.GetHisto(1)->Fill(thisEventNumFragments);//newData
 
-                for (G4ReactionProductVector::iterator iVector = theProduct->begin(); iVector != theProduct->end(); ++iVector) {
+                for (auto& product: products) {
                     G4double thisFragmentZ = 0;
                     G4double thisFragmentA = 0;
 
-                    const G4ParticleDefinition *pd = (*iVector)->GetDefinition();
+                    const G4ParticleDefinition *pd = product.GetDefinition();
 
                     G4String particleEmitted = pd->GetParticleName();
 
@@ -316,9 +319,8 @@ int main()
                         event.MassOnSideA.push_back(thisFragmentA);
                         event.ChargeOnSideA.push_back(thisFragmentZ);
 
-                        G4double eeA = (*iVector)->GetTotalEnergy();
-                        G4LorentzVector product_p4((*iVector)->GetMomentum().x(), (*iVector)->GetMomentum().y(),
-                        (*iVector)->GetMomentum().z(), eeA);
+                        G4double eeA = product.GetTotalEnergy();
+                        G4LorentzVector product_p4(product.GetMomentum());
                         G4double pXonA = product_p4.x() / MeV;
                         G4double pYonA = product_p4.y() / MeV;
                         G4double pZonA = product_p4.z() / MeV;
@@ -353,10 +355,8 @@ int main()
                     //newData  histoManager.GetHisto(6)->Fill(thisFragmentZ);
                     //newData histoManager.GetHisto(7)->Fill(thisFragmentA);
                     //newData  histoManager.GetHisto2(2)->Fill(thisFragmentZ, thisFragmentA);
-                    delete (*iVector);
                 }
                 //if(p4.mag() > 0.01) std::cout<<"p4.mag() = "<<p4.mag()<<" b = "<<b<<"\n";
-                delete theProduct;
             }
 
             event.ClustNumA = event.A_cl.size();
@@ -371,13 +371,13 @@ int main()
                 G4double eta_B = 0;
 
                 // HANDLER
-                G4ReactionProductVector *theProductB = handlerNew->BreakUp(aFragmentB, histoManager.GetDeexModel());
+                auto productsB = handler.BreakUp(aFragmentB, histoManager.GetDeexModel());
 
-                for (G4ReactionProductVector::iterator kVector = theProductB->begin(); kVector != theProductB->end(); ++kVector) {
+                for (auto& product: productsB) {
                     G4int thisFragmentZb = 0;
                     G4int thisFragmentAb = 0;
 
-                    const G4ParticleDefinition *pdB = (*kVector)->GetDefinition();
+                    const G4ParticleDefinition *pdB = product.GetDefinition();
 
                     G4String particleEmittedB = pdB->GetParticleName();
 
@@ -387,8 +387,8 @@ int main()
                         event.MassOnSideB.push_back(thisFragmentAb);
                         event.ChargeOnSideB.push_back(thisFragmentZb);
 
-                        G4double eeB = (*kVector)->GetTotalEnergy();
-                        G4LorentzVector product_p4b((*kVector)->GetMomentum().x(), (*kVector)->GetMomentum().y(), (*kVector)->GetMomentum().z(), eeB);
+                        G4double eeB = product.GetTotalEnergy();
+                        G4LorentzVector product_p4b(product.GetMomentum());
                         G4double pXonB = product_p4b.x() / MeV;
                         G4double pYonB = product_p4b.y() / MeV;
                         G4double pZonB = product_p4b.z() / MeV;
@@ -402,9 +402,7 @@ int main()
                         event.pseudorapidity_B.push_back(eta_B);
                     }
                     //newData  histoManager.GetHisto(0)->Fill(thisFragmentZb);
-                    delete (*kVector);
                 }
-                delete theProductB;
             }
 
             event.ClustNumB = event.Ab_cl.size();
@@ -455,14 +453,14 @@ int main()
         G4cout<<"----> Currently no event_initial_state passer is implemented";
     }
 
-    if(histoManager.GetReaderID())
+    if (histoManager.GetReaderID()) {
         inFile->Close();
+    }
     delete writer;
     delete InitReader;
     delete pMciniWriter;
     delete runManager;
     delete clusters;
-    delete handlerNew;
     delete mcg;
     delete ExEnA;
     delete ExEnB;
