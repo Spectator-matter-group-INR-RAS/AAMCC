@@ -53,4 +53,8 @@ bool VNucleiProperties::IsInvalidNuclei(MassNumber mass_number, ChargeNumber cha
   return mass_number < 1_m || charge_number < 0_c || FermiUInt(charge_number) > FermiUInt(mass_number);
 }
 
+void VNucleiProperties::PrintInvalidNuclei(MassNumber mass_number, ChargeNumber charge_number) {
+  std::cerr << "Unsupported values for A = " << mass_number << " and Z = " << charge_number << std::endl;
+}
+
 } // namespace properties

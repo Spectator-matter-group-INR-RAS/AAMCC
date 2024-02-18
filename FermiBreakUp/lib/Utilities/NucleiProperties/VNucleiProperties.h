@@ -24,6 +24,8 @@ class VNucleiProperties {
 
   static FermiFloat BindingEnergy(MassNumber mass_number, ChargeNumber charge_number);
 
+  static void PrintInvalidNuclei(MassNumber mass_number, ChargeNumber charge_number);
+
   static bool IsInvalidNuclei(MassNumber mass_number, ChargeNumber charge_number);
 };
 

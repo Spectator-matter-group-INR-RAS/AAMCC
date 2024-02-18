@@ -133,4 +133,15 @@ struct NucleiData {
   }
 };
 
+template <>
+struct std::hash<NucleiData>
+{
+  std::size_t operator()(const NucleiData& key) const
+  {
+    auto mass = FermiInt(key.mass_number);
+    auto charge = FermiInt(key.charge_number);
+    return (mass * (mass + 1)) / 2 + charge;
+  }
+};
+
 #endif //FERMIBREAKUP_MYFERMIBREAKUP_DATATYPES_H_

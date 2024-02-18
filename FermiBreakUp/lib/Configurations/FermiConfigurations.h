@@ -20,6 +20,8 @@ class FermiConfigurations : public VFermiConfigurations {
 
   std::optional<FragmentVector> ChooseSplit() override;
 
+  [[nodiscard]] std::unique_ptr<VFermiConfigurations> Clone() const override;
+
  private:
   std::vector<FragmentVector> configurations_;
   std::vector<FermiFloat> weights_;

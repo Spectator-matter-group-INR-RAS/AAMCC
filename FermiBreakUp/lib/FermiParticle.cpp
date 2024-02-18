@@ -70,7 +70,7 @@ void FermiParticle::CalculateExcitationEnergy() {
 }
 
 void FermiParticle::CalculateGroundStateMass() {
-  ground_state_mass_ = properties::NucleiProperties().GetNuclearMass(mass_number_, charge_number_);
+  ground_state_mass_ = properties::NucleiProperties()->GetNuclearMass(mass_number_, charge_number_);
 }
 
 std::ostream& operator<<(std::ostream& out, const FermiParticle& particle) {

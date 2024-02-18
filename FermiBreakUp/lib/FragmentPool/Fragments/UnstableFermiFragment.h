@@ -19,7 +19,7 @@ class UnstableFermiFragment : public FermiFragment {
 
   const UnstableFermiFragment& operator=(const UnstableFermiFragment&) = delete;
 
-  ParticleVector GetFragment(const LorentzVector& momentum) const override;
+  ParticleVector GetFragments(const LorentzVector& momentum) const override;
 
  protected:
   void Build(const std::vector<NucleiData>& decay_data);

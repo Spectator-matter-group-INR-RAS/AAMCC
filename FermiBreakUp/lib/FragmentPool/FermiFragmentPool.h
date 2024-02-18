@@ -9,36 +9,13 @@
 #include <map>
 
 #include "Utilities/DataTypes.h"
+#include "Utilities/Singleton.h"
 #include "Fragments/FermiFragment.h"
+#include "FragmentsStorage.h"
 
 namespace pool {
 
-class VPoolBuilder;
-
-class FermiFragmentPool {
- private:
-  using RangeIterators = std::pair<std::multimap<NucleiData, const FermiFragment*>::const_iterator,
-                                   std::multimap<NucleiData, const FermiFragment*>::const_iterator>;
- public:
-  using Map = std::multimap<NucleiData, const FermiFragment*>;
-
-  FermiFragmentPool();
-
-  FermiFragmentPool(const VPoolBuilder& builder);
-
-  size_t Count(MassNumber mass_number, ChargeNumber charge_number) const;
-
-  size_t Count(NucleiData nuclei) const;
-
-  RangeIterators GetFragments(MassNumber mass_number, ChargeNumber charge_number) const;
-
-  RangeIterators GetFragments(NucleiData nuclei) const;
-
- private:
-  void Build(const VPoolBuilder& builder);
-
-  static std::unique_ptr<Map> fragments_pool_;
-};
+using FermiFragmentPool = Singleton<FragmentsStorage>;
 
 } // namespace pool
 

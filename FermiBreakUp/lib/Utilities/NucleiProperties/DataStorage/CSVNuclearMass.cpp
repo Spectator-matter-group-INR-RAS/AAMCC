@@ -1,22 +1,18 @@
 //
-// Created by Artem Novikov on 21.05.2023.
+// Created by Artem Novikov on 18.02.2024.
 //
 
 #include <fstream>
 
-#include "CSVBuilder.h"
+#include "CSVNuclearMass.h"
 
 namespace properties {
 
-CSVBuilder::CSVBuilder(const std::string& csv_filename, const std::string& mass_number_name,
-                       const std::string& charge_number_name, const std::string& mass_name)
-    : csv_filename_(csv_filename),
-      mass_number_name_(mass_number_name),
-      charge_number_name_(charge_number_name),
-      mass_name_(mass_name) {}
-
-void CSVBuilder::BuildTable(FermiNucleiProperties::MassMap& data) const {
-  std::ifstream in(csv_filename_);
+CSVNuclearMass::CSVNuclearMass(const std::string& csv_filename,
+                               const std::string& mass_number_name,
+                               const std::string& charge_number_name,
+                               const std::string& mass_name) {
+  std::ifstream in(csv_filename);
 
   if (!in.is_open()) {
     throw std::runtime_error("invalid CSV file path");
@@ -31,15 +27,15 @@ void CSVBuilder::BuildTable(FermiNucleiProperties::MassMap& data) const {
   uint start = 0;
   auto comma = line.find(',', start);
   while (comma != std::string::npos) {
-    if (line.substr(start, comma - start) == mass_number_name_) {
+    if (line.substr(start, comma - start) == mass_number_name) {
       mass_number_idx = column_idx;
     }
 
-    if (line.substr(start, comma - start) == charge_number_name_) {
+    if (line.substr(start, comma - start) == charge_number_name) {
       charge_number_idx = column_idx;
     }
 
-    if (line.substr(start, comma - start) == mass_name_) {
+    if (line.substr(start, comma - start) == mass_name) {
       mass_idx = column_idx;
     }
 
@@ -91,7 +87,7 @@ void CSVBuilder::BuildTable(FermiNucleiProperties::MassMap& data) const {
       throw std::runtime_error("invalid row format: " + line);
     }
 
-    data.emplace(NucleiData{m, c}, mass);
+    masses_.emplace(NucleiData{m, c}, mass);
   }
 }
 

@@ -18,7 +18,7 @@ class FermiFragment {
 
   FermiFragment& operator=(const FermiFragment&) = delete;
 
-  virtual ParticleVector GetFragment(const LorentzVector& momentum) const = 0;
+  virtual ParticleVector GetFragments(const LorentzVector& momentum) const = 0;
 
   MassNumber GetA() const;
 

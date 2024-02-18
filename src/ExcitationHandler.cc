@@ -24,6 +24,7 @@
 #include "G4PhotonEvaporation.hh"
 #include "G4StatMF.hh"
 #include "FermiBreakUp/AAMCCFermiBreakUp.hh"
+
 #include "ExcitationHandler.hh"
 
 const size_t ExcitationHandler::EvaporationIterationThreshold = 1e3;
@@ -33,11 +34,15 @@ const char* ExcitationHandler::ErrorNoModel = "no model was applied, check condi
 ExcitationHandler::ExcitationHandler()
     : multi_fragmentation_model_(DefaultMultiFragmentation()),
       fermi_break_up_model_(DefaultFermiBreakUp()),
+      photon_evaporation_model_(DefaultPhotonEvaporation()),
       evaporation_model_(DefaultEvaporation()),
       multi_fragmentation_condition_(DefaultMultiFragmentationCondition()),
       fermi_condition_(DefaultFermiBreakUpCondition()),
-      evaporation_condition_(DefaultEvaporationCondition()),
-      photon_evaporation_condition_(DefaultPhotonEvaporationCondition()) {
+      photon_evaporation_condition_(DefaultPhotonEvaporationCondition()),
+      evaporation_condition_(DefaultEvaporationCondition()) {
+  evaporation_model_->SetFermiBreakUp(fermi_break_up_model_.get());
+  evaporation_model_->SetPhotonEvaporation(photon_evaporation_model_.get());
+
   G4BosonConstructor pCBos;
   pCBos.ConstructParticle();
 
@@ -54,7 +59,9 @@ ExcitationHandler::ExcitationHandler()
   pCIon.ConstructParticle();
 
   G4GenericIon* gion = G4GenericIon::GenericIon();
-  gion->SetProcessManager(new G4ProcessManager(gion));
+  auto manager = new G4ProcessManager(gion);
+  manager->SetVerboseLevel(0);
+  gion->SetProcessManager(manager);
 
   G4StateManager::GetStateManager()->SetNewState(G4State_Init); // To let create ions
   G4ParticleTable* partTable = G4ParticleTable::GetParticleTable();
@@ -62,6 +69,10 @@ ExcitationHandler::ExcitationHandler()
   partTable->SetReadiness();
   ion_table->CreateAllIon();
   ion_table->CreateAllIsomer();
+}
+
+ExcitationHandler::~ExcitationHandler() {
+  photon_evaporation_model_.release();  /// otherwise, SegFault in evaporation destructor
 }
 
 void ExcitationHandler::CleanUp(G4FragmentVector& v, std::queue<G4Fragment*>& q1, std::queue<G4Fragment*>& q2) {
@@ -101,7 +112,6 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
 
       /// infinite loop
       if (iteration_count == EvaporationIterationThreshold) {
-        /// exception safety
         CleanUp(results, evaporation_queue, photon_evaporation_queue);
 
         EvaporationError(fragment, *fragment_ptr, iteration_count);
@@ -120,7 +130,6 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
         continue;
       }
 
-      /// exception safety
       CleanUp(results, evaporation_queue, photon_evaporation_queue);
       throw std::runtime_error(ErrorNoModel);
     }
@@ -135,7 +144,6 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
         continue;
       }
 
-      /// exception safety
       CleanUp(results, evaporation_queue, photon_evaporation_queue);
       throw std::runtime_error(ErrorNoModel);
     }
@@ -143,9 +151,7 @@ std::vector<G4ReactionProduct> ExcitationHandler::BreakItUp(const G4Fragment& fr
 
   auto reaction_products = ConvertResults(results);
 
-  for (auto ptr : results) {
-    delete ptr;
-  }
+  CleanUp(results, evaporation_queue, photon_evaporation_queue);
 
   return reaction_products;
 }
@@ -159,8 +165,7 @@ std::unique_ptr<G4VFermiBreakUp> ExcitationHandler::DefaultFermiBreakUp() {
 }
 
 std::unique_ptr<G4VEvaporation> ExcitationHandler::DefaultEvaporation() {
-  auto evaporation = std::make_unique<G4Evaporation>(DefaultPhotonEvaporation().release());
-  evaporation->SetFermiBreakUp(DefaultFermiBreakUp().release());
+  auto evaporation = std::make_unique<G4Evaporation>();
   return evaporation;
 }
 
@@ -274,7 +279,7 @@ void ExcitationHandler::ApplyPhotonEvaporation(std::unique_ptr<G4Fragment> fragm
   if (!IsGroundState(*fragment)) {
     G4FragmentVector fragments;
 
-    evaporation_model_->GetPhotonEvaporation()->BreakUpChain(&fragments, fragment.get());
+    photon_evaporation_model_->BreakUpChain(&fragments, fragment.get());
 
     for (auto fragment_ptr : fragments) {
       results.emplace_back(fragment_ptr);

@@ -8,9 +8,11 @@
 #include <memory>
 
 #include "FermiParticle.h"
-#include "FermiConfigurations.h"
-#include "VFermiBreakUp.h"
+
 #include "VFermiConfigurations.h"
+#include "Configurations/FermiConfigurations.h"
+
+#include "VFermiBreakUp.h"
 
 class FermiBreakUp : public VFermiBreakUp {
  public:
@@ -22,9 +24,9 @@ class FermiBreakUp : public VFermiBreakUp {
 
   ~FermiBreakUp() = default;
 
- private:
   static std::unique_ptr<VFermiConfigurations> DefaultConfigurations();
 
+ private:
   std::unique_ptr<VFermiConfigurations> fermi_configurations_;
 };
 

@@ -2,9 +2,10 @@
 // Created by Artem Novikov on 24.05.2023.
 //
 
-#include "CachedFermiConfigurations.h"
 #include "Utilities/ConfigurationProperties.h"
 #include "Utilities/Randomizer.h"
+
+#include "CachedFermiConfigurations.h"
 
 CachedFermiConfigurations::CachedFermiConfigurations(NucleiData nuclei_data, FermiFloat total_energy) {
   CachedFermiConfigurations::GenerateSplits(nuclei_data, total_energy);
@@ -16,7 +17,7 @@ VFermiConfigurations& CachedFermiConfigurations::GenerateSplits(NucleiData nucle
     last_nuclei_ = nuclei_data;
     cached_configurations_.clear();
 
-    for (uint32_t particle_count = 2; particle_count <= max_fragments_count; particle_count++) {
+    for (uint32_t particle_count = 2; particle_count <= max_fragments_count; ++particle_count) {
       for (auto& split : FermiSplit(nuclei_data, particle_count)) {
         cached_configurations_.emplace_back(std::move(split));  /// split is moved!
       }
@@ -39,7 +40,7 @@ VFermiConfigurations& CachedFermiConfigurations::GenerateSplits(NucleiData nucle
   }
 
   std::transform(weights_.begin(), weights_.end(),
-                 weights_.begin(), std::bind(std::divides<FermiFloat>(), std::placeholders::_1, total_weight));
+                 weights_.begin(), std::bind(std::divides<>(), std::placeholders::_1, total_weight));
 
   return *this;
 }
@@ -61,4 +62,8 @@ std::optional<FragmentVector> CachedFermiConfigurations::ChooseSplit() {
   }
 
   throw std::runtime_error("No split chosen, something went wrong!");
+}
+
+std::unique_ptr<VFermiConfigurations> CachedFermiConfigurations::Clone() const {
+  return std::make_unique<CachedFermiConfigurations>(*this);
 }

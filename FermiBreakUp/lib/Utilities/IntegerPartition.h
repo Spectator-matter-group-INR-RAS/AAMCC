@@ -55,9 +55,9 @@ class IntegerPartition::Iterator {
 
   Iterator operator++(int);
 
-  bool operator==(Iterator& other) const;
+  bool operator==(const Iterator& other) const;
 
-  bool operator!=(Iterator& other) const;
+  bool operator!=(const Iterator& other) const;
 
  private:
   Iterator(uint32_t terms_count);

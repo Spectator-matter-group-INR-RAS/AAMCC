@@ -16,14 +16,13 @@ ParticleVector VFermiBreakUp::ConvertToParticles(const FermiParticle& source_nuc
   }
 
   FermiPhaseSpaceDecay phase_sampler;
-  std::vector<LorentzVector>
-      particles_momentum = phase_sampler.CalculateDecay(source_nucleus.GetMomentum(), split_masses);
+  auto particles_momentum = phase_sampler.CalculateDecay(source_nucleus.GetMomentum(), split_masses);
 
-  Vector3 boost_vector = source_nucleus.GetMomentum().boostVector();
+  auto boost_vector = source_nucleus.GetMomentum().boostVector();
 
   /// Go back to the Lab Frame
   for (size_t fragment_idx = 0; fragment_idx < split.size(); ++fragment_idx) {
-    ParticleVector fragment_particles = split[fragment_idx]->GetFragment(
+    ParticleVector fragment_particles = split[fragment_idx]->GetFragments(
         particles_momentum[fragment_idx].boost(boost_vector));
 
     particle_split.insert(particle_split.end(), std::make_move_iterator(fragment_particles.begin()),

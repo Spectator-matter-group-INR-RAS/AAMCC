@@ -21,25 +21,27 @@ class FermiSplit {
   FermiSplit(NucleiData nuclei_data, uint32_t fragment_count);
 
   iterator begin();
-  const_iterator begin() const;
-  const_iterator cbegin() const;
+  [[nodiscard]] const_iterator begin() const;
+  [[nodiscard]] const_iterator cbegin() const;
 
   iterator end();
-  const_iterator end() const;
-  const_iterator cend() const;
+  [[nodiscard]] const_iterator end() const;
+  [[nodiscard]] const_iterator cend() const;
 
-  const std::vector<FragmentVector>& GetSplits() const;
+  [[nodiscard]] const std::vector<FragmentVector>& GetSplits() const;
 
  private:
   static std::string ValidateInputs(NucleiData nuclei_data, uint32_t fragment_count);
 
-  static std::vector<size_t> FragmentVariations(const Partition& mass_partition, const Partition& charge_partition);
+  static std::vector<size_t> FragmentVariations(const Partition& mass_partition,
+                                                                           const Partition& charge_partition);
+
+  static bool IsSplitPossible(const Partition& mass_partition, const Partition& charge_partition);
 
   static std::vector<FragmentVector> GeneratePossibleSplits(const Partition& mass_partition,
-                                                            const Partition& charge_partition,
-                                                            const std::vector<size_t>& fragment_variation);
+                                                            const Partition& charge_partition);
 
-  void AddValidSplits(const std::vector<FragmentVector>& possible_splits);
+  void AddValidSplits(std::vector<FragmentVector>&& possible_splits);
 
   std::vector<FragmentVector> splits_;
 };

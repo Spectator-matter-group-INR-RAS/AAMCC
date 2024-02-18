@@ -45,6 +45,10 @@
 #include "MCiniWriter.hh"
 #include "DeexcitationHandler.hh"
 
+#include "FermiBreakUp/AAMCCFermiBreakUp.hh"
+#include "FermiBreakUp/lib/Configurations/FastFermiConfigurations.h"
+#include "FermiBreakUp/lib/FermiBreakUp.h"
+
 #include <fstream>
 
 
@@ -137,6 +141,8 @@ int main()
 
     //Setting up ExcitationHandler
     DeexcitationHandler handler;
+    auto fermi = std::make_unique<FermiBreakUp>(std::make_unique<FastFermiConfigurations>());
+    handler.SetFermiBreakUp(std::make_unique<AAMCCFermiBreakUp>(std::move(fermi)));
     handler.SetStableThreshold(1e-4 * MeV);
     handler.SetFermiBreakUpCondition([](const G4Fragment& fragment) {
       return fragment.GetA_asInt() < 19 && fragment.GetZ_asInt() < 9
@@ -447,8 +453,9 @@ int main()
         G4cout<<"----> Currently no event_initial_state passer is implemented";
     }
 
-    if(histoManager.GetReaderID())
+    if (histoManager.GetReaderID()) {
         inFile->Close();
+    }
     delete writer;
     delete InitReader;
     delete pMciniWriter;

@@ -68,7 +68,7 @@ bool NucleiPropertiesTable::VerifyNuclei(MassNumber mass_number, ChargeNumber ch
     throw std::runtime_error("Nucleon number smaller than Z");
   }
 
-  return GetIndex(mass_number, charge_number) != -1;
+  return GetIndex(mass_number, charge_number) != size_t(-1);
 }
 
 FermiFloat NucleiPropertiesTable::ElectronicBindingEnergy(ChargeNumber charge_number) {

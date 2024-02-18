@@ -36,11 +36,11 @@ IntegerPartition::Iterator IntegerPartition::Iterator::operator++(int) {
   return copy;
 }
 
-bool IntegerPartition::Iterator::operator==(IntegerPartition::Iterator& other) const {
+bool IntegerPartition::Iterator::operator==(const IntegerPartition::Iterator& other) const {
   return partition_ == other.partition_;
 }
 
-bool IntegerPartition::Iterator::operator!=(IntegerPartition::Iterator& other) const {
+bool IntegerPartition::Iterator::operator!=(const IntegerPartition::Iterator& other) const {
   return partition_ != other.partition_;
 }
 

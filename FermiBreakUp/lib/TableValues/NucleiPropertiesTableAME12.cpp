@@ -2,6 +2,8 @@
 // Created by Artem Novikov on 26.02.2023.
 //
 
+#include <cassert>
+
 #include <CLHEP/Units/PhysicalConstants.h>
 
 #include "NucleiPropertiesTableAME12.h"
@@ -94,7 +96,7 @@ bool NucleiPropertiesTableAME12::VerifyNuclei(MassNumber mass_number, ChargeNumb
     throw std::runtime_error("Nucleon number smaller than Z");
   }
 
-  return GetIndex(mass_number, charge_number) != -1;
+  return GetIndex(mass_number, charge_number) != size_t(-1);
 }
 
 FermiUInt NucleiPropertiesTableAME12::GetMaxMass() const {

@@ -59,3 +59,7 @@ std::optional<FragmentVector> FermiConfigurations::ChooseSplit() {
 
   throw std::runtime_error("No split chosen, something went wrong!");
 }
+
+std::unique_ptr<VFermiConfigurations> FermiConfigurations::Clone() const {
+  return std::make_unique<FermiConfigurations>(*this);
+}
