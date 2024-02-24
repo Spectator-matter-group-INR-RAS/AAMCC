@@ -15,6 +15,8 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "Pbpn"){sourceA = 208; sourceZ = 82; SysA = SysA_in;}
     else if(SysA_in == "Pbrw"){sourceA = 208; sourceZ = 82; SysA = SysA_in;}
     else if(SysA_in == "Pbpnrw"){sourceA = 208; sourceZ = 82; SysA = SysA_in;}
+    else if(SysA_in == "Bi"){sourceA = 209; sourceZ = 83; SysA = SysA_in;}
+    else if(SysA_in == "Bipn"){sourceA = 209; sourceZ = 83; SysA = SysA_in;}
     else if(SysA_in == "Cu"){sourceA = 64; sourceZ = 29; SysA = SysA_in; SysA+="2";}
     else if(SysA_in == "O"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "O2"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
@@ -49,6 +51,9 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     if(SysB_in == "Pb"){sourceAb = 208; sourceZb = 82; SysB = SysB_in; SysB+="*";}
     else if(SysB_in == "Pbpn"){sourceAb = 208; sourceZb = 82; SysB = SysB_in;}
     else if(SysB_in == "Pbrw"){sourceAb = 208; sourceZb = 82; SysB = SysB_in;}
+    else if(SysB_in == "Pbpnrw"){sourceAb = 208; sourceZb = 82; SysB = SysB_in;}
+    else if(SysB_in == "Bi"){sourceAb = 209; sourceZb = 83; SysB = SysB_in;}
+    else if(SysB_in == "Bipn"){sourceAb = 209; sourceZb = 83; SysB = SysB_in;}
     else if(SysB_in == "Pbpnrw"){sourceAb = 208; sourceZb = 82; SysB = SysB_in;}
     else if(SysB_in == "Cu"){sourceAb = 64; sourceZb = 29; SysB = SysB_in; SysB+="2";}
     else if(SysB_in == "O") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}

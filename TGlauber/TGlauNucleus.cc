@@ -168,6 +168,8 @@ void TGlauNucleus::Lookup(const char* name)
   else if (TString(name) == "PbHN")    {fN = 208; fR = 6.65;       fA = 0.460;  fW =  0;       fF = 1;  fZ=82;}
   else if (TString(name) == "Pbpn")    {fN = 208; fR = 6.68;       fA = 0.447;  fW =  0;       fF = 11; fZ=82; fR2=6.69; fA2=0.56; fW2=0;}
   else if (TString(name) == "Pbpnrw")  {fN = 208; fR = 6.68;       fA = 0.447;  fW =  0;       fF = 13; fZ=82; fR2=6.69; fA2=0.56; fW2=0;}
+  else if (TString(name) == "Bi")    {fN = 209; fR = 6.70;       fA = 0.449;  fW =  0;       fF = 1; fZ=83;}
+  else if (TString(name) == "Bipn")  {fN = 209; fR = 6.70;       fA = 0.449;  fW =  0;       fF = 13; fZ=83; fR2=6.71; fA2=0.560; fW2=0;}
   // Uranium description taken from Heinz & Kuhlman, nucl-th/0411054.  In this code, fR is defined as 6.8*0.91, fW=6.8*0.26
   else if (TString(name) == "U")       {fN = 238; fR = 6.188;      fA = 0.54;   fW =  1.77;    fF = 5;  fZ=92;}  
   else if (TString(name) == "U2")      {fN = 238; fR = 6.67;       fA = 0.44;   fW =  0;       fF = 8;  fZ=92; fBeta2=0.280; fBeta4=0.093;}

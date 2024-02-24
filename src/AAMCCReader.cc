@@ -48,7 +48,7 @@ void AAMCCReader::ReadFirstStage(AAMCCrun* runData, InitialConditions* InCond){
     // Initial inforomation is given by user
     std::cout << "######### Abrasion-Ablation model using Glauber Monte Carlo and Geant4" <<std::endl;
     while(!NucleusInputLabel){
-      std::cout << "Please enter colliding nucleus name (side A). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
+      std::cout << "Please enter colliding nucleus name (side A). U, U2, Bi, Bipn, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
       std::cin >> runData->SysA;
       NucleusInputLabel = InCond->SetSysA(runData->SysA);
       runData->AinitA = InCond->GetSourceA();
@@ -58,7 +58,7 @@ void AAMCCReader::ReadFirstStage(AAMCCrun* runData, InitialConditions* InCond){
     NucleusInputLabel = 0;
 
     while(!NucleusInputLabel){
-      std::cout << "Please enter colliding nucleus name (side B). U, U2, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
+      std::cout << "Please enter colliding nucleus name (side B). U, U2, Bi, Bipn, Pb, Pbrw, Pbpn, Pbpnrw, Au, Aurw, Au2, Au2rw, Xe, Ag, Br, Cu, Ca2 (with SRC), Ar, Al, O, O2 (with SRC), Oho (for HO param.), C, He4, He3, H3, d, p is available : ";
       std::cin >> runData->SysB;
       NucleusInputLabel = InCond->SetSysB(runData->SysB);
       runData->AinitB = InCond->GetSourceAb();
