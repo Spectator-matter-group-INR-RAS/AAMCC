@@ -149,6 +149,8 @@ void TGlauNucleus::Lookup(const char* name)
   else if (TString(name) == "CuHN")    {fN = 63;  fR = 4.28;       fA = 0.5;    fW =  0;       fF = 1;  fZ=29;} // from arXiv:0904.4080v1
   else if (TString(name) == "Br")      {fN = 79;  fR = 4.1629;     fA = 0.56;   fW =  0;       fF = 1;  fZ=35;} // from the ceiling
   else if (TString(name) == "Ag")      {fN = 109; fR = 4.5638;     fA = 0.53;   fW =  0;       fF = 1;  fZ=47;} // from the ceiling
+  else if (TString(name) == "Xe124")   {fN = 124; fR = 5.6114;     fA = 0.575;  fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
+  else if (TString(name) == "Xe130")   {fN = 130; fR = 5.6412;     fA = 0.575;  fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
   else if (TString(name) == "Xe")      {fN = 129; fR = 5.36;       fA = 0.59;   fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
   else if (TString(name) == "Xes")     {fN = 129; fR = 5.42;       fA = 0.57;   fW =  0;       fF = 1;  fZ=54;} // scale from Sb (Antimony, A=122, r=5.32) by 1.019 = (129/122)**0.333
   else if (TString(name) == "Xe2")     {fN = 129; fR = 5.36;       fA = 0.59;   fW =  0;       fF = 8;  fZ=54; fBeta2=0.161; fBeta4=-0.003;} // adapted from arXiv:1703.04278 and Z. Physik (1974) 270: 113
