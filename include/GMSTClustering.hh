@@ -15,39 +15,40 @@
 #include "G4Fragment.hh"
 #include "G4ReactionProductVector.hh"
 #include "G4FermiPhaseSpaceDecay.hh"
+
 using namespace std;
 
-// Creating shortcut for an integer pair 
+// Creating shortcut for an integer pair
 typedef  pair<G4int, G4int> iPair;
 
-// Structure to represent a graph 
+// Structure to represent a graph
 struct Graph
 {
 	// Vert and edges
     G4int V, E;
     vector< pair<G4double, iPair> > edges;
 
-    // Pointer to an array containing adjacency lists 
+    // Pointer to an array containing adjacency lists
     list<G4int>* adj;
 
-    // Constructors 
+    // Constructors
     Graph(G4int V, G4int E);
     Graph();
 
     // Destructor
 	~Graph();
 
-    // Utility function to add an edge 
+    // Utility function to add an edge
     void addEdge(G4int u, G4int v, G4double w);
     void DFSUtil(G4int v, G4bool visited[], vector < G4int > *clust_inside);
     // method to add a connection
     void addConn(G4int v, G4int w);
-	// Method to print connected components in an 
+	// Method to print connected components in an
 	// undirected graph
     vector< vector <G4int> > connectedComponents();
 
-    // Function to find MST using Kruskal's 
-    // MST algorithm 
+    // Function to find MST using Kruskal's
+    // MST algorithm
     vector< vector <G4int> > AdvancedKruskalMST(G4double CD_in);
 };
 
@@ -63,21 +64,21 @@ struct DisjointSets
     // Destructor
     ~DisjointSets();
 
-    // Find the parent of a node 'u' 
-    // Path Compression 
+    // Find the parent of a node 'u'
+    // Path Compression
     G4int find(G4int u);
 
-    // Union by rank 
+    // Union by rank
     void merge(G4int x, G4int y);
 };
 
 class GMSTCluster{
 
-	public: 
+	public:
 	GMSTCluster(G4int Z_in, G4int A_in);
 	~GMSTCluster();
 
-	public: 
+	public:
 	inline G4int GetZ() {return Z;};
 	inline G4int GetA() {return A;};
 	inline void SetZ(G4int Z_in) {Z = Z_in;}
@@ -85,7 +86,7 @@ class GMSTCluster{
 	inline void PushBackCoordinateVector(TVector3 vec_in) {coord.push_back(vec_in);}
         inline std::vector<TVector3> GetCoordinates() {return coord;}
 
-	private: 
+	private:
 	G4int Z;
 	G4int A;
 	std::vector<TVector3> coord;
@@ -111,7 +112,7 @@ class GMSTClustering{
 
 	private:
 
-    std::vector<G4FragmentVector> CalculateMomentum(std::vector<G4FragmentVector> noMomClusters, G4double ExEnA, G4double ExEnB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB);
+    std::vector<G4FragmentVector> CalculateMomentum(std::vector<G4FragmentVector> noMomClusters, G4double ExEnA, G4double ExEnB, CLHEP::Hep3Vector boostA, CLHEP::Hep3Vector boostB, aamcc::NucleonVector rnucsA, aamcc::NucleonVector rnucsB, std::vector<int> rmapsA, std::vector<int> rmapsB);
 
     G4double CritDistA;
     G4double CritDist;
@@ -128,6 +129,11 @@ class GMSTClustering{
 
     G4double SpecAa = 0;
     G4double SpecAb = 0;
+
+    G4double a_opt = 2.243;
+    G4double b_opt = 3.183 * MeV;
+    G4double c_opt = 0.99;
+    G4double d_opt = 0.29041;
 
 };
 
