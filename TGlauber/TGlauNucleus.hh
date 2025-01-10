@@ -65,7 +65,7 @@ class TGlauNucleus : public TNamed
     Double_t   fYRot;                //!Angle around Y axis for nucleus
     Double_t   fZRot;                //!Angle around Z axis for nucleus
     Double_t   fNucArr[6000][20][3]; //!Array of events (max 6000), up to 20 nucleons (only for small nuclei), 3 coordinates
-    Double_t   fNucArrAlv[16000][40][4]; //!Array of events (max 16000), up to 40 nucleons (only for small nuclei), 3 coordinates + isospin
+    Double_t   fNucArrAlv[160000][40][4]; //!Array of events (max 160000), up to 40 nucleons (only for small nuclei), 3 coordinates + isospin
     Int_t      fNucCounter;          //!Event counter
     TBits     *fIsUsed;              //!Bits for lattice use  
     Double_t   fMaxR;                //!maximum radius (15fm)

@@ -494,7 +494,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
       while (myfile) {
         //if (inputcounter > 5999) break;
           if (fNucCounter > 9999 && (tmpname=="O2" || tmpname=="Ca2") ) {break;}
-          else if(fNucCounter > 4999 && tmpname=="Oth") {break;}
+          else if(fNucCounter > 99999 && tmpname=="Oth") {break;}
           else if(fNucCounter > 5999) {break;}
         Double_t foo;
   if (fN == 3) {
