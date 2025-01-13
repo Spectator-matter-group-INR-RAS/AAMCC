@@ -176,7 +176,8 @@ int main()
 
     if(histoManager.GetStatType()> 2){
         //Parameters for ALADIN parametrization
-        G4double e_0=11.5*MeV;//was 8.13 MeV
+        G4double e_0=11.5*MeV;//was 11.5 MeV
+        G4double e_light = 4*MeV; //was 8 MeV
         G4double sigma0 = 0.005; //was 0.01
         G4double b0 = 2; // From Bondorf 1995
         G4double sigmaE0 = 1*MeV;
@@ -184,7 +185,9 @@ int main()
         G4double Pe = 24*MeV;
         G4double Pm = 0.2;
         ExEnA->SetParametersALADIN(e_0, sigma0, b0);
+            if(sourceA < 20)  ExEnA->SetParametersALADIN(e_light, sigma0, b0);
         ExEnB->SetParametersALADIN(e_0, sigma0, b0);
+            if(sourceAb < 20) ExEnB->SetParametersALADIN(e_light, sigma0, b0);
         ExEnA->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
         ExEnB->SetParametersParabolicApproximation(Pe, Pm, sigma0, c0, 0.01);
         //ExEnA->SetParametersCorrectedALADIN(0.01,1000,sigma0,c0,0);
