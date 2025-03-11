@@ -21,6 +21,9 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "O"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "O2"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Oth"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
+    else if(SysA_in == "Oth30"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
+    else if(SysA_in == "Onleft"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
+    else if(SysA_in == "Opgcm"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Oho"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Au"){sourceA = 197; sourceZ = 79; SysA = SysA_in;}
     else if(SysA_in == "Aurw"){sourceA = 197; sourceZ = 79; SysA = SysA_in;}
@@ -63,6 +66,9 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     else if(SysB_in == "O") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "O2") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Oth") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
+    else if(SysB_in == "Oth30") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
+    else if(SysB_in == "Onleft") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
+    else if(SysB_in == "Opgcm") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Oho") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Au"){sourceAb = 197; sourceZb = 79; SysB = SysB_in;}
     else if(SysB_in == "Aurw"){sourceAb = 197; sourceZb = 79; SysB = SysB_in;}
