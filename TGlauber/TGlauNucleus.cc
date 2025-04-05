@@ -138,6 +138,7 @@ void TGlauNucleus::Lookup(const char* name)
   else if (TString(name) == "Opgcm")   {fN = 16;  fR = 2.608;      fA = 0.513;  fW = -0.051;   fF = 6;  fZ=8;} // read configurations from file
   else if (TString(name) == "Opar")    {fN = 16;  fR = 2.608;      fA = 0.513;  fW = -0.051;   fF = 1;  fZ=8;} // WS parameterization
   else if (TString(name) == "Oho")     {fN = 16;  fR = 1.833;      fA = 1.544;  fW =  0;       fF = 15; fZ=8;} // Harmonic oscillator parameterization
+  else if (TString(name) == "Ne")      {fN = 20;  fR = 2.396;      fA = 0.592;  fW =  0;       fF = 8;  fZ=10; fBeta2=0.46; fBeta4=0.27;} // WS parameterization
   else if (TString(name) == "Al")      {fN = 27;  fR = 3.34;       fA = 0.580;  fW = 0.0;      fF = 8;  fZ=13; fBeta2=-0.448; fBeta4=0.239;}
   else if (TString(name) == "Si")      {fN = 28;  fR = 3.34;       fA = 0.580;  fW = -0.233;   fF = 1;  fZ=14;}
   else if (TString(name) == "Si2")     {fN = 28;  fR = 3.34;       fA = 0.580;  fW =  0;       fF = 8;  fZ=14; fBeta2=-0.478; fBeta4=0.250;}
