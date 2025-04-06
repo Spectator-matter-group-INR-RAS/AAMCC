@@ -26,6 +26,7 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "Opgcm"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Oho"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Ne"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
+    else if(SysA_in == "Necl"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Au"){sourceA = 197; sourceZ = 79; SysA = SysA_in;}
     else if(SysA_in == "Aurw"){sourceA = 197; sourceZ = 79; SysA = SysA_in;}
     else if(SysA_in == "Au2"){sourceA = 197; sourceZ = 79; SysA = SysA_in;}
@@ -72,6 +73,7 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     else if(SysB_in == "Opgcm") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Oho") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Ne") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
+    else if(SysB_in == "Necl") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Au"){sourceAb = 197; sourceZb = 79; SysB = SysB_in;}
     else if(SysB_in == "Aurw"){sourceAb = 197; sourceZb = 79; SysB = SysB_in;}
     else if(SysB_in == "Au2"){sourceAb = 197; sourceZb = 79; SysB = SysB_in;}
@@ -107,6 +109,7 @@ G4bool InitialConditions::SetSysA(G4double A_in, G4double Z_in) {
     else if(A_in == 124 && Z_in == 54){SysA = "Xe124";}
     else if(A_in == 130 && Z_in == 54){SysA = "Xe130";}
     else if(A_in == 184 && Z_in == 74){SysA = "W";}
+    else if(A_in == 63 && Z_in == 29){SysA = "Cu";}
     else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
         return 0;
     }
@@ -119,6 +122,7 @@ G4bool InitialConditions::SetSysB(G4double A_in, G4double Z_in) {
     else if(A_in == 124 && Z_in == 54){SysB = "Xe124";}
     else if(A_in == 130 && Z_in == 54){SysB = "Xe130";}
     else if(A_in == 184 && Z_in == 74){SysB = "W";}
+    else if(A_in == 63 && Z_in == 29){SysB = "Cu";}
     else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
         return 0;
     }
