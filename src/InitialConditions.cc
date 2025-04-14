@@ -110,6 +110,9 @@ G4bool InitialConditions::SetSysA(G4double A_in, G4double Z_in) {
     else if(A_in == 130 && Z_in == 54){SysA = "Xe130";}
     else if(A_in == 184 && Z_in == 74){SysA = "W";}
     else if(A_in == 63 && Z_in == 29){SysA = "Cu";}
+    else if(A_in == 124 && Z_in == 50){SysA = "Sn124";}
+    else if(A_in == 124 && Z_in == 57){SysA = "La124";}
+    else if(A_in == 107 && Z_in == 50){SysA = "Sn107";}
     else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
         return 0;
     }
@@ -123,6 +126,9 @@ G4bool InitialConditions::SetSysB(G4double A_in, G4double Z_in) {
     else if(A_in == 130 && Z_in == 54){SysB = "Xe130";}
     else if(A_in == 184 && Z_in == 74){SysB = "W";}
     else if(A_in == 63 && Z_in == 29){SysB = "Cu";}
+    else if(A_in == 124 && Z_in == 50){SysB = "Sn124";}
+    else if(A_in == 124 && Z_in == 57){SysB = "La124";}
+    else if(A_in == 107 && Z_in == 50){SysB = "Sn107";}
     else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
         return 0;
     }
