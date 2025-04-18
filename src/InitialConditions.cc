@@ -121,8 +121,9 @@ G4bool InitialConditions::SetSysA(G4double A_in, G4double Z_in) {
     else if(A_in == 124 && Z_in == 50){SysA = "Sn124";}
     else if(A_in == 124 && Z_in == 57){SysA = "La124";}
     else if(A_in == 107 && Z_in == 50){SysA = "Sn107";}
-    else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
-        return 0;
+    else{ G4Exception("NuclPzAeus input in AAMCC, using default name", "AAMCC-0", JustWarning, "There is no matched nucleus in AAMCC");
+    	SysA = "A"+std::to_string(A_in)+"Z"+std::to_string(Z_in);
+        return 1;
     }
     return 1;
 }
@@ -137,8 +138,9 @@ G4bool InitialConditions::SetSysB(G4double A_in, G4double Z_in) {
     else if(A_in == 124 && Z_in == 50){SysB = "Sn124";}
     else if(A_in == 124 && Z_in == 57){SysB = "La124";}
     else if(A_in == 107 && Z_in == 50){SysB = "Sn107";}
-    else{ G4Exception("NuclPzAeus input in GRATE", "GRATE-0", JustWarning, "There is no matched nucleus in GRATE");
-        return 0;
+    else{ G4Exception("NuclPzAeus input in AAMCC, using default name", "AAMCC-0", JustWarning, "There is no matched nucleus in AAMCC");
+    	SysB = "A"+std::to_string(A_in)+"Z"+std::to_string(Z_in);
+        return 1;
     }
     return 1;
 }
