@@ -485,7 +485,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
         filepath += "o16_alv.dat";
         //sprintf(filename,"../TGlauber/o16_alv.dat");
       } else if (tmpname=="Oth") {
-        filepath += "oxygen_tetrahedral_ho.dat";
+        filepath += "oxygen_tetrahedral.dat";
         //sprintf(filename,"../TGlauber/o16_alv.dat");
       } else if (tmpname=="Oth30") {
         filepath += "oxygen_tetrahedral_mixed_3_ho.dat";
