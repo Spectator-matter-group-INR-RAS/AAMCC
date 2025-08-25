@@ -20,6 +20,7 @@ void AAMCCReader::ReadFirstStage(AAMCCrun* runData, InitialConditions* InCond){
       {
         std::cout<<"Please enter the full path to the file" <<std::endl;
         std::cin >> inputFileName;
+        runData->CritDist=1.8;//for urqmd
         *runData = getTheRunData(inputFileName);
         InCond->SetConditions(*runData);
         runData->SysA = InCond->GetSysA();
