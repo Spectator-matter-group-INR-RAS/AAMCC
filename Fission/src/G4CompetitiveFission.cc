@@ -58,7 +58,7 @@ G4CompetitiveFission::G4CompetitiveFission() : G4VEvaporationChannel("fission")
   FissionBarrier = 0.0;
   FissionProbability = 0.0;
   LevelDensityParameter = 0.0;
-  FissionSuppression = 1e-9;
+  FissionSuppression = 0.2;
   pairingCorrection = G4NuclearLevelData::GetInstance()->GetPairingCorrection();
 }
 
