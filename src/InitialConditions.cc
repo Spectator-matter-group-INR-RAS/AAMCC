@@ -38,13 +38,19 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "Ag"){sourceA = 109; sourceZ = 47; SysA = SysA_in;}
     else if(SysA_in == "Br"){sourceA = 79; sourceZ = 35; SysA = SysA_in;}
     else if(SysA_in == "Xe124"){sourceA = 124; sourceZ = 54; SysA = SysA_in;}
+    else if(SysA_in == "Xe124d"){sourceA = 124; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "Xe130"){sourceA = 130; sourceZ = 54; SysA = SysA_in;}
+    else if(SysA_in == "Xe136pn"){sourceA = 136; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "Xe"){sourceA = 129; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "W"){sourceA = 186; sourceZ = 74; SysA = SysA_in;}
     else if(SysA_in == "Ar"){sourceA = 40; sourceZ = 18; SysA = SysA_in;}
+    else if(SysA_in == "Ca"){sourceA = 40; sourceZ = 20; SysA = SysA_in;}
     else if(SysA_in == "Ca2"){sourceA = 40; sourceZ = 20; SysA = SysA_in;}
     //else if(SysA_in == "Ni"){sourceA = 58; sourceZ = 28; SysA = SysA_in;} //issue on GlauberMC side
     else if(SysA_in == "C"){sourceA = 12; sourceZ = 6; SysA = SysA_in;}
+    else if(SysA_in == "Cho"){sourceA = 12; sourceZ = 6; SysA = SysA_in;}
+    else if(SysA_in == "C2"){sourceA = 12; sourceZ = 6; SysA = SysA_in;}
+    else if(SysA_in == "Ctr"){sourceA = 12; sourceZ = 6; SysA = SysA_in;}
     else if(SysA_in == "Al"){sourceA = 27; sourceZ = 13; SysA = SysA_in;}
     else if(SysA_in == "U"){sourceA = 238; sourceZ = 92; SysA = SysA_in;}
     else if(SysA_in == "U2"){sourceA = 238; sourceZ = 92; SysA = SysA_in;}
@@ -89,13 +95,19 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     else if(SysB_in == "Ag"){sourceAb = 109; sourceZb = 47; SysB = SysB_in;}
     else if(SysB_in == "Br"){sourceAb = 79; sourceZb = 35; SysB = SysB_in;}
     else if(SysB_in == "Xe124"){sourceAb = 124; sourceZb = 54; SysB = SysB_in;}
+    else if(SysB_in == "Xe124d"){sourceAb = 124; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "Xe130"){sourceAb = 130; sourceZb = 54; SysB = SysB_in;}
+    else if(SysB_in == "Xe136pn"){sourceAb = 136; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "Xe"){sourceAb = 129; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "W"){sourceAb = 186; sourceZb = 74; SysB = SysB_in;}
     else if(SysB_in == "Ar"){sourceAb = 40; sourceZb = 18; SysB = SysB_in;}
+    else if(SysB_in == "Ca") {sourceAb = 40; sourceZb = 20; SysB = SysB_in;}
     else if(SysB_in == "Ca2") {sourceAb = 40; sourceZb = 20; SysB = SysB_in;}
     //else if(SysB_in == "Ni") {sourceAb = 58; sourceZb = 28; SysB = SysB_in;} //issue on GlauberMC side
     else if(SysB_in == "C") {sourceAb = 12; sourceZb = 6; SysB = SysB_in;}
+    else if(SysB_in == "Cho") {sourceAb = 12; sourceZb = 6; SysB = SysB_in;}
+    else if(SysB_in == "C2") {sourceAb = 12; sourceZb = 6; SysB = SysB_in;}
+    else if(SysB_in == "Ctr") {sourceAb = 12; sourceZb = 6; SysB = SysB_in;}
     else if(SysB_in == "Al"){sourceAb = 27; sourceZb = 13; SysB = SysB_in;}
     else if(SysB_in == "U") {sourceAb = 238; sourceZb = 92; SysB = SysB_in;}
     else if(SysB_in == "U2"){sourceAb = 238; sourceZb = 92; SysB = SysB_in;}
