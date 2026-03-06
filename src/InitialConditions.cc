@@ -26,6 +26,7 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "Opgcm"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Oho"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Ne"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
+    else if(SysA_in == "Nes"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Ne22"){sourceA = 22; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Necl"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Ne22cl"){sourceA = 22; sourceZ = 10; SysA = SysA_in;}
@@ -83,6 +84,7 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     else if(SysB_in == "Opgcm") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Oho") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Ne") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
+    else if(SysB_in == "Nes") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Ne22") {sourceAb = 22; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Necl") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Ne22cl"){sourceAb = 22; sourceZb = 10; SysB = SysB_in;}

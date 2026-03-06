@@ -105,6 +105,8 @@ struct AAMCCrun{
     G4bool InFileOrNot = false;
 
     G4bool isQMD = false;
+
+    G4bool isIniCond = false;
 };
 
 //#endif

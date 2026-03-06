@@ -20,26 +20,96 @@ private:
     std::shared_ptr<TTree> tRun;
     std::shared_ptr<TTree> tClusters;
     std::shared_ptr<TTree> tFermiMom;
+    std::shared_ptr<TTree> tIniState;
     TH1D* histo[20];
     TH2D*  histo2[10];
     bool callflag = true;
     AAMCCEvent event;
     AAMCCrun runData;
+    aamcc::IniState iniState;
 
     void InitTrees(){
         std::shared_ptr<TTree> glau (new TTree("Glauber","Events from glauber modeling"));
         std::shared_ptr<TTree> clust (new TTree("MST-Clusters","TTree to store clusters"));
         std::shared_ptr<TTree> fm(new TTree("FermiMomentum", "Fermi momentum"));
+        std::shared_ptr<TTree> ini(new TTree("InitialState", "Initial State"));
 
-        tGlauber = glau; tClusters = clust; tFermiMom = fm;
+        tGlauber = glau; tClusters = clust; tFermiMom = fm; tIniState = ini;
 
         tGlauber->SetDirectory(0);
         tClusters->SetDirectory(0);
         tFermiMom->SetDirectory(0);
+        tIniState->SetDirectory(0);
 
         tGlauber->Branch("id", &event.id, "id/i");
-        tGlauber->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
-        tGlauber->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
+        tGlauber->Branch("A_on_A", "std::vector", &event.MassOnSideA, 128000, 1);
+        tGlauber->Branch("A_on_B", "std::vector", &event.MassOnSideB, 128000, 1);
+        tGlauber->Branch("Z_on_A", "std::vector", &event.ChargeOnSideA, 128000, 1);
+        tGlauber->Branch("Z_on_B", "std::vector", &event.ChargeOnSideB, 128000, 1);
+        tGlauber->Branch("Nhard", &event.Nhard, "Nhard/I");
+        tGlauber->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
+        tGlauber->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
+        tGlauber->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
+        tGlauber->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
+        tGlauber->Branch("Npart", &event.Npart, "Npart/I");
+        tGlauber->Branch("NpartA", &event.NpartA, "NpartA/I");
+        tGlauber->Branch("NpartB", &event.NpartB, "NpartB/I");
+        tGlauber->Branch("pseudorapidity_on_A", "std::vector", &event.pseudorapidity_A, 128000, 1);
+        tGlauber->Branch("pseudorapidity_on_B", "std::vector", &event.pseudorapidity_B, 128000, 1);
+        tGlauber->Branch("pX_on_A", "std::vector", &event.pXonSideA, 128000, 1);
+        tGlauber->Branch("pY_on_A", "std::vector", &event.pYonSideA, 128000, 1);
+        tGlauber->Branch("pZ_on_A", "std::vector", &event.pZonSideA, 128000, 1);
+        tGlauber->Branch("pX_on_B", "std::vector", &event.pXonSideB, 128000, 1);
+        tGlauber->Branch("pY_on_B", "std::vector", &event.pYonSideB, 128000, 1);
+        tGlauber->Branch("pZ_on_B", "std::vector", &event.pZonSideB, 128000, 1);
+        tGlauber->Branch("impact_parameter", &event.b, "impact_parameter/f");
+        tGlauber->Branch("Ex_En_per_nucleon", &event.ExEnA, "Ex_En_per_nucleon/f");
+
+        tClusters->Branch("Aa_cl", "std::vector", &event.A_cl, 128000, 1);
+        tClusters->Branch("Za_cl", "std::vector", &event.Z_cl, 128000, 1);
+        tClusters->Branch("d", &event.d_MstA, "d/d");
+        tClusters->Branch("Clust_num_a", &event.ClustNumA, "Clust_num/I");
+        tClusters->Branch("Ab_cl", "std::vector", &event.Ab_cl, 128000, 1);
+        tClusters->Branch("Zb_cl", "std::vector", &event.Zb_cl, 128000, 1);
+        tClusters->Branch("d_b", &event.d_MstB, "d/d");
+        tClusters->Branch("Clust_num_b", &event.ClustNumB, "Clust_num_b/I");
+
+        tClusters->Branch("Aa_cl", "std::vector", &event.A_cl, 128000, 1);
+        tClusters->Branch("Za_cl", "std::vector", &event.Z_cl, 128000, 1);
+        tClusters->Branch("d", &event.d_MstA, "d/d");
+        tClusters->Branch("Clust_num_a", &event.ClustNumA, "Clust_num/I");
+        tClusters->Branch("Ab_cl", "std::vector", &event.Ab_cl, 128000, 1);
+        tClusters->Branch("Zb_cl", "std::vector", &event.Zb_cl, 128000, 1);
+        tClusters->Branch("d_b", &event.d_MstB, "d/d");
+        tClusters->Branch("Clust_num_b", &event.ClustNumB, "Clust_num_b/I");
+
+        tIniState->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
+        tIniState->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
+        tIniState->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
+        tIniState->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
+        tIniState->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
+
+        tIniState->Branch("ini_x_on_A", "std::vector", &iniState.xOnA, 128000, 1);
+        tIniState->Branch("ini_y_on_A", "std::vector", &iniState.yOnA, 128000, 1);
+        tIniState->Branch("ini_z_on_A", "std::vector", &iniState.zOnA, 128000, 1);
+        tIniState->Branch("ini_is_participant_A", "std::vector", &iniState.isPartA, 128000, 1);
+        tIniState->Branch("ini_isospin_A", "std::vector", &iniState.isoA, 128000, 1);
+        tIniState->Branch("ini_x_on_B", "std::vector", &iniState.xOnB, 128000, 1);
+        tIniState->Branch("ini_y_on_B", "std::vector", &iniState.yOnB, 128000, 1);
+        tIniState->Branch("ini_z_on_B", "std::vector", &iniState.zOnB, 128000, 1);
+        tIniState->Branch("ini_is_participant_B", "std::vector", &iniState.isPartB, 128000, 1);
+        tIniState->Branch("ini_isospin_B", "std::vector", &iniState.isoB, 128000, 1);
+
+        tFermiMom->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
+        tFermiMom->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
+        tFermiMom->Branch("Fermi_momentum_z_side_A", &event.FermiMomA_z, "Fermi_momentumA_y/d");
+        tFermiMom->Branch("Fermi_momentum_x_side_B", &event.FermiMomB_x, "Fermi_momentumB_x/d");
+        tFermiMom->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
+        tFermiMom->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
+        /*
+        tGlauber->Branch("id", &event.id, "id/i");
+        tGlauber->Branch("A_on_A", "std::vector" ,&event.MassOnSideA, 1);
+        tGlauber->Branch("A_on_B", "std::vector" ,&event.MassOnSideB, 1);
         tGlauber->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
         tGlauber->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
         tGlauber->Branch("Nhard", &event.Nhard, "Nhard/I");
@@ -59,53 +129,66 @@ private:
         tGlauber->Branch("pY_on_B", "std::vector" ,&event.pYonSideB,128000,1);
         tGlauber->Branch("pZ_on_B", "std::vector" ,&event.pZonSideB,128000,1);
         tGlauber->Branch("impact_parameter", &event.b, "impact_parameter/f");
-        tGlauber->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
-        tGlauber->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
-        tGlauber->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
-        tGlauber->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
-        tGlauber->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
-        tGlauber->Branch("id", &event.id, "id/i");
-        tGlauber->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
-        tGlauber->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
-        tGlauber->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
-        tGlauber->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
-        tGlauber->Branch("Nhard", &event.Nhard, "Nhard/I");
-        tGlauber->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
-        tGlauber->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
-        tGlauber->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
-        tGlauber->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
-        tGlauber->Branch("Npart", &event.Npart, "Npart/I");
-        tGlauber->Branch("NpartA", &event.NpartA, "NpartA/I");
-        tGlauber->Branch("NpartB", &event.NpartB, "NpartB/I");
-
-        tClusters->Branch("Aa_cl", "std::vector" ,&event.A_cl);
-        tClusters->Branch("Za_cl", "std::vector" ,&event.Z_cl);
-        tClusters->Branch("d", &event.d_MstA ,"d/d");
-        tClusters->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
-        tClusters->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
-        tClusters->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
-        tClusters->Branch("d_b", &event.d_MstB ,"d/d");
-        tClusters->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
-
-        tClusters->Branch("Aa_cl", "std::vector" ,&event.A_cl);
-        tClusters->Branch("Za_cl", "std::vector" ,&event.Z_cl);
-        tClusters->Branch("d", &event.d_MstA ,"d/d");
-        tClusters->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
-        tClusters->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
-        tClusters->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
-        tClusters->Branch("d_b", &event.d_MstB ,"d/d");
-        tClusters->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
-
-
-        tGlauber->Branch("impact_parameter", &event.b, "impact_parameter/f");
-
-        tGlauber->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
-        tGlauber->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
-        tGlauber->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
-        tGlauber->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
-        tGlauber->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
-
         tGlauber->Branch("Ex_En_per_nucleon", &event.ExEnA, "Ex_En_per_nucleon/f");
+        
+        //tGlauber->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
+        //tGlauber->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
+        //tGlauber->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
+        //tGlauber->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
+        //tGlauber->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
+        //tGlauber->Branch("id", &event.id, "id/i");
+        //tGlauber->Branch("A_on_A", "std::vector" ,&event.MassOnSideA);
+        //tGlauber->Branch("A_on_B", "std::vector" ,&event.MassOnSideB);
+        //tGlauber->Branch("Z_on_A", "std::vector" ,&event.ChargeOnSideA);
+        //tGlauber->Branch("Z_on_B", "std::vector" ,&event.ChargeOnSideB);
+        //tGlauber->Branch("Nhard", &event.Nhard, "Nhard/I");
+        //tGlauber->Branch("Ncoll", &event.Ncoll, "Ncoll/I");
+        //tGlauber->Branch("Ncollpp", &event.Ncollpp, "Ncollpp/I");
+        //tGlauber->Branch("Ncollpn", &event.Ncollpn, "Ncollpn/I");
+        //tGlauber->Branch("Ncollnn", &event.Ncollnn, "Ncollnn/I");
+        //tGlauber->Branch("Npart", &event.Npart, "Npart/I");
+        //tGlauber->Branch("NpartA", &event.NpartA, "NpartA/I");
+        //tGlauber->Branch("NpartB", &event.NpartB, "NpartB/I");
+        //tGlauber->Branch("impact_parameter", &event.b, "impact_parameter/f");
+
+        tClusters->Branch("Aa_cl", "std::vector" ,&event.A_cl);
+        tClusters->Branch("Za_cl", "std::vector" ,&event.Z_cl);
+        tClusters->Branch("d", &event.d_MstA ,"d/d");
+        tClusters->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
+        tClusters->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
+        tClusters->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
+        tClusters->Branch("d_b", &event.d_MstB ,"d/d");
+        tClusters->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
+
+        //tClusters->Branch("Aa_cl", "std::vector" ,&event.A_cl);
+        //tClusters->Branch("Za_cl", "std::vector" ,&event.Z_cl);
+        //tClusters->Branch("d", &event.d_MstA ,"d/d");
+        //tClusters->Branch("Clust_num_a", &event.ClustNumA ,"Clust_num/I");
+        //tClusters->Branch("Ab_cl", "std::vector" ,&event.Ab_cl);
+        //tClusters->Branch("Zb_cl", "std::vector" ,&event.Zb_cl);
+        //tClusters->Branch("d_b", &event.d_MstB ,"d/d");
+        //tClusters->Branch("Clust_num_b", &event.ClustNumB ,"Clust_num_b/I");
+
+
+        tIniState->Branch("PhiRotA", &event.PhiRotA, "PhiRotA/f");
+        tIniState->Branch("ThetaRotA", &event.ThetaRotA, "ThetaRotA/f");
+        tIniState->Branch("PhiRotB", &event.PhiRotB, "PhiRotB/f");
+        tIniState->Branch("ThetaRotB", &event.ThetaRotB, "ThetaRotB/f");
+        tIniState->Branch("Ecc", &event.Ecc, "Ecc[10]/f");
+
+
+        tIniState->Branch("ini_x_on_A","std::vector", &iniState.xOnA);
+        tIniState->Branch("ini_y_on_A","std::vector", &iniState.yOnA);
+        tIniState->Branch("ini_z_on_A","std::vector", &iniState.zOnA);
+        tIniState->Branch("ini_is_participant_A", "std::vector", &iniState.isPartA);
+        tIniState->Branch("ini_isospin_A","std::vector",&iniState.isoA);
+        tIniState->Branch("ini_x_on_B","std::vector", &iniState.xOnB);
+        tIniState->Branch("ini_y_on_B","std::vector", &iniState.yOnB);
+        tIniState->Branch("ini_z_on_B","std::vector", &iniState.zOnB);
+        tIniState->Branch("ini_is_participant_B", "std::vector", &iniState.isPartB);
+        tIniState->Branch("ini_isospin_B","std::vector",&iniState.isoB);
+
+
 
         tFermiMom->Branch("Fermi_momentum_x_side_A", &event.FermiMomA_x, "Fermi_momentumA_x/d");
         tFermiMom->Branch("Fermi_momentum_y_side_A", &event.FermiMomA_y, "Fermi_momentumA_y/d");
@@ -114,6 +197,11 @@ private:
         tFermiMom->Branch("Fermi_momentum_y_side_B", &event.FermiMomB_y, "Fermi_momentumB_y/d");
         tFermiMom->Branch("Fermi_momentum_z_side_B", &event.FermiMomB_z, "Fermi_momentumB_y/d");
 
+        tGlauber->SetBasketSize("*", 128000); 
+        tClusters->SetBasketSize("*", 128000);
+        tFermiMom->SetBasketSize("*", 128000);
+        tIniState->SetBasketSize("*", 128000);
+        */
     }
 
     void InitRunTree(){
@@ -161,11 +249,16 @@ private:
         histo[11] = new TH1D("Proton distribution B", ";R;entries", Num_ent, 0, Rmax);
     }
 
-    void FillTrees(AAMCCEvent ev){
+    void FillTrees(AAMCCEvent ev, aamcc::IniState _iniState){
         event = ev;
+        iniState = _iniState;
         tGlauber->Fill();
         tClusters->Fill();
         tFermiMom->Fill();
+        
+        if(runData.isIniCond){
+            tIniState->Fill();
+        }
         //tRun->Fill(); //should be activated after reslisation of InitRunTree();
     }
 
@@ -173,7 +266,6 @@ private:
         runData = run;
         tRun->Fill();
     }
-
     void FillHisto(AAMCCEvent ev, aamcc::NucleonVector nucleons){
         //needs a realisation
     }

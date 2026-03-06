@@ -8,6 +8,23 @@
 #define NUCLEON_HH
 
 namespace aamcc {
+
+    struct IniState
+    {
+        std::vector<double> xOnA;
+        std::vector<double> yOnA;
+        std::vector<double> zOnA;
+        std::vector<bool>   isPartA;
+        std::vector<bool>   isoA;
+
+        std::vector<double> xOnB;
+        std::vector<double> yOnB;
+        std::vector<double> zOnB;
+        std::vector<bool>   isPartB;
+        std::vector<bool>   isoB;
+    };
+    
+
     class Nucleon {
     public:
         Nucleon();
@@ -41,6 +58,8 @@ namespace aamcc {
         int GetTotZ(std::string Nucl);
 
         NucleonVector *GetNucleons(std::string side);
+
+        IniState *GetIniState();
     };
 
    inline int IsotopeToPDG(int Z, int A){

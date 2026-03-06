@@ -11,17 +11,22 @@ AAMCCWriter::~AAMCCWriter() {
     else {fileName = runData.fileName;}
     std::string  fileType = "root";
     std::string fileFullName = fileName+"."+fileType;
-    std::unique_ptr<TFile> file( TFile::Open(fileFullName.c_str(), "RECREATE", fileName.c_str(), 9) );
+    std::unique_ptr<TFile> file( TFile::Open(fileFullName.c_str(), "RECREATE", fileName.c_str(), 7) );
+    ROOT::EnableImplicitMT();
 
     file->WriteObject(tGlauber.get(), "Glauber");
     file->WriteObject(tFermiMom.get(), "FermiMomentum");
     file->WriteObject(tClusters.get(), "MST-Clusters");
     file->WriteObject(tRun.get(), "Conditions");
+
+    if(runData.isIniCond){
+    file->WriteObject(tIniState.get(), "InitialStage");
+    }
     G4cout << "\n----> Data were written into the file " << fileName+".root" << G4endl;
 }
 
 void AAMCCWriter::operator()(AAMCCEvent *ev, AAMCCrun *run, aamcc::NucleonVector *nucleons) {
     if(run != nullptr) runData = (*run);
     if(callflag){InitHisto(runData); callflag = false;}
-    if(ev != nullptr && nucleons != nullptr){FillTrees((*ev)); FillHisto((*ev), (*nucleons));}
+    if(ev != nullptr && nucleons != nullptr){FillTrees((*ev), (*nucleons->GetIniState())); FillHisto((*ev), (*nucleons));}
 }
