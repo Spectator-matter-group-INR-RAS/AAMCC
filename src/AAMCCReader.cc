@@ -142,6 +142,11 @@ void AAMCCReader::ReadSecondStage(AAMCCrun* runData, InitialConditions* InCond){
   std::cout << "Please enter the file name to write histograms (.root will be supplied): ";
   std::cin >> runData->fileName;
 
+  if(!runData->isIniCond && !runData->InFileOrNot){
+    std::cout << "Do you want to write the primary nucleons data?: ";
+    std::cin >> runData->isIniCond;
+  }
+
   runData->XsectNN = InCond->GetXsectNN(); // Is it only for GlauberMC?
 
   runData->KinEnPerNucl = InCond->GetKinEnergyPerNucl();

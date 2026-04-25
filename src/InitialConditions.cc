@@ -26,6 +26,7 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "Opgcm"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Oho"){sourceA = 16; sourceZ = 8; SysA = SysA_in;}
     else if(SysA_in == "Ne"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
+    else if(SysA_in == "Nes"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Ne22"){sourceA = 22; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Necl"){sourceA = 20; sourceZ = 10; SysA = SysA_in;}
     else if(SysA_in == "Ne22cl"){sourceA = 22; sourceZ = 10; SysA = SysA_in;}
@@ -40,7 +41,9 @@ G4bool InitialConditions::SetSysA(G4String SysA_in) {
     else if(SysA_in == "Xe124"){sourceA = 124; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "Xe124d"){sourceA = 124; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "Xe130"){sourceA = 130; sourceZ = 54; SysA = SysA_in;}
+    else if(SysA_in == "Xe136"){sourceA = 136; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "Xe136pn"){sourceA = 136; sourceZ = 54; SysA = SysA_in;}
+    else if(SysA_in == "Xe136pnz"){sourceA = 136; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "Xe"){sourceA = 129; sourceZ = 54; SysA = SysA_in;}
     else if(SysA_in == "W"){sourceA = 186; sourceZ = 74; SysA = SysA_in;}
     else if(SysA_in == "Ar"){sourceA = 40; sourceZ = 18; SysA = SysA_in;}
@@ -83,6 +86,7 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     else if(SysB_in == "Opgcm") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Oho") {sourceAb = 16; sourceZb = 8; SysB = SysB_in;}
     else if(SysB_in == "Ne") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
+    else if(SysB_in == "Nes") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Ne22") {sourceAb = 22; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Necl") {sourceAb = 20; sourceZb = 10; SysB = SysB_in;}
     else if(SysB_in == "Ne22cl"){sourceAb = 22; sourceZb = 10; SysB = SysB_in;}
@@ -97,7 +101,9 @@ G4bool InitialConditions::SetSysB(G4String SysB_in) {
     else if(SysB_in == "Xe124"){sourceAb = 124; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "Xe124d"){sourceAb = 124; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "Xe130"){sourceAb = 130; sourceZb = 54; SysB = SysB_in;}
+    else if(SysB_in == "Xe136"){sourceAb = 136; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "Xe136pn"){sourceAb = 136; sourceZb = 54; SysB = SysB_in;}
+    else if(SysB_in == "Xe136pnz"){sourceAb = 136; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "Xe"){sourceAb = 129; sourceZb = 54; SysB = SysB_in;}
     else if(SysB_in == "W"){sourceAb = 186; sourceZb = 74; SysB = SysB_in;}
     else if(SysB_in == "Ar"){sourceAb = 40; sourceZb = 18; SysB = SysB_in;}

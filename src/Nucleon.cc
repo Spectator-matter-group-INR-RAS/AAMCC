@@ -48,4 +48,30 @@ namespace aamcc {
         } else { out = this; }
         return out;
     }
+
+    IniState *NucleonVector::GetIniState(){
+        auto ini = new IniState();
+
+        for(int k = 0; k < this->size(); ++k){
+            if(this->at(k).Nucl == "A"){
+                ini->xOnA.push_back(this->at(k).GetX());
+                ini->yOnA.push_back(this->at(k).GetY());
+                ini->zOnA.push_back(this->at(k).GetZ());
+                ini->isPartA.push_back(this->at(k).isParticipant);
+                ini->isoA.push_back(this->at(k).isospin);
+            }else if(this->at(k).Nucl == "B"){
+                ini->xOnB.push_back(this->at(k).GetX());
+                ini->yOnB.push_back(this->at(k).GetY());
+                ini->zOnB.push_back(this->at(k).GetZ());
+                ini->isPartB.push_back(this->at(k).isParticipant);
+                ini->isoB.push_back(this->at(k).isospin);
+            }
+            else{
+               throw "Nucleon with wrong side attribute"; 
+            }
+        }
+
+        return ini;
+    }
+
 }   //aamcc
