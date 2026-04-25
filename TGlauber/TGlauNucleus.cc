@@ -166,7 +166,9 @@ void TGlauNucleus::Lookup(const char* name)
   else if (TString(name) == "Xe124")   {fN = 124; fR = 5.463;      fA = 0.59;   fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
   else if (TString(name) == "Xe124d")  {fN = 124; fR = 5.463;      fA = 0.59;   fW =  0;       fF = 8;  fZ=54; fBeta2=0.208; fBeta4=0.00;}
   else if (TString(name) == "Xe130")   {fN = 130; fR = 5.463;      fA = 0.59;   fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
-  else if (TString(name) == "Xe136pn") {fN = 136; fR = 5.506;      fA = 0.59;   fW =  0;       fF = 11; fZ=54; fR2=5.795; fA2=0.59; fW2=0;}
+  else if (TString(name) == "Xe136")   {fN = 130; fR = 5.506;      fA = 0.59;   fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
+  else if (TString(name) == "Xe136pn") {fN = 136; fR = 5.506;      fA = 0.59;   fW =  0;       fF = 11; fZ=54; fR2=5.68; fA2=0.60; fW2=0;}
+  else if (TString(name) == "Xe136pnz"){fN = 136; fR = 5.506;      fA = 0.59;   fW =  0;       fF = 11; fZ=54; fR2=5.70; fA2=0.61; fW2=0;}
   else if (TString(name) == "Xe")      {fN = 129; fR = 5.36;       fA = 0.59;   fW =  0;       fF = 1;  fZ=54;} // adapted from arXiv:1703.04278
   else if (TString(name) == "Xes")     {fN = 129; fR = 5.42;       fA = 0.57;   fW =  0;       fF = 1;  fZ=54;} // scale from Sb (Antimony, A=122, r=5.32) by 1.019 = (129/122)**0.333
   else if (TString(name) == "Xe2")     {fN = 129; fR = 5.36;       fA = 0.59;   fW =  0;       fF = 8;  fZ=54; fBeta2=0.161; fBeta4=-0.003;} // adapted from arXiv:1703.04278 and Z. Physik (1974) 270: 113
@@ -485,7 +487,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
         filepath += "carbon_plaintext.dat";
         //sprintf(filename,"../TGlauber/carbon_plaintext.dat");
       } else if (tmpname=="C2") {
-        filepath += "carbon_src.dat";
+        filepath += "carbon_nn_vanila.dat";
         //sprintf(filename,"../TGlauber/carbon_plaintext.dat");
       } else if (tmpname=="Ctr") {
         filepath += "carbon_clustered.dat";
@@ -509,7 +511,7 @@ TVector3 &TGlauNucleus::ThrowNucleons(Double_t xshift)
         filepath += "oxygen_pgcm_clustered.dat";
         //sprintf(filename,"../TGlauber/o16_alv.dat");    
       } else if (tmpname=="Ca2") {
-        filepath += "calcium_nn_plushalffm.dat";
+        filepath += "ca40_alv.dat";
         //sprintf(filename,"../TGlauber/ca40_alv.dat");
       } else if (tmpname=="Necl") {
         filepath += "neon_clustered.dat";
