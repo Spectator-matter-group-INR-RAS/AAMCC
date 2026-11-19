@@ -21,7 +21,7 @@ of colliding nuclei and energy of the collision on the event-by-event basis
    
 ## How to use AAMCC
 
-- To compile AAMCC one will need Geant4 v10.4 and ROOT v6.* installed with CMake or as a part of FairROOT/AliROOT/etc. and [MCini library](https://github.com/eugene274/mcini)
+- To compile AAMCC one will need **Geant4 v10.4** and **ROOT v6.*** installed with CMake or as a part of FairROOT/AliROOT/etc. and [**MCini** library](https://github.com/eugene274/mcini)
 - To compile create a build dir, move to it and run `cmake /path/to/CMakeList.txt` and `make`
 - After it executable file *GRATE* will be created 
 - Run executable, e.g. `./GRATE` 
